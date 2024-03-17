@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".", // 这里设置基本目录为项目根目录
+    "paths": {
+      "widgets-v3": ["src/index"] // 假设你的类型定义在src/index.ts
+    },
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "jsx": "react",
+    "esModuleInterop": true,
+    "types": ["jest"],
+    "strict": true,
+    "skipLibCheck": true,
+    "declaration": true
+  }
+}
