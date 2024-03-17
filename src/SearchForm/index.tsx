@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { Form, Row, Col, Button } from 'antd';
-import Icon from 'antd/lib/icon'
+import { Form, Row, Col, Button, Icon } from 'antd';
 import * as PropTypes from 'prop-types';
 import { FormComponentProps, WrappedFormUtils } from 'antd/lib/form/Form';
 
