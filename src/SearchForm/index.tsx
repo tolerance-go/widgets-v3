@@ -3,22 +3,32 @@ import { Form, Row, Col, Button, Icon } from 'antd';
 import * as PropTypes from 'prop-types';
 import { FormComponentProps, WrappedFormUtils } from 'antd/lib/form/Form';
 
-type Item = {
+export type SearchFormItem = {
   node: PropTypes.ReactNodeLike;
   span?: number;
 };
 
-interface AdvancedSearchFormProps extends FormComponentProps {
+export type SearchFormProps = {
   defaultFieldCount?: number;
   itemSpan?: number;
-  renderFormItems?: ({ form }: { form: WrappedFormUtils }) => (PropTypes.ReactNodeLike | Item)[];
-}
+  renderFormItems?: ({
+    form,
+  }: {
+    form: WrappedFormUtils;
+  }) => (PropTypes.ReactNodeLike | SearchFormItem)[];
+  onSearch?: (values: Record<string, any>) => void;
+  onReset?: () => void;
+};
+
+export type AdvancedSearchFormProps = SearchFormProps & FormComponentProps;
 
 const AdvancedSearchFormInner: React.FC<AdvancedSearchFormProps> = ({
   form,
   defaultFieldCount = 2,
   renderFormItems,
   itemSpan = 8,
+  onSearch,
+  onReset
 }) => {
   const [expand, setExpand] = useState<boolean>(false);
 
@@ -37,8 +47,12 @@ const AdvancedSearchFormInner: React.FC<AdvancedSearchFormProps> = ({
         // Check if item is a React node
         node = item;
         span = itemSpan; // Default span
-      } else if (typeof item === 'object' && item !== null && (item as Partial<Item>).node) {
-        const rightItem = item as Item;
+      } else if (
+        typeof item === 'object' &&
+        item !== null &&
+        (item as Partial<SearchFormItem>).node
+      ) {
+        const rightItem = item as SearchFormItem;
         // Check if item is an object with a node field
         node = rightItem.node;
         span = rightItem.span || itemSpan; // Use provided span or default to 8
@@ -58,13 +72,15 @@ const AdvancedSearchFormInner: React.FC<AdvancedSearchFormProps> = ({
     e.preventDefault();
     form.validateFields((err: any, values: any) => {
       if (!err) {
-        console.log('Received values of form: ', values);
+        // console.log('Received values of form: ', values);
+        onSearch?.(values)
       }
     });
   };
 
   const handleReset = () => {
     form.resetFields();
+    onReset?.()
   };
 
   const toggleExpand = () => {
@@ -123,8 +139,8 @@ const AdvancedSearchFormInner: React.FC<AdvancedSearchFormProps> = ({
   );
 };
 
-const WrappedAdvancedSearchForm = Form.create<AdvancedSearchFormProps>({ name: 'advanced_search' })(
-  AdvancedSearchFormInner,
-);
+const WrappedAdvancedSearchForm = Form.create<AdvancedSearchFormProps>({
+  name: 'advanced_search_form',
+})(AdvancedSearchFormInner);
 
 export default WrappedAdvancedSearchForm;
