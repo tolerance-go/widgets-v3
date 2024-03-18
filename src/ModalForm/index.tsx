@@ -22,7 +22,7 @@ type ModalFormProps = React.PropsWithChildren<{
     initialFormValues?: InitialFormValues;
   }) => React.ReactNode;
   requestInitialFormValues?: () => Promise<InitialFormValues>;
-  renderCustomActionGroup?: (args: {
+  renderActionGroup?: (args: {
     toggleModal: () => void;
     form: WrappedFormUtils;
   }) => React.ReactNode;
@@ -37,7 +37,7 @@ const ModalFormInner = ({
   trigger,
   renderFormItems,
   requestInitialFormValues,
-  renderCustomActionGroup,
+  renderActionGroup,
   ...restProps
 }: ModalFormInnerProps) => {
   const [isVisible, setIsVisible] = useState<boolean>(false);
@@ -74,8 +74,8 @@ const ModalFormInner = ({
 
   // 自定义操作组件的渲染
   const renderCustomActionGroupInner = () => {
-    if (typeof renderCustomActionGroup === 'function') {
-      return renderCustomActionGroup({ toggleModal, form });
+    if (typeof renderActionGroup === 'function') {
+      return renderActionGroup({ toggleModal, form });
     }
     return null;
   };

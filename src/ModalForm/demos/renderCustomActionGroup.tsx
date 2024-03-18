@@ -100,7 +100,7 @@ export default () => (
         </Form.Item>,
       ];
     }}
-    renderCustomActionGroup={() => {
+    renderActionGroup={() => {
       return [
         <Action
           key="btn1"
