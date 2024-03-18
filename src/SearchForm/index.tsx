@@ -29,6 +29,7 @@ const AdvancedSearchFormInner: React.FC<AdvancedSearchFormProps> = ({
   itemSpan = 8,
   onSearch,
   onReset,
+  ...restFormProps
 }) => {
   const [expand, setExpand] = useState<boolean>(false);
 
@@ -104,14 +105,15 @@ const AdvancedSearchFormInner: React.FC<AdvancedSearchFormProps> = ({
 
   return (
     <Form
-      onSubmit={handleSearch}
       layout="horizontal"
       labelCol={{
-        span: 8,
+        span: 6,
       }}
       wrapperCol={{
-        span: 16,
+        span: 18,
       }}
+      {...restFormProps}
+      onSubmit={handleSearch}
     >
       <Row gutter={24}>
         {items}
