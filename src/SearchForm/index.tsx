@@ -28,7 +28,7 @@ const AdvancedSearchFormInner: React.FC<AdvancedSearchFormProps> = ({
   renderFormItems,
   itemSpan = 8,
   onSearch,
-  onReset
+  onReset,
 }) => {
   const [expand, setExpand] = useState<boolean>(false);
 
@@ -73,14 +73,14 @@ const AdvancedSearchFormInner: React.FC<AdvancedSearchFormProps> = ({
     form.validateFields((err: any, values: any) => {
       if (!err) {
         // console.log('Received values of form: ', values);
-        onSearch?.(values)
+        onSearch?.(values);
       }
     });
   };
 
   const handleReset = () => {
     form.resetFields();
-    onReset?.()
+    onReset?.();
   };
 
   const toggleExpand = () => {
@@ -100,7 +100,7 @@ const AdvancedSearchFormInner: React.FC<AdvancedSearchFormProps> = ({
   const spanLeft = lastRowSpanUsed === 0 ? 0 : 24 - lastRowSpanUsed;
 
   // Adjust button position based on the remaining span
-  const buttonSpan = spanLeft >= 8 ? spanLeft : 24;
+  const buttonSpan = spanLeft >= 0 ? spanLeft : 24;
 
   return (
     <Form
