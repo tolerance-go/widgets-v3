@@ -43,7 +43,10 @@ const columns = [
     title: '姓名',
     dataIndex: 'name',
     key: 'name',
-    filters: [{ text: 'Joe', value: 'Joe' }, { text: 'Jim', value: 'Jim' }],
+    filters: [
+      { text: 'Joe', value: 'Joe' },
+      { text: 'Jim', value: 'Jim' },
+    ],
     sorter: true,
   },
   {
@@ -65,19 +68,12 @@ export default () => (
       renderFormItems: ({ form: { getFieldDecorator } }) => {
         return [
           <Form.Item label="E-mail">
-            {getFieldDecorator('email', {
-              rules: [
-                {
-                  type: 'email',
-                  message: 'The input is not valid E-mail!',
-                },
-              ],
-            })(<Input />)}
+            {getFieldDecorator('email', {})(<Input autoComplete="off" />)}
           </Form.Item>,
           <Form.Item label="Password" hasFeedback>
             {getFieldDecorator('password', {
               rules: [],
-            })(<Input.Password />)}
+            })(<Input.Password autoComplete="off" />)}
           </Form.Item>,
           <Form.Item label="Confirm Password" hasFeedback>
             {getFieldDecorator('confirm', {
@@ -112,7 +108,7 @@ export default () => (
       },
     }}
     request={async (params) => {
-      console.log('params', params)
+      console.log('params', params);
       await delay(1000);
       return {
         total: 100,

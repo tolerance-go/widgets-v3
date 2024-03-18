@@ -1,6 +1,7 @@
-import { Cascader, Form, Icon, Input, Tooltip } from 'antd';
+import { Button, Cascader, Form, Icon, Input, Tooltip } from 'antd';
 import React from 'react';
-import { SearchForm } from 'widgets-v3';
+import { Action, ModalForm } from 'widgets-v3';
+import delay from 'delay';
 
 const residences = [
   {
@@ -38,10 +39,12 @@ const residences = [
 ];
 
 export default () => (
-  <SearchForm
+  <ModalForm
+    title="标题"
+    trigger={<Button type="primary">按钮</Button>}
     renderFormItems={({ form: { getFieldDecorator } }) => {
       return [
-        <Form.Item label="E-mail">
+        <Form.Item key={'email'} label="E-mail">
           {getFieldDecorator('email', {
             rules: [
               {
@@ -51,7 +54,7 @@ export default () => (
             ],
           })(<Input autoComplete="off" />)}
         </Form.Item>,
-        <Form.Item label="Password" hasFeedback>
+        <Form.Item key={'password'} label="Password" hasFeedback>
           {getFieldDecorator('password', {
             rules: [
               {
@@ -61,7 +64,7 @@ export default () => (
             ],
           })(<Input.Password autoComplete="off" />)}
         </Form.Item>,
-        <Form.Item label="Confirm Password" hasFeedback>
+        <Form.Item key={'confirm'} label="Confirm Password" hasFeedback>
           {getFieldDecorator('confirm', {
             rules: [
               {
@@ -73,6 +76,7 @@ export default () => (
           })(<Input.Password />)}
         </Form.Item>,
         <Form.Item
+          key={'nickname'}
           label={
             <span>
               Nickname&nbsp;
@@ -86,7 +90,7 @@ export default () => (
             rules: [{ required: true, message: 'Please input your nickname!', whitespace: true }],
           })(<Input />)}
         </Form.Item>,
-        <Form.Item label="Habitual Residence">
+        <Form.Item key={'residence'} label="Habitual Residence">
           {getFieldDecorator('residence', {
             initialValue: ['zhejiang', 'hangzhou', 'xihu'],
             rules: [
@@ -94,6 +98,18 @@ export default () => (
             ],
           })(<Cascader options={residences} />)}
         </Form.Item>,
+      ];
+    }}
+    renderCustomActionGroup={() => {
+      return [
+        <Action
+          key="btn1"
+          trigger={<Button type="primary">请求异常按钮</Button>}
+          request={async () => {
+            await delay(1000);
+            throw new Error();
+          }}
+        />,
       ];
     }}
   />
