@@ -44,19 +44,13 @@ const ModalFormInner = ({
   const [formLoading, setFormLoading] = useState<boolean>(false); // 新增状态，用于跟踪异步表单项的加载状态
   const [initialFormValues, setInitialFormValues] = useState<InitialFormValues>();
 
-  const initialFormValuesRef = useRef<any>(initialFormValues);
-
-  useEffect(() => {
-    initialFormValuesRef.current = initialFormValues;
-  }, [initialFormValues]);
-
   // 切换模态框的显示状态
   const toggleModal = () => setIsVisible(!isVisible);
 
   // 处理异步表单项渲染
   useEffect(() => {
     const fetchInitialFormValues = async () => {
-      if (isVisible && !initialFormValuesRef.current && requestInitialFormValues) {
+      if (isVisible && requestInitialFormValues) {
         setFormLoading(true);
         try {
           const values = await requestInitialFormValues();
@@ -80,6 +74,10 @@ const ModalFormInner = ({
     return null;
   };
 
+  const resetData = () => {
+    setInitialFormValues(undefined);
+  };
+
   return (
     <>
       {trigger && React.cloneElement(trigger, { onClick: toggleModal })}
@@ -88,7 +86,10 @@ const ModalFormInner = ({
         width={width}
         title={title}
         visible={isVisible}
-        onCancel={toggleModal}
+        onCancel={() => {
+          toggleModal();
+          resetData();
+        }}
         footer={[
           renderCustomActionGroupInner(),
           <Button key="close" onClick={toggleModal}>
