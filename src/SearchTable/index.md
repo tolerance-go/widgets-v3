@@ -11,3 +11,7 @@
 ## 表格操作栏目
 
 <code src="./demos/actions" />
+
+## 内部方法
+
+<code src="./demos/reload" />
