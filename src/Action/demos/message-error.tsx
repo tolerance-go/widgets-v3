@@ -34,5 +34,18 @@ export default () => (
         }}
       />
     </Col>
+
+    <Col>
+      <Action
+        trigger={<Button type="primary">Promise 内的异常</Button>}
+        request={async () => {
+          await new Promise((resolve, reject) => {
+            setTimeout(() => {
+              reject(new Error('表单验证失败'));
+            }, 1000);
+          });
+        }}
+      />
+    </Col>
   </Row>
 );
