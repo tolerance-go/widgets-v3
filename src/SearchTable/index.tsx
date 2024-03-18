@@ -78,11 +78,17 @@ const SearchTable = forwardRef(
     const methods: SearchTableMethods<T> = {
       reload: (params?: Partial<RequestParams<T>>) => {
         const nextParams = {
-          pagination: { ...tableState.pagination, ...params?.pagination },
-          filters: { ...tableState.filters, ...params?.filters },
-          sorter: { ...tableState.sorter, ...params?.sorter },
-          search: { ...tableState.searchValues, ...params?.search },
-          extra: { ...tableState.extra, ...params?.extra },
+          pagination: params?.pagination
+            ? { ...tableState.pagination, ...params?.pagination }
+            : tableState.pagination,
+          filters: params?.filters
+            ? { ...tableState.filters, ...params?.filters }
+            : tableState.filters,
+          sorter: params?.sorter ? { ...tableState.sorter, ...params?.sorter } : tableState.sorter,
+          search: params?.search
+            ? { ...tableState.searchValues, ...params?.search }
+            : tableState.searchValues,
+          extra: params?.extra ? { ...tableState.extra, ...params?.extra } : tableState.extra,
         };
 
         fetch(nextParams);
