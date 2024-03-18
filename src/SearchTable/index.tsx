@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import SearchForm, { SearchFormProps } from '../SearchForm';
-import { Table } from 'antd';
+import { Col, Row, Table, Typography } from 'antd';
 import { TableProps, PaginationConfig } from 'antd/lib/table';
 import { SorterResult, TableCurrentDataSource } from 'antd/lib/table';
 
@@ -18,14 +18,18 @@ export interface RequestResult<T> {
 }
 
 export type SearchTableProps<T extends {} = {}> = {
+  headerTitle?: string;
   searchForm?: SearchFormProps;
   request?: (params: RequestParams<T>) => Promise<RequestResult<T>>;
+  renderActionGroup?: () => React.ReactNode;
 } & TableProps<T>;
 
 // Add generic type T to the component function
 const SearchTable = <T extends {} = {}>({
   searchForm,
+  headerTitle,
   request,
+  renderActionGroup,
   ...tableProps
 }: SearchTableProps<T>) => {
   const [data, setData] = useState<T[]>([]);
@@ -73,6 +77,33 @@ const SearchTable = <T extends {} = {}>({
           setSearchValues(values);
         }}
       ></SearchForm>
+      <Row
+        style={{ paddingTop: 16, paddingBottom: 16 }}
+        type="flex"
+        justify="space-between"
+        align="middle"
+      >
+        <Col>
+          {headerTitle && (
+            <span
+              style={{
+                color: 'rgba(42, 46, 54, 0.88)',
+                fontWeight: 500,
+                fontSize: '16px',
+              }}
+            >
+              {headerTitle}
+            </span>
+          )}
+        </Col>
+        <Col>
+          <Row type="flex" gutter={8}>
+            {React.Children.map(renderActionGroup?.(), (action: React.ReactNode, index: number) => (
+              <Col key={index}>{action}</Col>
+            ))}
+          </Row>
+        </Col>
+      </Row>
       <Table
         {...tableProps}
         dataSource={data}
