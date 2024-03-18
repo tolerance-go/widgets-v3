@@ -20,8 +20,19 @@ const Action = ({ trigger, request }: ActionProps) => {
         try {
           await request(); // 等待异步请求完成
         } catch (error) {
+          let errorMessage;
+
+          // 判断错误的类型
+          if (typeof error === 'string') {
+            // 如果错误是一个字符串
+            errorMessage = error;
+          } else if (error instanceof Error) {
+            // 如果错误是Error对象
+            errorMessage = error.message;
+          }
+
           console.log(error);
-          message.error('操作请求异常');
+          message.error(errorMessage || '操作异常');
         } finally {
           setLoading(false); // 结束加载
         }
