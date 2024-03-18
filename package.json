@@ -10,7 +10,8 @@
     "prettier": "prettier --write \"**/*.{js,jsx,tsx,ts,less,md,json}\"",
     "test": "umi-test",
     "test:coverage": "umi-test --coverage",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0"
   },
   "files": [
     "dist"
@@ -43,6 +44,7 @@
     "@umijs/fabric": "^2.8.1",
     "@umijs/test": "^3.0.5",
     "babel-plugin-import": "^1.13.8",
+    "conventional-changelog-cli": "^4.1.0",
     "delay": "^6.0.0",
     "dumi": "^1.1.0",
     "father": "^4.0.0-rc.2",
