@@ -1,12 +1,9 @@
 import { Button, Cascader, Form, Icon, Input, Row, Tooltip } from 'antd';
 import React from 'react';
-import { BackendFilteredSelect, ModalForm } from 'widgets-v3';
+import { BackendFilteredSelect, ModalForm, BackendFilteredSelectListItem } from 'widgets-v3';
 import delay from 'delay';
-import { BackendFilteredSelectListItem } from '..';
 
-const PAGE_SIZE = 50;
-
-const generateChildren = (total: number = 100): BackendFilteredSelectListItem[] => {
+const generateChildren = (total: number): BackendFilteredSelectListItem[] => {
   const children: BackendFilteredSelectListItem[] = [];
   for (let i = 0; i < total; i++) {
     children.push({
@@ -19,9 +16,10 @@ const generateChildren = (total: number = 100): BackendFilteredSelectListItem[] 
 
 const getPageItems = (
   page: number,
-  pageSize: number = PAGE_SIZE,
+  pageSize: number,
+  total: number,
 ): BackendFilteredSelectListItem[] => {
-  const children = generateChildren();
+  const children = generateChildren(total);
   // 计算开始索引和结束索引
   const startIndex = (page - 1) * pageSize;
   const endIndex = startIndex + pageSize;
@@ -32,13 +30,13 @@ const getPageItems = (
 export default () => (
   <Row>
     <BackendFilteredSelect
-      pageSize={PAGE_SIZE}
+      pageSize={50}
       placeholder="请选择"
       request={async (params) => {
         console.log('发出请求', params);
         await delay(1000);
         return {
-          list: getPageItems(params.current, params.pageSize),
+          list: getPageItems(params.current, params.pageSize, 100),
           total: 100,
         };
       }}
