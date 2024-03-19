@@ -1,3 +1,9 @@
+## [0.6.5](https://gitee.com/bzone/widgets-v3/compare/v0.6.4...v0.6.5) (2024-03-19)
+
+### Bug Fixes
+
+- 删除 esm 模块导出 ([7bd6001](https://gitee.com/bzone/widgets-v3/commits/7bd60018410b3d8787fbe6c63379c79914a78586))
+
 ## [0.6.4](https://gitee.com/bzone/widgets-v3/compare/v0.6.3...v0.6.4) (2024-03-19)
 
 ### Bug Fixes
