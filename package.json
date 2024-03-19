@@ -18,8 +18,8 @@
   "files": [
     "dist"
   ],
-  "module": "dist/cjs/index.js",
-  "typings": "dist/cjs/index.d.ts",
+  "module": "dist/esm/index.js",
+  "typings": "dist/esm/index.d.ts",
   "gitHooks": {
     "pre-commit": "lint-staged"
   },
