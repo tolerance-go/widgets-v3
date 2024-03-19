@@ -1,3 +1,12 @@
+# [0.8.0](https://gitee.com/bzone/widgets-v3/compare/v0.7.0...v0.8.0) (2024-03-19)
+
+
+### Features
+
+* **BaseForm:** 新增基础表单组件 ([d886ef1](https://gitee.com/bzone/widgets-v3/commits/d886ef131a709f3346bd318b7cd37244ac20ba75))
+
+
+
 # [0.7.0](https://gitee.com/bzone/widgets-v3/compare/v0.6.7...v0.7.0) (2024-03-19)
 
 
