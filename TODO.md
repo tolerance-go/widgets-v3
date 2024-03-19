@@ -75,3 +75,42 @@ turn [ <ModalForm key={'modal-form-1'} title='修改手机号' trigger={ <Button
                         })
 
                         把 form 封装进去
+
+---
+
+<Action trigger={ <Button size='large' block style={{
+                                        marginLeft: 0,
+                                    }} type="primary"> 确定 </Button> } request={async () => {
+
+                                    const formValues = await new Promise((resolve, reject) => {
+                                        validateFieldsAndScroll((errors, values) => {
+                                            if (errors) {
+                                                reject('表单验证失败，请检查')
+                                                return;
+                                            }
+                                            resolve(values)
+                                        })
+                                    })
+
+                                    const rsp = await request(`${baseUrl}/account/unLock`, {
+                                        defaultAndThrow: true,
+                                        method: 'PATCH',
+                                        body: formValues
+                                    })
+                                    if (rsp?.code !== BE_RIGHT_CODE) {
+                                        notification.error({
+                                            message: '操作失败，请再试一次',
+                                            description: rsp.msg
+                                        })
+                                        return;
+                                    }
+                                    message.success('账号已解锁')
+                                }}
+                            >
+                            </Action>
+
+
+                            封装  notification.error({
+                                            message: '操作失败，请再试一次',
+                                            description: rsp.msg
+                                        })
