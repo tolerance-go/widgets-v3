@@ -1,3 +1,9 @@
+## [0.6.4](https://gitee.com/bzone/widgets-v3/compare/v0.6.3...v0.6.4) (2024-03-19)
+
+### Bug Fixes
+
+- 新增 cjs 模块导出 ([470f0d1](https://gitee.com/bzone/widgets-v3/commits/470f0d107184c777ac2f20556eff0d5a7b4fae0d))
+
 ## [0.6.3](https://gitee.com/bzone/widgets-v3/compare/v0.6.2...v0.6.3) (2024-03-19)
 
 ### Bug Fixes
