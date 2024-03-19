@@ -19,8 +19,7 @@
     "dist"
   ],
   "main": "dist/cjs/index.js",
-  "module": "dist/esm/index.js",
-  "typings": "dist/esm/index.d.ts",
+  "typings": "dist/cjs/index.d.ts",
   "gitHooks": {
     "pre-commit": "lint-staged"
   },
