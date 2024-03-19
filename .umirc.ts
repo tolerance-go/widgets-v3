@@ -14,8 +14,8 @@ export default defineConfig({
       'import',
       {
         libraryName: 'antd',
-        libraryDirectory: 'lib', // 指定从 lib 目录导入
-        style: 'css', // 指定导入 css 文件
+        libraryDirectory: 'es',
+        style: true, // 指定导入 css 文件
       },
       'antd',
     ],
