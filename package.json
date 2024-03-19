@@ -12,7 +12,8 @@
     "test:coverage": "umi-test --coverage",
     "prepublishOnly": "npm run build",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
-    "postversion": "npm run changelog && git add CHANGELOG.md && git commit -m \"chore: update changelog\" && git push --tags"
+    "postversion": "npm run changelog && git add CHANGELOG.md && git commit -m \"chore: update changelog\" && git push --tags && npm run sync-cnpm",
+    "sync-cnpm": "start https://npmmirror.com/sync/widgets-v3"
   },
   "files": [
     "dist"
