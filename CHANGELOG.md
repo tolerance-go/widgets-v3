@@ -1,3 +1,9 @@
+## [0.6.7](https://gitee.com/bzone/widgets-v3/compare/v0.6.6...v0.6.7) (2024-03-19)
+
+### Bug Fixes
+
+- esm 导出样式改为 style ([8b247e9](https://gitee.com/bzone/widgets-v3/commits/8b247e996e248f94b204cc0a02206f94d994700d))
+
 ## [0.6.6](https://gitee.com/bzone/widgets-v3/compare/v0.6.5...v0.6.6) (2024-03-19)
 
 ### Bug Fixes
