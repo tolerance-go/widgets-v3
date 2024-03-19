@@ -1,3 +1,9 @@
+## [0.6.3](https://gitee.com/bzone/widgets-v3/compare/v0.6.2...v0.6.3) (2024-03-19)
+
+### Bug Fixes
+
+- 打包改为 esm ([e3d1744](https://gitee.com/bzone/widgets-v3/commits/e3d1744ff4400a72d14f97d2c6858915b66411cf))
+
 ## [0.6.2](https://gitee.com/bzone/widgets-v3/compare/v0.6.1...v0.6.2) (2024-03-19)
 
 ### Bug Fixes
