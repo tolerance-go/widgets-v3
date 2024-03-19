@@ -1,3 +1,9 @@
+## [0.6.6](https://gitee.com/bzone/widgets-v3/compare/v0.6.5...v0.6.6) (2024-03-19)
+
+### Bug Fixes
+
+- 指定 platform 为 browser ([4b1f288](https://gitee.com/bzone/widgets-v3/commits/4b1f2882a9bdd52ea8964772e35197aaf1fefff9))
+
 ## [0.6.5](https://gitee.com/bzone/widgets-v3/compare/v0.6.4...v0.6.5) (2024-03-19)
 
 ### Bug Fixes
