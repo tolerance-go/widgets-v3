@@ -1,4 +1,4 @@
-import { Button, Cascader, Form, Col, Icon, Input, Row, Tooltip } from 'antd';
+import { Button, Cascader, Form, Col, Icon, Input, Row, Tooltip, Modal } from 'antd';
 import React from 'react';
 import { Action } from 'widgets-v3';
 import delay from 'delay';
@@ -38,6 +38,23 @@ export default () => (
           await delay(1000);
         }}
       />
+    </Col>
+
+    <Col>
+      <Button
+        type="primary"
+        onClick={() => {
+          Modal.confirm({
+            title: '确认？',
+            content: '描述',
+            onOk: async () => {
+              await delay(1000);
+            },
+          });
+        }}
+      >
+        弹窗确认按钮
+      </Button>
     </Col>
   </Row>
 );
