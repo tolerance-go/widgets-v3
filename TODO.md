@@ -53,3 +53,25 @@ turn [ <ModalForm key={'modal-form-1'} title='修改手机号' trigger={ <Button
                                             ---
 
                                             什么时候用 表单 的 hasFeedback
+
+---
+
+              <Action
+                    trigger={
+                        <Button type="primary">
+                            登录
+                        </Button>
+                    }
+                    request={async () => {
+
+                        const formValues = await new Promise((resolve, reject) => {
+                            validateFieldsAndScroll((errors, values) => {
+                                if (errors) {
+                                    reject('表单验证失败，请检查')
+                                    return;
+                                }
+                                resolve(values)
+                            })
+                        })
+
+                        把 form 封装进去
