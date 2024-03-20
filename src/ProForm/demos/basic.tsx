@@ -1,6 +1,6 @@
 import { Button, Cascader, Form, Icon, Input, Tooltip } from 'antd';
 import React from 'react';
-import { BackendFilteredSelect, BaseForm, BackendFilteredSelectListItem } from 'widgets-v3';
+import { BackendFilteredSelect, ProForm, BackendFilteredSelectListItem } from 'widgets-v3';
 import delay from 'delay';
 
 const generateChildren = (total: number): BackendFilteredSelectListItem[] => {
@@ -63,10 +63,10 @@ const residences = [
 ];
 
 export default () => (
-  <BaseForm
+  <ProForm
     request={async (params) => {
       console.log(params);
-      await delay(1000)
+      await delay(1000);
       return;
     }}
     renderFormItems={({ form: { getFieldDecorator }, submitLoading }) => {

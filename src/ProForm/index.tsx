@@ -9,7 +9,7 @@ export interface RequestParams {
 
 export interface RequestResult {}
 
-export type BaseFormProps = {
+export type ProFormProps = {
   request?: (params: RequestParams) => Promise<void>;
   renderFormItems?: (params: {
     form: WrappedFormUtils;
@@ -17,9 +17,9 @@ export type BaseFormProps = {
   }) => PropTypes.ReactNodeLike;
 };
 
-export type AdvancedBaseFormProps = BaseFormProps & FormComponentProps;
+export type AdvancedProFormProps = ProFormProps & FormComponentProps;
 
-const AdvancedBaseFormInner: React.FC<AdvancedBaseFormProps> = ({
+const AdvancedProFormInner: React.FC<AdvancedProFormProps> = ({
   form,
   renderFormItems,
   request,
@@ -72,8 +72,8 @@ const AdvancedBaseFormInner: React.FC<AdvancedBaseFormProps> = ({
   );
 };
 
-const WrappedAdvancedBaseForm = Form.create<AdvancedBaseFormProps>({
+const WrappedAdvancedProForm = Form.create<AdvancedProFormProps>({
   name: 'advanced_base_form',
-})(AdvancedBaseFormInner);
+})(AdvancedProFormInner);
 
-export default WrappedAdvancedBaseForm;
+export default WrappedAdvancedProForm;
