@@ -1,3 +1,8 @@
+---
+group:
+  order: 6
+---
+
 # SearchTable
 
 ## 基本使用

@@ -1,3 +1,8 @@
+---
+group:
+  order: 5
+---
+
 # SearchForm
 
 ## 基本使用
