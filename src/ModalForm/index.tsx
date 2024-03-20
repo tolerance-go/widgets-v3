@@ -91,10 +91,10 @@ const ModalFormInner = ({
           resetData();
         }}
         footer={[
-          renderCustomActionGroupInner(),
           <Button key="close" onClick={toggleModal}>
             关闭
           </Button>,
+          renderCustomActionGroupInner(),
         ]}
       >
         <Form {...restProps}>
