@@ -5,7 +5,7 @@ group:
 
 # FrontendFilteredSelect
 
-后端分页的下拉选项输入框
+前端过滤的下拉选项输入框
 
 相较于直接使用，增加如下功能选项：
 
