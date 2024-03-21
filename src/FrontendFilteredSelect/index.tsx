@@ -1,4 +1,4 @@
-import { Select, Spin } from 'antd';
+import { Select, Spin, message } from 'antd';
 import { OptionProps, SelectProps, SelectValue } from 'antd/lib/select';
 import React, {
   ForwardedRef,
@@ -65,6 +65,20 @@ const FrontendFilteredSelect = forwardRef(
         if (currentRequestIndex === requestCounterRef.current) {
           setList(newList);
         }
+      } catch (error) {
+        let errorMessage;
+
+        // 判断错误的类型
+        if (typeof error === 'string') {
+          // 如果错误是一个字符串
+          errorMessage = error;
+        } else if (error instanceof Error) {
+          // 如果错误是Error对象
+          errorMessage = error.message;
+        }
+
+        console.log(error);
+        message.error(errorMessage || '请求下拉选项异常');
       } finally {
         if (currentRequestIndex === requestCounterRef.current) {
           setLoading(false);

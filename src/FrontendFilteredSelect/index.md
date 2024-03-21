@@ -21,3 +21,7 @@ group:
 ## 初始值
 
 <code src="./demos/initialList" />
+
+## 请求异常捕获自动打印
+
+<code src="./demos/error-message" />
