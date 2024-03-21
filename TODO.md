@@ -114,3 +114,15 @@ turn [ <ModalForm key={'modal-form-1'} title='修改手机号' trigger={ <Button
                                             message: '操作失败，请再试一次',
                                             description: rsp.msg
                                         })
+
+---
+
+renderActionGroup={({ toggleModal, form }) => { return [ <Action key="btn1" trigger={<Button type="primary">确认</Button>} request={async () => { const formValues = await new Promise((resolve, reject) => { form.validateFieldsAndScroll((errors, values) => { if (errors) { reject('表单存在错误，请检查') return; } resolve(values) }) }) await delay(1000);
+
+                      console.log(formValues)
+
+                      toggleModal()
+                    }}
+                  />,
+                ];
+              }}

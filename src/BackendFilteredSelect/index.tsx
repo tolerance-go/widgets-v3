@@ -1,7 +1,14 @@
 import { Select, Spin } from 'antd';
 import { OptionProps, SelectProps, SelectValue } from 'antd/lib/select';
 import debounce from 'lodash.debounce';
-import React, { ForwardedRef, forwardRef, useImperativeHandle, useRef, useState } from 'react';
+import React, {
+  ForwardedRef,
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from 'react';
 import { highlightMatch } from '../_utils/highlightMatch';
 import useUpdateEffect from '../_utils/useUpdateEffect';
 
@@ -76,6 +83,10 @@ const BackendFilteredSelect = forwardRef(
 
     // 使用 useRef 来存储 debounce 函数的引用，以保证其在组件的每次渲染中保持不变
     const fetchRef = useRef(debounce(fetch, 350));
+
+    useEffect(() => {
+      fetchRef.current = debounce(fetch, 350);
+    }, [fetch]);
 
     useUpdateEffect(() => {
       // 关闭弹窗的时候，不请求
