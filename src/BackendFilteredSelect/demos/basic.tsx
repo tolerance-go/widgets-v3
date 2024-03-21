@@ -7,8 +7,8 @@ const generateChildren = (total: number): BackendFilteredSelectListItem[] => {
   const children: BackendFilteredSelectListItem[] = [];
   for (let i = 0; i < total; i++) {
     children.push({
-      value: i.toString() + i,
-      label: i.toString() + i,
+      value: 'value-' + i,
+      label: 'label-' + i,
     });
   }
   return children;
