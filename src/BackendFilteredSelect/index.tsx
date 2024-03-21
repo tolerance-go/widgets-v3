@@ -57,9 +57,9 @@ const BackendFilteredSelect = forwardRef(
 
     const [hasMore, setHasMore] = useState(true);
 
-    const currentPageRef = useRef(1);
+    const currentPageRef = useRef(0);
 
-    const fetch = async (searchText: string, page: number = 1) => {
+    const fetch = async (searchText: string, page: number) => {
       if (!request) return;
       const currentRequestIndex = ++requestCounterRef.current;
       try {
@@ -71,7 +71,10 @@ const BackendFilteredSelect = forwardRef(
             // If it's a new search, reset list to the new one; otherwise, append.
             return page === 1 ? newList : prev.concat(newList);
           });
-          setHasMore(list.length + newList.length < total);
+          /**
+           * 这里不清空 list，但是重置了 current，根据它做判断
+           */
+          setHasMore((currentPageRef.current === 0 ? 0 : list.length) + newList.length < total);
           currentPageRef.current = page;
         }
       } finally {
@@ -92,9 +95,8 @@ const BackendFilteredSelect = forwardRef(
       // 关闭弹窗的时候，不请求
       if (searchText !== undefined) {
         // 搜索后请求，就重置，比如下拉了几次后，重新输入了搜索参数
-        setList([]);
         setHasMore(true);
-        fetchRef.current(searchText);
+        fetchRef.current(searchText, 1);
       }
     }, [searchText]);
 
@@ -119,11 +121,10 @@ const BackendFilteredSelect = forwardRef(
         onDropdownVisibleChange={(visible) => {
           if (visible) {
             // 立即调用一次
-            fetch('');
+            fetch('', 1);
           } else {
             setSearchText(undefined);
-            currentPageRef.current = 1;
-            setList([]);
+            currentPageRef.current = 0;
             setHasMore(true);
           }
         }}
@@ -143,7 +144,7 @@ const BackendFilteredSelect = forwardRef(
                 }
               }}
             >
-              {menu}
+              {currentPageRef.current > 0 && menu}
               {/* 添加自定义内容到下拉菜单底部 */}
               {loading && (
                 <div style={{ padding: 8, textAlign: 'center' }}>
