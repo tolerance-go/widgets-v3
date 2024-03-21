@@ -1,3 +1,9 @@
+## [0.9.2](https://gitee.com/bzone/widgets-v3/compare/v0.9.1...v0.9.2) (2024-03-21)
+
+### Bug Fixes
+
+- **FrontendFilteredSelect:** 关闭的时候不重置 list ([b32e38e](https://gitee.com/bzone/widgets-v3/commits/b32e38eacfa6c5540185efb8fb46c2b287e381b4))
+
 ## [0.9.1](https://gitee.com/bzone/widgets-v3/compare/v0.9.0...v0.9.1) (2024-03-21)
 
 ### Bug Fixes
