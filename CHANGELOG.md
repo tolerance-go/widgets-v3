@@ -1,3 +1,13 @@
+## [0.9.1](https://gitee.com/bzone/widgets-v3/compare/v0.9.0...v0.9.1) (2024-03-21)
+
+### Bug Fixes
+
+- **FrontendFilteredSelect:** 关闭弹窗不显示 label 的问题 ([b356d53](https://gitee.com/bzone/widgets-v3/commits/b356d5375085c944abd09865462af744b229dbdd))
+
+### Features
+
+- **FrontendFilteredSelect:** 新增请求异常报错 ([58ccb1b](https://gitee.com/bzone/widgets-v3/commits/58ccb1b874cf1cf41d4b9c23d09c72218319a8c8))
+
 # [0.9.0](https://gitee.com/bzone/widgets-v3/compare/v0.8.0...v0.9.0) (2024-03-21)
 
 ### Bug Fixes
