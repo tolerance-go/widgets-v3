@@ -107,15 +107,6 @@ const FrontendFilteredSelect = forwardRef(
     // 更新useImperativeHandle钩子，直接使用methods对象
     useImperativeHandle(ref, () => methods);
 
-    // 方便重置的时候，逻辑应该重置为当前选中的下拉项
-    // 解决项目环境下可能的清空 list 就导致显示 value 的问题
-    const currentSelectedOption = useMemo(() => {
-      if (selectProps.value) {
-        return list.find((item) => item.value === selectProps.value);
-      }
-      return undefined;
-    }, [selectProps.value, list]);
-
     return (
       <Select
         {...(selectProps as SelectProps<SelectValue>)}
@@ -137,8 +128,6 @@ const FrontendFilteredSelect = forwardRef(
 
           if (!visible) {
             setSearchText(undefined);
-            setList(currentSelectedOption ? [currentSelectedOption] : []);
-            console.log('currentSelectedOption', currentSelectedOption);
           }
         }}
         style={{

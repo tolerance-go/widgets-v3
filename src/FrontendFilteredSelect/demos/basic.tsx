@@ -7,8 +7,8 @@ const generateChildren = (total: number): FrontendFilteredSelectListItem[] => {
   const children: FrontendFilteredSelectListItem[] = [];
   for (let i = 0; i < total; i++) {
     children.push({
-      value: 'value-' + i,
-      label: 'label-' + i,
+      value_new: 'value-' + i,
+      label_new: 'label-' + i,
     });
   }
   return children;
@@ -30,6 +30,16 @@ const getPageItems = (
 export default () => (
   <Row>
     <FrontendFilteredSelect
+      placeholder="请选择"
+      request={async () => {
+        await delay(1000);
+        return getPageItems(1, 100, 100);
+      }}
+    />
+
+    <FrontendFilteredSelect
+      valueFieldName="value_new"
+      labelFieldName="label_new"
       placeholder="请选择"
       request={async () => {
         await delay(1000);
