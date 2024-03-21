@@ -1,3 +1,9 @@
+## [0.9.3](https://gitee.com/bzone/widgets-v3/compare/v0.9.2...v0.9.3) (2024-03-21)
+
+### Bug Fixes
+
+- **BackendFilteredSelect:** 修复下拉清空选项后只显示 value 的问题 ([17e7b1a](https://gitee.com/bzone/widgets-v3/commits/17e7b1a488940d6df98a2e17e564b542b2fff964))
+
 ## [0.9.2](https://gitee.com/bzone/widgets-v3/compare/v0.9.1...v0.9.2) (2024-03-21)
 
 ### Bug Fixes
