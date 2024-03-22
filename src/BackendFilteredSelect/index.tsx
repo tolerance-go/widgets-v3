@@ -59,6 +59,14 @@ const BackendFilteredSelect = forwardRef(
 
     const currentPageRef = useRef(0);
 
+    const listRef = useRef(list);
+
+    useEffect(() => {
+      listRef.current = list;
+    }, [list]);
+
+    // 保证这个函数内不使用外部的闭包，只使用 setState 和 ref，其他通过参数传入
+    // 为了下面的 debounce 持久实例的正确调用
     const fetch = async (searchText: string, page: number) => {
       if (!request) return;
       const currentRequestIndex = ++requestCounterRef.current;
@@ -68,13 +76,16 @@ const BackendFilteredSelect = forwardRef(
 
         if (currentRequestIndex === requestCounterRef.current) {
           setList((prev) => {
+            // TODO: 如果请求的页数小于当前页面，应该更新切片数据，现在只做简单的第一页的处理
             // If it's a new search, reset list to the new one; otherwise, append.
             return page === 1 ? newList : prev.concat(newList);
           });
           /**
            * 这里不清空 list，但是重置了 current，根据它做判断
            */
-          setHasMore((currentPageRef.current === 0 ? 0 : list.length) + newList.length < total);
+          setHasMore(
+            (currentPageRef.current === 0 ? 0 : listRef.current.length) + newList.length < total,
+          );
           currentPageRef.current = page;
         }
       } finally {
@@ -87,9 +98,10 @@ const BackendFilteredSelect = forwardRef(
     // 使用 useRef 来存储 debounce 函数的引用，以保证其在组件的每次渲染中保持不变
     const fetchRef = useRef(debounce(fetch, 350));
 
-    useEffect(() => {
-      fetchRef.current = debounce(fetch, 350);
-    }, [fetch]);
+    // 不能这样更新，否则 debounce 就失效了（多个实例）
+    // useEffect(() => {
+    //   fetchRef.current = debounce(fetch, 350);
+    // }, [fetch]);
 
     useUpdateEffect(() => {
       // 关闭弹窗的时候，不请求
@@ -115,6 +127,7 @@ const BackendFilteredSelect = forwardRef(
         filterOption={false} // 禁用本地过滤
         optionFilterProp="children"
         onSearch={(val) => {
+          currentPageRef.current = 0;
           setSearchText(val);
           return;
         }}
@@ -151,7 +164,9 @@ const BackendFilteredSelect = forwardRef(
                   <Spin size="small" />
                 </div>
               )}
-              {!hasMore && <div style={{ padding: 8, textAlign: 'center' }}>没有更多了</div>}
+              {!hasMore && currentPageRef.current > 1 && (
+                <div style={{ padding: 8, textAlign: 'center' }}>没有更多了</div>
+              )}
             </div>
           );
         }}
