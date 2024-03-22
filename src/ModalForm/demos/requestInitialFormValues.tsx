@@ -42,10 +42,11 @@ export default () => (
   <ModalForm
     title="标题"
     trigger={<Button type="primary">按钮</Button>}
-    renderFormItems={({ form: { getFieldDecorator } }) => {
+    renderFormItems={({ form: { getFieldDecorator }, initialFormValues }) => {
       return [
         <Form.Item key={'email'} label="E-mail">
           {getFieldDecorator('email', {
+            initialValue: initialFormValues?.email,
             rules: [
               {
                 required: true,
@@ -56,6 +57,7 @@ export default () => (
         </Form.Item>,
         <Form.Item key={'password'} label="Password" hasFeedback>
           {getFieldDecorator('password', {
+            initialValue: initialFormValues?.password,
             rules: [
               {
                 required: true,
@@ -87,6 +89,7 @@ export default () => (
           }
         >
           {getFieldDecorator('nickname', {
+            initialValue: initialFormValues?.nickname,
             rules: [{ required: true, message: 'Please input your nickname!', whitespace: true }],
           })(<Input />)}
         </Form.Item>,

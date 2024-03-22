@@ -1,6 +1,6 @@
 import { Button, Cascader, Form, Icon, Input, Tooltip } from 'antd';
 import React from 'react';
-import { ModalForm } from 'widgets-v3';
+import { DialogForm } from 'widgets-v3';
 
 const residences = [
   {
@@ -38,7 +38,8 @@ const residences = [
 ];
 
 export default () => (
-  <ModalForm
+  <DialogForm
+    type="modal"
     title="标题"
     trigger={<Button type="primary">按钮</Button>}
     renderFormItems={({ form: { getFieldDecorator } }) => {

@@ -1,6 +1,7 @@
 import { Button, Cascader, Form, Icon, Input, Tooltip } from 'antd';
 import React from 'react';
-import { ModalForm } from 'widgets-v3';
+import { DialogForm } from 'widgets-v3';
+import delay from 'delay';
 
 const residences = [
   {
@@ -38,13 +39,15 @@ const residences = [
 ];
 
 export default () => (
-  <ModalForm
+  <DialogForm
+    type="modal"
     title="标题"
     trigger={<Button type="primary">按钮</Button>}
-    renderFormItems={({ form: { getFieldDecorator } }) => {
+    renderFormItems={({ form: { getFieldDecorator }, initialFormValues }) => {
       return [
         <Form.Item key={'email'} label="E-mail">
           {getFieldDecorator('email', {
+            initialValue: initialFormValues?.email,
             rules: [
               {
                 required: true,
@@ -55,6 +58,7 @@ export default () => (
         </Form.Item>,
         <Form.Item key={'password'} label="Password" hasFeedback>
           {getFieldDecorator('password', {
+            initialValue: initialFormValues?.password,
             rules: [
               {
                 required: true,
@@ -86,6 +90,7 @@ export default () => (
           }
         >
           {getFieldDecorator('nickname', {
+            initialValue: initialFormValues?.nickname,
             rules: [{ required: true, message: 'Please input your nickname!', whitespace: true }],
           })(<Input />)}
         </Form.Item>,
@@ -98,6 +103,14 @@ export default () => (
           })(<Cascader options={residences} />)}
         </Form.Item>,
       ];
+    }}
+    requestInitialFormValues={async () => {
+      await delay(1000);
+      return {
+        email: 'yarnb@qq.com',
+        password: 123,
+        nickname: 'yarnb',
+      };
     }}
   />
 );

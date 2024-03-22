@@ -1,6 +1,7 @@
 import { Button, Cascader, Form, Icon, Input, Tooltip } from 'antd';
 import React from 'react';
-import { ModalForm } from 'widgets-v3';
+import { DrawerForm } from 'widgets-v3';
+import delay from 'delay';
 
 const residences = [
   {
@@ -38,7 +39,7 @@ const residences = [
 ];
 
 export default () => (
-  <ModalForm
+  <DrawerForm
     title="标题"
     trigger={<Button type="primary">按钮</Button>}
     renderFormItems={({ form: { getFieldDecorator } }) => {
@@ -98,6 +99,14 @@ export default () => (
           })(<Cascader options={residences} />)}
         </Form.Item>,
       ];
+    }}
+    requestInitialFormValues={async () => {
+      await delay(1000);
+      return {
+        email: 'yarnb@qq.com',
+        password: 123,
+        nickname: 'yarnb',
+      };
     }}
   />
 );
