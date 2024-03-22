@@ -1,3 +1,9 @@
+# [0.10.0](https://gitee.com/bzone/widgets-v3/compare/v0.9.4...v0.10.0) (2024-03-22)
+
+### Features
+
+- **EllipsisTooltip:** 新增 EllipsisTooltip 组件，自动处理文本缩略和提示 ([1e92b9a](https://gitee.com/bzone/widgets-v3/commits/1e92b9ad0a2b420d1d3a466d8dde4917084ab9d1))
+
 ## [0.9.4](https://gitee.com/bzone/widgets-v3/compare/v0.9.3...v0.9.4) (2024-03-22)
 
 ### Bug Fixes
