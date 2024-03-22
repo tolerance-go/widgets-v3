@@ -9,7 +9,7 @@ import { DescriptionsItemProps, DescriptionsProps } from 'antd/lib/descriptions'
 type TabPaneSchema = {
   type: 'TabPane';
   props: TabPaneProps;
-  children?: ComponentSchema[];
+  children?: DescriptionsComponentSchema[];
 };
 
 type DescriptionsItemSchema = {
@@ -18,7 +18,7 @@ type DescriptionsItemSchema = {
 };
 
 // 使用具体的Props类型来增强类型安全性和智能提示
-type ComponentSchema =
+export type DescriptionsComponentSchema =
   | {
       type: 'Tabs';
       props: TabsProps;
@@ -28,7 +28,7 @@ type ComponentSchema =
   | {
       type: 'Card';
       props: CardProps;
-      children?: ComponentSchema[];
+      children?: DescriptionsComponentSchema[];
     }
   | {
       type: 'Descriptions';
@@ -38,7 +38,7 @@ type ComponentSchema =
   | DescriptionsItemSchema;
 
 export type SchemaDescriptionsProps = {
-  schema?: ComponentSchema;
+  schema?: DescriptionsComponentSchema;
 };
 
 export type SchemaDescriptionsMethods = {};
@@ -49,7 +49,7 @@ const SchemaDescriptions = forwardRef(
 
     useImperativeHandle(ref, () => methods);
 
-    const renderComponent = (schema?: ComponentSchema): React.ReactElement => {
+    const renderComponent = (schema?: DescriptionsComponentSchema): React.ReactElement => {
       if (!schema) return <></>;
 
       switch (schema.type) {

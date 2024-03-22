@@ -15,7 +15,7 @@ export default () => (
     }}
   >
     {(data) => {
-      return JSON.stringify(data);
+      return <div>{JSON.stringify(data)}</div>;
     }}
   </ProDescriptions>
 );

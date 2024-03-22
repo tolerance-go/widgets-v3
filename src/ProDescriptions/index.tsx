@@ -8,6 +8,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
+import SchemaDescriptions, { DescriptionsComponentSchema } from '../SchemaDescriptions';
 
 export interface RequestParams<T> {}
 
@@ -15,7 +16,7 @@ export interface RequestResult<T> {}
 
 export type ProDescriptionsProps<T> = {
   request?: (params: RequestParams<T>) => Promise<RequestResult<T>>;
-  children?: (dataSource?: Record<string, any>) => ReactNode;
+  children?: (dataSource?: Record<string, any>) => ReactNode | DescriptionsComponentSchema;
 };
 
 export type ProDescriptionsMethods<T> = {};
@@ -54,7 +55,34 @@ const ProDescriptions = forwardRef(
       fetch({});
     }, []);
 
-    return <Spin spinning={loading}>{children?.(dataSource)}</Spin>;
+    // 检查变量是否是ReactNode（简化版本）
+    function isReactNode(value: any): value is ReactNode {
+      return (
+        React.isValidElement(value) ||
+        typeof value === 'string' ||
+        typeof value === 'number' ||
+        Array.isArray(value) ||
+        value === null ||
+        value === undefined
+      );
+    }
+
+    // Render logic to handle both function and object children
+    const renderChildren = () => {
+      if (typeof children === 'function') {
+        const result = children(dataSource);
+        if (isReactNode(result)) {
+          return result;
+        }
+        if (typeof result === 'object') {
+          return <SchemaDescriptions schema={result} />;
+        }
+        return result; // This handles the case where result is a ReactNode
+      }
+      return null;
+    };
+
+    return <Spin spinning={loading}>{renderChildren()}</Spin>;
   },
 );
 
