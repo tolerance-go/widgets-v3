@@ -9,6 +9,7 @@ export { default as EllipsisTooltip } from './EllipsisTooltip';
 export { default as ProDescriptions } from './ProDescriptions';
 export { default as DialogForm } from './DialogForm';
 export { default as DrawerForm } from './DrawerForm';
+export { default as SchemaDescriptions } from './SchemaDescriptions';
 
 export type { BackendFilteredSelectListItem } from './BackendFilteredSelect';
 export type { FrontendFilteredSelectListItem } from './FrontendFilteredSelect';

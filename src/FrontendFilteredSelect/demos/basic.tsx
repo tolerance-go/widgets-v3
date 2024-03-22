@@ -30,14 +30,6 @@ const getPageItems = (
 export default () => (
   <Row>
     <FrontendFilteredSelect
-      placeholder="请选择"
-      request={async () => {
-        await delay(1000);
-        return getPageItems(1, 100, 100);
-      }}
-    />
-
-    <FrontendFilteredSelect
       valueFieldName="value_new"
       labelFieldName="label_new"
       placeholder="请选择"
