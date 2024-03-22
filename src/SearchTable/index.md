@@ -20,3 +20,7 @@ group:
 ## 内部方法
 
 <code src="./demos/reload" />
+
+## 子表格
+
+<code src="./demos/tabs" />

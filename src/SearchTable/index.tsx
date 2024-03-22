@@ -1,18 +1,19 @@
+import { Col, Row, Table, Tabs } from 'antd';
+import { PaginationConfig, SorterResult, TableCurrentDataSource, TableProps } from 'antd/lib/table';
 import React, {
-  useState,
-  useEffect,
-  forwardRef,
-  useImperativeHandle,
-  ForwardRefRenderFunction,
   ForwardedRef,
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
   useRef,
+  useState,
 } from 'react';
 import SearchForm, { SearchFormProps } from '../SearchForm';
-import { Col, Row, Table, Typography } from 'antd';
-import { TableProps, PaginationConfig } from 'antd/lib/table';
-import { SorterResult, TableCurrentDataSource } from 'antd/lib/table';
+
+const { TabPane } = Tabs;
 
 export interface RequestParams<T> {
+  activeTabKey?: string;
   pagination: PaginationConfig;
   filters: Partial<Record<keyof T, string[]>>;
   sorter: Record<string, any>;
@@ -25,11 +26,20 @@ export interface RequestResult<T> {
   total: number;
 }
 
+type TableTabItem = {
+  key?: string;
+  title?: string;
+};
+
 export type SearchTableProps<T extends {} = {}> = {
+  tabs?: TableTabItem[];
   headerTitle?: string;
-  searchForm?: SearchFormProps;
+  searchForm?: SearchFormProps | ((params: { activeTabKey?: string }) => SearchFormProps);
   request?: (params: RequestParams<T>) => Promise<RequestResult<T>>;
-  renderActionGroup?: (args: { methods: SearchTableMethods<T> }) => React.ReactNode;
+  renderActionGroup?: (args: {
+    methods: SearchTableMethods<T>;
+    activeTabKey?: string;
+  }) => React.ReactNode;
 } & TableProps<T>;
 
 export type SearchTableMethods<T> = {
@@ -39,19 +49,28 @@ export type SearchTableMethods<T> = {
 // Add generic type T to the component function
 const SearchTable = forwardRef(
   <T extends {} = {}>(
-    { searchForm, headerTitle, request, renderActionGroup, ...tableProps }: SearchTableProps<T>,
+    {
+      searchForm,
+      tabs,
+      headerTitle,
+      request,
+      renderActionGroup,
+      ...tableProps
+    }: SearchTableProps<T>,
     ref: ForwardedRef<SearchTableMethods<T>>,
   ) => {
     const [data, setData] = useState<T[]>([]);
     const [loading, setLoading] = useState(false);
 
     const [tableState, setTableState] = useState<{
+      activeTabKey: string | undefined;
       pagination: PaginationConfig;
       filters: Partial<Record<keyof T, string[]>>;
       sorter: Record<string, any>;
       extra: TableCurrentDataSource<T>;
       searchValues: Record<string, any>;
     }>({
+      activeTabKey: tabs?.[0]?.key,
       pagination: { current: 1, pageSize: 10 },
       filters: {},
       sorter: {},
@@ -78,6 +97,7 @@ const SearchTable = forwardRef(
     const methods: SearchTableMethods<T> = {
       reload: (params?: Partial<RequestParams<T>>) => {
         const nextParams = {
+          activeTabKey: params?.activeTabKey,
           pagination: params?.pagination
             ? { ...tableState.pagination, ...params?.pagination }
             : tableState.pagination,
@@ -111,6 +131,7 @@ const SearchTable = forwardRef(
       }
 
       fetch({
+        activeTabKey: tableState.activeTabKey,
         pagination: tableState.pagination,
         filters: tableState.filters,
         sorter: tableState.sorter,
@@ -124,6 +145,7 @@ const SearchTable = forwardRef(
       tableState.sorter,
       tableState.extra,
       tableState.searchValues,
+      tableState.activeTabKey,
     ]);
 
     const handleTableChange: TableProps<T>['onChange'] = (
@@ -144,7 +166,9 @@ const SearchTable = forwardRef(
     return (
       <div>
         <SearchForm
-          {...searchForm}
+          {...(typeof searchForm === 'function'
+            ? searchForm({ activeTabKey: tableState.activeTabKey })
+            : searchForm)}
           onSearch={(values) => {
             setTableState((prev) => ({
               ...prev,
@@ -171,11 +195,22 @@ const SearchTable = forwardRef(
                 {headerTitle}
               </span>
             )}
+            {tabs?.length && (
+              <Tabs
+                activeKey={tableState.activeTabKey}
+                type="card"
+                onChange={(key) => setTableState((prev) => ({ ...prev, activeTabKey: key }))}
+              >
+                {tabs.map((item) => {
+                  return <TabPane tab={item.title} key={item.key}></TabPane>;
+                })}
+              </Tabs>
+            )}
           </Col>
           <Col>
             <Row type="flex" gutter={8}>
               {React.Children.map(
-                renderActionGroup?.({ methods }),
+                renderActionGroup?.({ methods, activeTabKey: tableState.activeTabKey }),
                 (action: React.ReactNode, index: number) => (
                   <Col key={index}>{action}</Col>
                 ),
