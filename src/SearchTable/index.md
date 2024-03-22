@@ -24,3 +24,8 @@ group:
 ## 子表格
 
 <code src="./demos/tabs" />
+
+
+## 行选择
+
+<code src="./demos/row-selection" />
