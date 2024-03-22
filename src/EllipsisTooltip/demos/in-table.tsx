@@ -62,7 +62,20 @@ export default () => (
         key: 'address',
         width: 400,
         render: (val) => {
-          return <EllipsisTooltip text={val} maxWidth={400}></EllipsisTooltip>;
+          return (
+            <EllipsisTooltip
+              text={
+                <span
+                  style={{
+                    color: 'blue',
+                  }}
+                >
+                  {val}
+                </span>
+              }
+              maxWidth={400}
+            ></EllipsisTooltip>
+          );
         },
       },
     ]}

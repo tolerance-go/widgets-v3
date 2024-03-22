@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect, FC } from 'react';
 import { Popover } from 'antd';
 
 export type EllipsisTooltipProps = {
-  text: string;
+  text: React.ReactNode;
   maxWidth: string | number;
 };
 
