@@ -1,3 +1,9 @@
+## [0.9.4](https://gitee.com/bzone/widgets-v3/compare/v0.9.3...v0.9.4) (2024-03-22)
+
+### Bug Fixes
+
+- **BackendFilteredSelectListItem:** 搜索后，只显示 loading，不展示 menu；如果只有第一页数据，就显示完了，不展示“没有更多了” ([4629aed](https://gitee.com/bzone/widgets-v3/commits/4629aed4384f840820596aa29bedf1fa32264ebd))
+
 ## [0.9.3](https://gitee.com/bzone/widgets-v3/compare/v0.9.2...v0.9.3) (2024-03-21)
 
 ### Bug Fixes
