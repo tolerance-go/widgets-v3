@@ -18,7 +18,7 @@ export type DialogFormBaseProps = React.PropsWithChildren<{
   width?: string | number;
   title?: string;
   trigger?: ReactElement;
-  renderFormItems: (args: {
+  renderFormItems?: (args: {
     form: WrappedFormUtils;
     initialFormValues?: InitialFormValues;
   }) => React.ReactNode;
@@ -117,10 +117,10 @@ const DialogFormInner = ({
             <Spin />
           ) : requestInitialFormValues ? (
             initialFormValues ? (
-              renderFormItems({ form, initialFormValues })
+              renderFormItems?.({ form, initialFormValues })
             ) : null
           ) : (
-            renderFormItems({ form })
+            renderFormItems?.({ form })
           )}
         </Form>
       </Container>
