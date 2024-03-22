@@ -1,3 +1,9 @@
+## [0.10.1](https://gitee.com/bzone/widgets-v3/compare/v0.10.0...v0.10.1) (2024-03-22)
+
+### Bug Fixes
+
+- **EllipsisTooltip:** 修复 text 类型问题不包含 node ([8f76620](https://gitee.com/bzone/widgets-v3/commits/8f76620585246014d8bce8aa17f3b8760dd0dbd1))
+
 # [0.10.0](https://gitee.com/bzone/widgets-v3/compare/v0.9.4...v0.10.0) (2024-03-22)
 
 ### Features
