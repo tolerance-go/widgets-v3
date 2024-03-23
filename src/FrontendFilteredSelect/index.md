@@ -25,9 +25,3 @@ group:
 ## 请求异常捕获自动打印
 
 <code src="./demos/error-message" />
-
-## Bug
-
-### 关闭弹窗的时候，清空了 list，导致显示 value 而非 label
-
-这个问题在项目环境中复现了，但是在这里复现不了，代码中做了特别优化

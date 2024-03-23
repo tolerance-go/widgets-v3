@@ -16,7 +16,7 @@ export interface RequestResult<T> {}
 
 export type ProDescriptionsProps<T> = {
   request?: (params: RequestParams<T>) => Promise<RequestResult<T>>;
-  children?: (dataSource?: Record<string, any>) => ReactNode | DescriptionsComponentSchema;
+  children?: (dataSource?: Record<string, any>) => ReactNode | DescriptionsComponentSchema[];
 };
 
 export type ProDescriptionsMethods<T> = {};
@@ -61,7 +61,7 @@ const ProDescriptions = forwardRef(
         React.isValidElement(value) ||
         typeof value === 'string' ||
         typeof value === 'number' ||
-        Array.isArray(value) ||
+        (Array.isArray(value) && value.every(isReactNode)) ||
         value === null ||
         value === undefined
       );
@@ -74,7 +74,7 @@ const ProDescriptions = forwardRef(
         if (isReactNode(result)) {
           return result;
         }
-        if (typeof result === 'object') {
+        if (Array.isArray(result)) {
           return <SchemaDescriptions schema={result} />;
         }
         return result; // This handles the case where result is a ReactNode

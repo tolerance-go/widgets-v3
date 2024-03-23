@@ -1,6 +1,5 @@
 import React, { ForwardedRef, forwardRef, useImperativeHandle } from 'react';
-import { Tabs, Card, Descriptions } from 'antd';
-import 'antd/dist/antd.css'; // 确保导入了antd的样式
+import { Tabs, Card, Descriptions, Table } from 'antd';
 import { TabPaneProps, TabsProps } from 'antd/lib/tabs';
 import { CardProps } from 'antd/lib/card';
 import { DescriptionsItemProps, DescriptionsProps } from 'antd/lib/descriptions';
@@ -28,25 +27,25 @@ type DescriptionsItemSchema = {
 export type DescriptionsComponentSchema =
   | {
       type: 'Tabs';
-      props: TabsProps;
+      props: TabsProps & { key?: React.Key };
       children?: TabPaneSchema[];
     }
   | TabPaneSchema
   | {
       type: 'Card';
-      props: CardProps;
+      props: CardProps & { key?: React.Key };
       children?: DescriptionsComponentSchema[];
     }
   | {
       type: 'Descriptions';
-      props: DescriptionsProps;
+      props: DescriptionsProps & { key?: React.Key };
       children?: DescriptionsItemSchema[];
     }
   | DescriptionsItemSchema
   | TableSchema; // 添加TableSchema
 
 export type SchemaDescriptionsProps = {
-  schema?: DescriptionsComponentSchema;
+  schema?: DescriptionsComponentSchema[];
 };
 
 export type SchemaDescriptionsMethods = {};
@@ -57,38 +56,70 @@ const SchemaDescriptions = forwardRef(
 
     useImperativeHandle(ref, () => methods);
 
-    const renderComponent = (schema?: DescriptionsComponentSchema): React.ReactElement => {
+    const renderComponent = (
+      schema: DescriptionsComponentSchema | undefined,
+      index: number,
+    ): React.ReactElement => {
       if (!schema) return <></>;
 
       switch (schema.type) {
         case 'Tabs':
           return (
-            <Tabs type="card" {...schema.props}>
+            <Tabs type="card" {...schema.props} key={schema.props?.key ? schema.props.key : index}>
               {schema.children?.map((child, index) => (
                 <Tabs.TabPane tab={(child.props as TabPaneProps)?.tab} key={index.toString()}>
-                  {renderComponent(child)}
+                  {renderComponent(child, index)}
                 </Tabs.TabPane>
               ))}
             </Tabs>
           );
         case 'TabPane':
-          return <>{schema.children?.map((child, index) => renderComponent(child))}</>;
+          return <>{schema.children?.map((child, index) => renderComponent(child, index))}</>;
         case 'Card':
           return (
-            <Card bordered {...schema.props}>
+            <Card
+              bordered
+              {...schema.props}
+              style={{ marginBottom: 16, ...schema.props.style }}
+              key={
+                schema.props?.key
+                  ? schema.props?.key
+                  : typeof schema.props.title === 'string' || schema.props.title === 'number'
+                  ? schema.props.title
+                  : undefined
+              }
+            >
               {schema.children?.map(renderComponent)}
             </Card>
           );
         case 'Descriptions':
           return (
-            <Descriptions {...schema.props}>
-              {schema.children?.map((child, index) => renderComponent(child))}
+            <Descriptions
+              {...schema.props}
+              key={
+                schema.props?.key
+                  ? schema.props?.key
+                  : typeof schema.props.title === 'string' || schema.props.title === 'number'
+                  ? schema.props.title
+                  : undefined
+              }
+            >
+              {schema.children?.map((child, index) => renderComponent(child, index))}
             </Descriptions>
           );
         case 'DescriptionsItem':
           // Descriptions.Item 需要特别处理，因为它需要label和value属性
           return (
-            <Descriptions.Item label={schema.props?.label} key={schema.props?.key}>
+            <Descriptions.Item
+              label={schema.props?.label}
+              key={
+                schema.props?.key
+                  ? schema.props?.key
+                  : typeof schema.props.label === 'string' || schema.props.label === 'number'
+                  ? schema.props.label
+                  : undefined
+              }
+            >
               {schema.props?.children}
             </Descriptions.Item>
           );
@@ -99,7 +130,13 @@ const SchemaDescriptions = forwardRef(
       }
     };
 
-    return renderComponent(schema);
+    return (
+      <>
+        {schema?.map((schemaItem, index) => (
+          <React.Fragment key={index}>{renderComponent(schemaItem, index)}</React.Fragment>
+        ))}
+      </>
+    );
   },
 );
 

@@ -68,9 +68,9 @@ export default () => (
             await delay(1000);
             methods.reload({
               pagination: {
-                current: 1
-              }
-            })
+                current: 1,
+              },
+            });
           }}
         />,
         <Action
@@ -84,9 +84,9 @@ export default () => (
             await delay(1000);
             methods.reload({
               pagination: {
-                current: 1
-              }
-            })
+                current: 1,
+              },
+            });
           }}
         />,
       ];
@@ -142,72 +142,74 @@ export default () => (
                       }}
                     >
                       {(data) => {
-                        return {
-                          type: 'Tabs',
-                          props: {},
-                          children: [
-                            {
-                              type: 'TabPane',
-                              props: { tab: 'Tab 1' },
-                              children: [
-                                {
-                                  type: 'Card',
-                                  props: { title: 'Card Title 1' },
-                                  children: [
-                                    {
-                                      type: 'Descriptions',
-                                      props: { title: 'User Info 1' },
-                                      children: [
-                                        {
-                                          type: 'DescriptionsItem',
-                                          props: { label: 'Name', children: 'John Doe' },
-                                        },
-                                        {
-                                          type: 'DescriptionsItem',
-                                          props: { label: 'Age', children: '30' },
-                                        },
-                                        {
-                                          type: 'DescriptionsItem',
-                                          props: { label: 'Country', children: 'USA' },
-                                        },
-                                      ],
-                                    },
-                                  ],
-                                },
-                              ],
-                            },
-                            {
-                              type: 'TabPane',
-                              props: { tab: 'Tab 2' },
-                              children: [
-                                {
-                                  type: 'Card',
-                                  props: { title: 'Card Title 2' },
-                                  children: [
-                                    {
-                                      type: 'Descriptions',
-                                      props: { title: 'User Info 2' },
-                                      children: [
-                                        {
-                                          type: 'DescriptionsItem',
-                                          props: { label: 'Name', children: 'Jane Doe' },
-                                        },
-                                        {
-                                          type: 'DescriptionsItem',
-                                          props: { label: 'Age', children: '28' },
-                                        },
-                                        {
-                                          type: 'DescriptionsItem',
-                                          props: { label: 'Country', children: 'Canada' },
-                                        },
-                                      ],
-                                    },
-                                  ],
-                                },
-                              ],
-                            },
-                          ],
-                        };
+                        return [
+                          {
+                            type: 'Tabs',
+                            props: {},
+                            children: [
+                              {
+                                type: 'TabPane',
+                                props: { tab: 'Tab 1' },
+                                children: [
+                                  {
+                                    type: 'Card',
+                                    props: { title: 'Card Title 1' },
+                                    children: [
+                                      {
+                                        type: 'Descriptions',
+                                        props: { title: 'User Info 1' },
+                                        children: [
+                                          {
+                                            type: 'DescriptionsItem',
+                                            props: { label: 'Name', children: 'John Doe' },
+                                          },
+                                          {
+                                            type: 'DescriptionsItem',
+                                            props: { label: 'Age', children: '30' },
+                                          },
+                                          {
+                                            type: 'DescriptionsItem',
+                                            props: { label: 'Country', children: 'USA' },
+                                          },
+                                        ],
+                                      },
+                                    ],
+                                  },
+                                ],
+                              },
+                              {
+                                type: 'TabPane',
+                                props: { tab: 'Tab 2' },
+                                children: [
+                                  {
+                                    type: 'Card',
+                                    props: { title: 'Card Title 2' },
+                                    children: [
+                                      {
+                                        type: 'Descriptions',
+                                        props: { title: 'User Info 2' },
+                                        children: [
+                                          {
+                                            type: 'DescriptionsItem',
+                                            props: { label: 'Name', children: 'Jane Doe' },
+                                          },
+                                          {
+                                            type: 'DescriptionsItem',
+                                            props: { label: 'Age', children: '28' },
+                                          },
+                                          {
+                                            type: 'DescriptionsItem',
+                                            props: { label: 'Country', children: 'Canada' },
+                                          },
+                                        ],
+                                      },
+                                    ],
+                                  },
+                                ],
+                              },
+                            ],
+                          },
+                        ];
                       }}
                     </ProDescriptions>
                   );
