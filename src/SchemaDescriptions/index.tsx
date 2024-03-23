@@ -4,6 +4,13 @@ import 'antd/dist/antd.css'; // 确保导入了antd的样式
 import { TabPaneProps, TabsProps } from 'antd/lib/tabs';
 import { CardProps } from 'antd/lib/card';
 import { DescriptionsItemProps, DescriptionsProps } from 'antd/lib/descriptions';
+import { TableProps } from 'antd/lib/table'; // 导入Table的Props类型
+
+// 定义Table子组件的Schema类型
+type TableSchema = {
+  type: 'Table';
+  props: TableProps<Record<string, any>> & { key?: string | number }; // 使用any作为泛型参数，也可以根据实际数据结构进行具体化
+};
 
 // 定义特定于Tabs和Descriptions的子组件类型
 type TabPaneSchema = {
@@ -35,7 +42,8 @@ export type DescriptionsComponentSchema =
       props: DescriptionsProps;
       children?: DescriptionsItemSchema[];
     }
-  | DescriptionsItemSchema;
+  | DescriptionsItemSchema
+  | TableSchema; // 添加TableSchema
 
 export type SchemaDescriptionsProps = {
   schema?: DescriptionsComponentSchema;
@@ -84,6 +92,8 @@ const SchemaDescriptions = forwardRef(
               {schema.props?.children}
             </Descriptions.Item>
           );
+        case 'Table': // 处理Table类型的模式
+          return <Table {...schema.props} key={schema.props?.key ? schema.props.key : index} />;
         default:
           return <></>;
       }
