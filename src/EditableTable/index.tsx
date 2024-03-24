@@ -1,11 +1,10 @@
+import { DndContext, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import {
-  DndContext,
-  KeyboardSensor,
-  PointerSensor,
-  useSensor,
-  useSensors
-} from '@dnd-kit/core';
-import { SortableContext, arrayMove, sortableKeyboardCoordinates, useSortable } from '@dnd-kit/sortable';
+  SortableContext,
+  arrayMove,
+  sortableKeyboardCoordinates,
+  useSortable,
+} from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Button, Form, Icon, Input, Popconfirm, Table, message } from 'antd';
 import { FormComponentProps } from 'antd/es/form';
@@ -340,6 +339,7 @@ const EditableTable = <T extends Record<string, any> = Record<string, any>>({
   const operationColumn: ExtendedColumnProps<T> = {
     title: '操作',
     dataIndex: OPERATION_DATA_INDEX,
+    align: 'center',
     render: (text: any, record: T, index: number) => {
       return (
         <EditableRowContext.Consumer>
@@ -350,6 +350,14 @@ const EditableTable = <T extends Record<string, any> = Record<string, any>>({
 
             return !editing ? (
               <>
+                <Button
+                  size="small"
+                  type="link"
+                  style={{ marginRight: 8 }}
+                  onClick={() => setEditing(true)}
+                >
+                  编辑
+                </Button>
                 <Button
                   size="small"
                   type="link"
@@ -365,14 +373,6 @@ const EditableTable = <T extends Record<string, any> = Record<string, any>>({
                   onClick={() => handleInsertRow('below', rowId)}
                 >
                   下方插入
-                </Button>
-                <Button
-                  size="small"
-                  type="link"
-                  style={{ marginRight: 8 }}
-                  onClick={() => setEditing(true)}
-                >
-                  编辑
                 </Button>
                 <Popconfirm
                   title="确认删除吗？"
