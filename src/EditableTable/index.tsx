@@ -276,26 +276,40 @@ const EditableTable = <T extends Record<string, any> = Record<string, any>>({
     setDataSource(newData);
   };
 
-  const handleAdd = (position = 'bottom') => {
+  const handleAdd = (position: 'top' | 'bottom' = 'bottom') => {
     if (Object.entries(editingRowIds).some(([_, editing]) => editing)) {
       message.warn('有正在编辑的行，请先保存');
       return;
     }
 
+    // Create a new data item with a unique ID
     const newDataItem = {} as T;
     const rowId = Date.now().toString(); // 使用时间戳作为唯一ID
-    const newDataItemWithKey = { [rowKey]: rowId, ...newDataItem };
-    const newData =
-      position === 'bottom'
-        ? [...dataSource, newDataItemWithKey]
-        : [newDataItemWithKey, ...dataSource];
+    const newDataItemWithKey: T = { ...newDataItem, [rowKey]: rowId };
+
+    let newData: T[];
+
+    if (position === 'bottom') {
+      // Add the new data item at the end of the dataSource
+      newData = [...dataSource, newDataItemWithKey];
+    } else {
+      // Add the new data item at the beginning of the dataSource and move to the first page
+      newData = [newDataItemWithKey, ...dataSource];
+    }
 
     setDataSource(newData);
     setEditingRowIds((prev) => ({ ...prev, [rowId]: true })); // 新增行直接进入编辑状态
 
-    const newTotalPages = Math.ceil(newData.length / pageSize);
-    if (currentPage < newTotalPages) {
-      setCurrentPage(newTotalPages); // 直接跳转到最后一页
+    if (position === 'bottom') {
+      // If adding at the bottom and the current page is not the last one, navigate to the new last page
+      const newTotalPages = Math.ceil(newData.length / pageSize);
+      if (currentPage < newTotalPages) {
+        setCurrentPage(newTotalPages);
+      }
+    } else {
+      if (currentPage !== 1) {
+        setCurrentPage(1); // Ensure we navigate back to the first page when adding a row at the top
+      }
     }
   };
 
