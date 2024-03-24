@@ -7,9 +7,7 @@ const DemoPage = () => {
   return (
     <>
       <EditableTable
-        pagination={{
-          defaultPageSize: 2,
-        }}
+        pagination={false}
         columns={[
           {
             title: '姓名',

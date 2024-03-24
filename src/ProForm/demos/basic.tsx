@@ -171,6 +171,9 @@ export default () => (
               ],
             })(
               <EditableTable
+                pagination={{
+                  defaultPageSize: 2,
+                }}
                 columns={[
                   {
                     title: '姓名',
