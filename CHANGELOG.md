@@ -1,3 +1,12 @@
+## [0.11.1](https://gitee.com/bzone/widgets-v3/compare/v0.11.0...v0.11.1) (2024-03-24)
+
+
+### Bug Fixes
+
+* **EditableTable:** 首部添加一行数据的时候，如果不在第一页，需要回到第一页 ([dd4816a](https://gitee.com/bzone/widgets-v3/commits/dd4816ae4224bb8eda4fafc17d3442bf3921c6ef))
+
+
+
 # [0.11.0](https://gitee.com/bzone/widgets-v3/compare/v0.10.1...v0.11.0) (2024-03-24)
 
 
