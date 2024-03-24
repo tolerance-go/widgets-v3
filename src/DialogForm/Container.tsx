@@ -1,7 +1,7 @@
 import React, { ReactElement, useEffect, useRef, useState } from 'react';
 import { Drawer, Modal } from 'antd';
-import { DrawerProps } from 'antd/lib/drawer';
-import { ModalProps } from 'antd/lib/modal';
+import { DrawerProps } from 'antd/es/drawer';
+import { ModalProps } from 'antd/es/modal';
 import './Container.less';
 
 export type ContainerProps =

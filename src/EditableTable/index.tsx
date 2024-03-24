@@ -8,9 +8,9 @@ import {
 import { SortableContext, arrayMove, sortableKeyboardCoordinates, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Button, Form, Icon, Input, Popconfirm, Table, message } from 'antd';
-import { FormComponentProps } from 'antd/lib/form';
-import { GetFieldDecoratorOptions, WrappedFormUtils } from 'antd/lib/form/Form';
-import { ColumnProps, TableProps } from 'antd/lib/table';
+import { FormComponentProps } from 'antd/es/form';
+import { GetFieldDecoratorOptions, WrappedFormUtils } from 'antd/es/form/Form';
+import { ColumnProps, TableProps } from 'antd/es/table';
 import React, { Dispatch, SetStateAction, useCallback, useContext, useMemo, useState } from 'react';
 import useUpdateEffect from '../_utils/useUpdateEffect';
 

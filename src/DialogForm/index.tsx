@@ -1,5 +1,5 @@
 import { Button, Form, Spin, message } from 'antd';
-import { FormComponentProps, WrappedFormUtils } from 'antd/lib/form/Form';
+import { FormComponentProps, WrappedFormUtils } from 'antd/es/form/Form';
 import React, { ReactElement, useEffect, useState } from 'react';
 import Container from './Container';
 

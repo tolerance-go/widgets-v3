@@ -25,7 +25,7 @@ group:
 - 自定义 row 要用 Form.create 包裹
 - 使用 hook 来编写组件
 - 自定义表格行，进入行编辑状态后，使用当前 record 的字段值来初始化当前单元格，getFieldDecorator 内部的组件通过 render 获取，但是 render 增加一个 editing 状态参数给用户，可以通过柯里化的方式传入，把 render 的类型改为返回函数的函数，额外参数通过最外层参数传递
-- form 的类型是 WrappedFormUtils 来自 antd/lib/form/Form
+- form 的类型是 WrappedFormUtils 来自 antd/es/form/Form
 
 ## 基本使用
 

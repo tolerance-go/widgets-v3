@@ -1,5 +1,5 @@
 import { Alert, Button, Col, Row, Table, Tabs } from 'antd';
-import { PaginationConfig, SorterResult, TableCurrentDataSource, TableProps } from 'antd/lib/table';
+import { PaginationConfig, SorterResult, TableCurrentDataSource, TableProps } from 'antd/es/table';
 import React, {
   ForwardedRef,
   forwardRef,

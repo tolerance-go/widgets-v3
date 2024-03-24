@@ -1,5 +1,5 @@
 import { Form, message } from 'antd';
-import { FormComponentProps, WrappedFormUtils } from 'antd/lib/form/Form';
+import { FormComponentProps, WrappedFormUtils } from 'antd/es/form/Form';
 import * as PropTypes from 'prop-types';
 import React, { useState } from 'react';
 

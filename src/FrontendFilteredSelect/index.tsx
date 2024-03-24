@@ -1,5 +1,5 @@
 import { Select, Spin, message } from 'antd';
-import { OptionProps, SelectProps, SelectValue } from 'antd/lib/select';
+import { OptionProps, SelectProps, SelectValue } from 'antd/es/select';
 import React, {
   ForwardedRef,
   forwardRef,

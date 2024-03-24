@@ -1,9 +1,9 @@
 import React, { ForwardedRef, forwardRef, useImperativeHandle } from 'react';
 import { Tabs, Card, Descriptions, Table } from 'antd';
-import { TabPaneProps, TabsProps } from 'antd/lib/tabs';
-import { CardProps } from 'antd/lib/card';
-import { DescriptionsItemProps, DescriptionsProps } from 'antd/lib/descriptions';
-import { TableProps } from 'antd/lib/table'; // 导入Table的Props类型
+import { TabPaneProps, TabsProps } from 'antd/es/tabs';
+import { CardProps } from 'antd/es/card';
+import { DescriptionsItemProps, DescriptionsProps } from 'antd/es/descriptions';
+import { TableProps } from 'antd/es/table'; // 导入Table的Props类型
 
 // 定义Table子组件的Schema类型
 type TableSchema = {
