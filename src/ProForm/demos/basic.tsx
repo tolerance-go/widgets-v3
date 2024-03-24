@@ -1,6 +1,11 @@
-import { Button, Cascader, Form, Icon, Input, Tooltip } from 'antd';
+import { Button, Cascader, Form, Icon, Input, InputNumber, Tooltip } from 'antd';
 import React from 'react';
-import { BackendFilteredSelect, ProForm, BackendFilteredSelectListItem } from 'widgets-v3';
+import {
+  BackendFilteredSelect,
+  ProForm,
+  BackendFilteredSelectListItem,
+  EditableTable,
+} from 'widgets-v3';
 import delay from 'delay';
 
 const generateChildren = (total: number): BackendFilteredSelectListItem[] => {
@@ -62,6 +67,27 @@ const residences = [
   },
 ];
 
+const editableInitialData = [
+  {
+    key: '1',
+    name: 'John Doe',
+    age: 32,
+    address: 'New York No. 1 Lake Park',
+  },
+  {
+    key: '2',
+    name: 'Jim Green',
+    age: 42,
+    address: 'London No. 1 Lake Park',
+  },
+  {
+    key: '3',
+    name: 'Joe Black',
+    age: 32,
+    address: 'Sidney No. 1 Lake Park',
+  },
+]
+
 export default () => (
   <ProForm
     request={async (params) => {
@@ -97,33 +123,14 @@ export default () => (
           </Form.Item>
           <Form.Item label="E-mail">
             {getFieldDecorator('email', {
-              rules: [
-                {
-                  required: true,
-                  message: 'Please input your E-mail!',
-                },
-              ],
             })(<Input autoComplete="off" />)}
           </Form.Item>
           <Form.Item label="Password" hasFeedback>
             {getFieldDecorator('password', {
-              rules: [
-                {
-                  required: true,
-                  message: 'Please input your password!',
-                },
-              ],
             })(<Input.Password autoComplete="off" />)}
           </Form.Item>
           <Form.Item label="Confirm Password" hasFeedback>
             {getFieldDecorator('confirm', {
-              rules: [
-                {
-                  required: true,
-                  message: 'Please confirm your password!',
-                },
-                {},
-              ],
             })(<Input.Password />)}
           </Form.Item>
           <Form.Item
@@ -152,6 +159,51 @@ export default () => (
               ],
             })(<Cascader options={residences} />)}
           </Form.Item>
+          <Form.Item label="EditableTable">
+            {getFieldDecorator('res234234idence', {
+              initialValue: editableInitialData,
+              rules: [
+                {
+                  type: 'array',
+                  required: true,
+                  message: 'Please select your habitual residence!',
+                },
+              ],
+            })(
+              <EditableTable
+                columns={[
+                  {
+                    title: '姓名',
+                    dataIndex: 'name',
+                    key: 'name',
+                    fieldDecoratorOptions: {
+                      rules: [
+                        {
+                          required: true,
+                        },
+                      ],
+                    },
+                    editable: true, // 让这列可编辑
+                  },
+                  {
+                    title: '年龄',
+                    dataIndex: 'age',
+                    key: 'age',
+                    editable: true,
+                    renderInput(val, record, index, form) {
+                      return <InputNumber></InputNumber>;
+                    },
+                  },
+                  {
+                    title: '住址',
+                    dataIndex: 'address',
+                    key: 'address',
+                  },
+                ]}
+              />,
+            )}
+          </Form.Item>
+
           <Form.Item>
             <Button loading={submitLoading} type="primary" htmlType="submit">
               Submit
