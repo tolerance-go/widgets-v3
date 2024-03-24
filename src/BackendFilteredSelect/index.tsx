@@ -52,12 +52,13 @@ const BackendFilteredSelect = forwardRef(
     const [loading, setLoading] = useState(false);
     const [searchText, setSearchText] = useState<string>();
 
-    const skipNextFetchRef = useRef(false);
     const requestCounterRef = useRef(0); // 请求计数器
 
     const [hasMore, setHasMore] = useState(true);
 
     const currentPageRef = useRef(0);
+
+    const visibleRef = useRef(false);
 
     const listRef = useRef(list);
 
@@ -80,6 +81,14 @@ const BackendFilteredSelect = forwardRef(
             // If it's a new search, reset list to the new one; otherwise, append.
             return page === 1 ? newList : prev.concat(newList);
           });
+
+          // 如果此时关闭了弹窗，就直接重置
+          if (!visibleRef.current) {
+            setHasMore(true);
+            currentPageRef.current = 0;
+            return;
+          }
+
           /**
            * 这里不清空 list，但是重置了 current，根据它做判断
            */
@@ -132,6 +141,8 @@ const BackendFilteredSelect = forwardRef(
           return;
         }}
         onDropdownVisibleChange={(visible) => {
+          visibleRef.current = visible;
+
           if (visible) {
             // 立即调用一次
             fetch('', 1);
