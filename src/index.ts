@@ -12,6 +12,7 @@ export { default as DrawerForm } from './DrawerForm';
 export { default as SchemaDescriptions } from './SchemaDescriptions';
 export { default as EditableTable } from './EditableTable';
 export { default as useUpdateEffect } from './_utils/useUpdateEffect';
+export { default as SchemaForm } from './SchemaForm';
 
 export type { BackendFilteredSelectListItem } from './BackendFilteredSelect';
 export type { FrontendFilteredSelectListItem } from './FrontendFilteredSelect';

@@ -42,7 +42,11 @@ export type DescriptionsComponentSchema =
       children?: DescriptionsItemSchema[];
     }
   | DescriptionsItemSchema
-  | TableSchema; // 添加TableSchema
+  | TableSchema // 添加TableSchema
+  | {
+      type: 'Node';
+      component: React.ReactNode;
+    };
 
 export type SchemaDescriptionsProps = {
   schema?: DescriptionsComponentSchema[];
@@ -59,10 +63,12 @@ const SchemaDescriptions = forwardRef(
     const renderComponent = (
       schema: DescriptionsComponentSchema | undefined,
       index: number,
-    ): React.ReactElement => {
+    ): React.ReactNode => {
       if (!schema) return <></>;
 
       switch (schema.type) {
+        case 'Node':
+          return schema.component;
         case 'Tabs':
           return (
             <Tabs type="card" {...schema.props} key={schema.props?.key ? schema.props.key : index}>
