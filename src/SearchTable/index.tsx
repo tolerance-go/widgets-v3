@@ -277,6 +277,9 @@ const SearchTable = forwardRef(
               searchValues: values,
             }));
           }}
+          style={{
+            marginBottom: 10,
+          }}
         ></SearchForm>
         <Row
           style={{ paddingTop: 16, paddingBottom: 16 }}

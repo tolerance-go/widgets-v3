@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { Form, Row, Col, Button, Icon } from 'antd';
 import * as PropTypes from 'prop-types';
 import { FormComponentProps, WrappedFormUtils } from 'antd/es/form/Form';
+import './index.less';
+import { FormProps } from 'antd/es/form';
+import { classNames } from '../_utils/classNames';
 
 export type SearchFormItem = {
   node: PropTypes.ReactNodeLike;
@@ -18,7 +21,7 @@ export type SearchFormProps = {
   }) => (PropTypes.ReactNodeLike | SearchFormItem)[];
   onSearch?: (values: Record<string, any>) => void;
   onReset?: () => void;
-};
+} & FormProps;
 
 export type AdvancedSearchFormProps = SearchFormProps & FormComponentProps;
 
@@ -113,31 +116,34 @@ const AdvancedSearchFormInner: React.FC<AdvancedSearchFormProps> = ({
         span: 18,
       }}
       {...restFormProps}
+      className={classNames('wg-search-form', restFormProps.className)}
       onSubmit={handleSearch}
     >
       <Row gutter={24}>
         {items}
         {
           <Col span={buttonSpan} style={{ textAlign: 'right' }}>
-            <Button type="primary" htmlType="submit">
-              查询
-            </Button>
-            <Button style={{ marginLeft: 8 }} onClick={handleReset}>
-              重置
-            </Button>
-            {defaultFieldCount < items.length && (
-              <a style={{ marginLeft: 8, fontSize: 12 }} onClick={toggleExpand}>
-                {expand ? (
-                  <span>
-                    收起 <Icon type="up" />
-                  </span>
-                ) : (
-                  <span>
-                    展开 <Icon type="down" />
-                  </span>
-                )}
-              </a>
-            )}
+            <Form.Item className="wg-search-form-action-form-item">
+              <Button type="primary" htmlType="submit">
+                查询
+              </Button>
+              <Button style={{ marginLeft: 8 }} onClick={handleReset}>
+                重置
+              </Button>
+              {defaultFieldCount < items.length && (
+                <a style={{ marginLeft: 8, fontSize: 12 }} onClick={toggleExpand}>
+                  {expand ? (
+                    <span>
+                      收起 <Icon type="up" />
+                    </span>
+                  ) : (
+                    <span>
+                      展开 <Icon type="down" />
+                    </span>
+                  )}
+                </a>
+              )}
+            </Form.Item>
           </Col>
         }
       </Row>
