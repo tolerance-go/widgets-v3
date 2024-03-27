@@ -1,3 +1,14 @@
+## [0.12.1](https://gitee.com/bzone/widgets-v3/compare/v0.12.0...v0.12.1) (2024-03-27)
+
+### Bug Fixes
+
+- **SearchForm:** 默认展示数量小于实际数量的时候，才显示展开和关闭 ([a3e26a4](https://gitee.com/bzone/widgets-v3/commits/a3e26a4ce921f9bce9e2d0e3bc13c861285b9322))
+
+### Features
+
+- **SchemaForm:** 新增 SchemaForm ([4ff4f51](https://gitee.com/bzone/widgets-v3/commits/4ff4f51d0ccdaa79e5742096215fd0682f03c0c1))
+- **SearchTable:** columns 支持函数形式 ([44c37f7](https://gitee.com/bzone/widgets-v3/commits/44c37f7a3d7404ffa8d662577e7761078c36195a))
+
 # [0.12.0](https://gitee.com/bzone/widgets-v3/compare/v0.11.1...v0.12.0) (2024-03-26)
 
 ### Features
