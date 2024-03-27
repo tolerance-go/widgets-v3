@@ -101,7 +101,7 @@ const AdvancedSearchFormInner: React.FC<AdvancedSearchFormProps> = ({
   const spanLeft = lastRowSpanUsed === 0 ? 0 : 24 - lastRowSpanUsed;
 
   // Adjust button position based on the remaining span
-  const buttonSpan = spanLeft >= 0 ? spanLeft : 24;
+  const buttonSpan = spanLeft > 0 ? spanLeft : 24;
 
   return (
     <Form
