@@ -5,6 +5,7 @@ import React, {
   forwardRef,
   useEffect,
   useImperativeHandle,
+  useMemo,
   useRef,
   useState,
 } from 'react';
@@ -56,7 +57,14 @@ export type SearchTableProps<T extends {} = {}> = {
     activeTabKey?: string;
     selectedRowsInfo: TableSelectionState<T>;
   }) => React.ReactNode;
-} & TableProps<T>;
+  columns?:
+    | TableProps<T>['columns']
+    | ((args: {
+        methods: SearchTableMethods<T>;
+        activeTabKey?: string;
+        selectedRowsInfo: TableSelectionState<T>;
+      }) => TableProps<T>['columns']);
+} & Omit<TableProps<T>, 'columns'>;
 
 export type SearchTableMethods<T> = {
   reload: (params?: Partial<RequestParams<T>>) => void;
@@ -75,6 +83,7 @@ const SearchTable = forwardRef(
       renderBatchActionGroup,
       renderSelectionDetail,
       rowKey = 'key',
+      columns,
       ...tableProps
     }: SearchTableProps<T>,
     ref: ForwardedRef<SearchTableMethods<T>>,
@@ -244,6 +253,17 @@ const SearchTable = forwardRef(
       }));
     };
 
+    const mergedColumns = useMemo(() => {
+      if (typeof columns === 'function') {
+        return columns({
+          activeTabKey: tableState.activeTabKey,
+          methods,
+          selectedRowsInfo,
+        });
+      }
+      return columns;
+    }, [columns, tableState.activeTabKey, methods, selectedRowsInfo]);
+
     return (
       <div>
         <SearchForm
@@ -354,6 +374,7 @@ const SearchTable = forwardRef(
         )}
         <Table
           {...tableProps}
+          columns={mergedColumns}
           rowKey={rowKey}
           // 应用处理过的rowSelection
           rowSelection={handleRowSelection}

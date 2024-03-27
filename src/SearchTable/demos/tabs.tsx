@@ -1,7 +1,8 @@
 import { Button, Cascader, Form, Icon, Input, Tooltip } from 'antd';
 import React from 'react';
-import { Action, SearchTable } from 'widgets-v3';
+import { Action, SearchTable, SearchTableProps } from 'widgets-v3';
 import delay from 'delay';
+type ExcludeFunctionsAndNullish<T> = Exclude<T, Function | null | undefined>;
 
 const residences = [
   {
@@ -38,29 +39,6 @@ const residences = [
   },
 ];
 
-const columns = [
-  {
-    title: '姓名',
-    dataIndex: 'name',
-    key: 'name',
-    filters: [
-      { text: 'Joe', value: 'Joe' },
-      { text: 'Jim', value: 'Jim' },
-    ],
-    sorter: true,
-  },
-  {
-    title: '年龄',
-    dataIndex: 'age',
-    key: 'age',
-  },
-  {
-    title: '住址',
-    dataIndex: 'address',
-    key: 'address',
-  },
-];
-
 export default () => (
   <SearchTable
     tabs={[
@@ -73,7 +51,54 @@ export default () => (
         title: '小学',
       },
     ]}
-    columns={columns}
+    columns={({ activeTabKey }) =>
+      (
+        [
+          {
+            title: '姓名',
+            dataIndex: 'name',
+            key: 'name',
+            filters: [
+              { text: 'Joe', value: 'Joe' },
+              { text: 'Jim', value: 'Jim' },
+            ],
+            sorter: true,
+          },
+          {
+            title: '年龄',
+            dataIndex: 'age',
+            key: 'age',
+          },
+          {
+            title: '住址',
+            dataIndex: 'address',
+            key: 'address',
+          },
+        ] as ExcludeFunctionsAndNullish<SearchTableProps<any>['columns']>
+      ).concat(
+        activeTabKey === '1'
+          ? [
+              {
+                title: '操作',
+                dataIndex: 'operation',
+                key: 'operation',
+                render: () => {
+                  return (
+                    <>
+                      <Button style={{ marginLeft: 0 }} size="small" type="link">
+                        查看订单
+                      </Button>
+                      <Button onClick={() => {}} style={{ marginLeft: 8 }} size="small" type="link">
+                        审核
+                      </Button>
+                    </>
+                  );
+                },
+              },
+            ]
+          : [],
+      )
+    }
     searchForm={(searchFormParams) => {
       console.log('searchFormParams', searchFormParams);
       return {

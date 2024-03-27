@@ -16,3 +16,4 @@ export { default as SchemaForm } from './SchemaForm';
 
 export type { BackendFilteredSelectListItem } from './BackendFilteredSelect';
 export type { FrontendFilteredSelectListItem } from './FrontendFilteredSelect';
+export type { SearchTableProps } from './SearchTable';
