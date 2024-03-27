@@ -117,25 +117,29 @@ const AdvancedSearchFormInner: React.FC<AdvancedSearchFormProps> = ({
     >
       <Row gutter={24}>
         {items}
-        <Col span={buttonSpan} style={{ textAlign: 'right' }}>
-          <Button type="primary" htmlType="submit">
-            查询
-          </Button>
-          <Button style={{ marginLeft: 8 }} onClick={handleReset}>
-            重置
-          </Button>
-          <a style={{ marginLeft: 8, fontSize: 12 }} onClick={toggleExpand}>
-            {expand ? (
-              <span>
-                收起 <Icon type="up" />
-              </span>
-            ) : (
-              <span>
-                展开 <Icon type="down" />
-              </span>
+        {
+          <Col span={buttonSpan} style={{ textAlign: 'right' }}>
+            <Button type="primary" htmlType="submit">
+              查询
+            </Button>
+            <Button style={{ marginLeft: 8 }} onClick={handleReset}>
+              重置
+            </Button>
+            {defaultFieldCount < items.length && (
+              <a style={{ marginLeft: 8, fontSize: 12 }} onClick={toggleExpand}>
+                {expand ? (
+                  <span>
+                    收起 <Icon type="up" />
+                  </span>
+                ) : (
+                  <span>
+                    展开 <Icon type="down" />
+                  </span>
+                )}
+              </a>
             )}
-          </a>
-        </Col>
+          </Col>
+        }
       </Row>
     </Form>
   );
