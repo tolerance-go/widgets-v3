@@ -1,15 +1,10 @@
-## [0.12.2](https://gitee.com/bzone/widgets-v3/compare/v0.12.1...v0.12.2) (2024-03-27)
-
-### Bug Fixes
-
-- **SearchForm:** 修复搜索按钮没有空位显示的时候就消失了的问题 ([0dcf9e0](https://gitee.com/bzone/widgets-v3/commits/0dcf9e030c6118dc207c437db2365fca5514e283))
-- **SearchForm:** 优化样式，减少空隙 ([802e3a6](https://gitee.com/bzone/widgets-v3/commits/802e3a6adb6bfd4048e7d65ba6dc1fe45ae04e98))
-
-## [0.12.1](https://gitee.com/bzone/widgets-v3/compare/v0.12.0...v0.12.1) (2024-03-27)
+# [0.13.0](https://gitee.com/bzone/widgets-v3/compare/v0.12.0...v0.13.0) (2024-03-27)
 
 ### Bug Fixes
 
 - **SearchForm:** 默认展示数量小于实际数量的时候，才显示展开和关闭 ([a3e26a4](https://gitee.com/bzone/widgets-v3/commits/a3e26a4ce921f9bce9e2d0e3bc13c861285b9322))
+- **SearchForm:** 修复搜索按钮没有空位显示的时候就消失了的问题 ([30cb463](https://gitee.com/bzone/widgets-v3/commits/30cb46332cb8deabfaf14bb7f7d9222473ced87f))
+- **SearchForm:** 优化样式，减少空隙 ([7589877](https://gitee.com/bzone/widgets-v3/commits/7589877e5f6840e8f9c615543fd2e6504a9d1adf))
 
 ### Features
 
