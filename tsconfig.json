@@ -4,11 +4,12 @@
     "paths": {
       "widgets-v3": ["src/index"] // 假设你的类型定义在src/index.ts
     },
+    "esModuleInterop": true, // 允许默认导入非ES模块
+    "resolveJsonModule": true, // 允许导入.json文件
     "target": "esnext",
     "module": "esnext",
     "moduleResolution": "node",
     "jsx": "react",
-    "esModuleInterop": true,
     "types": ["jest"],
     "strict": true,
     "skipLibCheck": true,

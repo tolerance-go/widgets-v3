@@ -28,8 +28,9 @@ export type FrontendFilteredSelectListItem = {
 export type FrontendFilteredSelectProps<T = SelectValue> = {
   initialList?: FrontendFilteredSelectListItem[];
   valueFieldName?: string;
-  labelFieldName?: string;
-  filterFieldName?: string;
+  labelFieldName?: string | ((item: FrontendFilteredSelectListItem, index: number) => string);
+  filterFieldName?: string | ((item: FrontendFilteredSelectListItem, index: number) => string);
+  optionLabelFieldName?: string;
   request?: () => Promise<RequestResult<T>>;
 } & SelectProps<T>;
 
@@ -43,6 +44,7 @@ const FrontendFilteredSelect = forwardRef(
       valueFieldName = 'value',
       labelFieldName = 'label',
       filterFieldName = labelFieldName,
+      optionLabelFieldName,
       request,
       ...selectProps
     }: FrontendFilteredSelectProps<T>,
@@ -119,6 +121,8 @@ const FrontendFilteredSelect = forwardRef(
           return filterText ? filterText.toLowerCase().includes(input.toLowerCase()) : false;
         }}
         optionFilterProp="children"
+        // TODO: children （combobox 模式下为 value）
+        optionLabelProp={optionLabelFieldName ? 'data-option-label' : 'children'}
         onSearch={(val) => {
           setSearchText(val);
           return;
@@ -144,15 +148,36 @@ const FrontendFilteredSelect = forwardRef(
           )
         }
       >
-        {list.map((item) => {
+        {list.map((item, index) => {
+          const filterLabel =
+            typeof filterFieldName === 'function'
+              ? filterFieldName(item, index)
+              : item[filterFieldName];
+
+          const label =
+            typeof labelFieldName === 'function'
+              ? labelFieldName(item, index)
+              : item[labelFieldName];
+
+          const { disabled, value, title, label: itemLabel, children, className, style } = item;
+
           return (
             <Select.Option
-              {...item}
+              {...{
+                disabled,
+                value,
+                title,
+                label: itemLabel,
+                children,
+                className,
+                style,
+              }}
               key={item[valueFieldName]}
               value={item[valueFieldName]}
-              data-filter={item[filterFieldName]}
+              data-filter={filterLabel}
+              data-option-label={optionLabelFieldName && item[optionLabelFieldName]}
             >
-              {highlightMatch(item[labelFieldName], searchText)}
+              {highlightMatch(label, searchText)}
             </Select.Option>
           );
         })}
