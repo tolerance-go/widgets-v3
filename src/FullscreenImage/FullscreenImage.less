@@ -1,0 +1,53 @@
+// 使用 wg 前缀
+.wg {
+  &-interactive {
+    cursor: pointer;
+    transition: transform 0.2s;
+
+    &:hover {
+      transform: scale(1.05);
+    }
+  }
+
+  &-hidden {
+    display: none;
+  }
+
+  &-fullscreen-container {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1000; // 确保遮罩层位于页面内容之上
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &-mask {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: -1;
+    background-color: rgba(0, 0, 0, 0.7); // 半透明黑色背景
+  }
+
+  &-fullscreen-image {
+    z-index: 1001; // 确保图片位于遮罩层之上
+    max-width: 90%;
+    max-height: 90%;
+  }
+
+  &-close-button {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1002; // 确保关闭按钮位于图片之上
+    color: white;
+    font-size: 30px;
+    cursor: pointer;
+  }
+}
