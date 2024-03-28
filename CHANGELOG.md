@@ -1,3 +1,10 @@
+# [0.14.0](https://gitee.com/bzone/widgets-v3/compare/v0.13.0...v0.14.0) (2024-03-28)
+
+### Features
+
+- **FrontendFilteredSelect:** 新增 optionLabelFieldName 控制回填展示 ([6509858](https://gitee.com/bzone/widgets-v3/commits/650985876cb19de34d3601dd4dcc27d76caaf821))
+- **FullscreenImage:** 新增 FullscreenImage 组件 ([d009451](https://gitee.com/bzone/widgets-v3/commits/d009451336c900a72ac510f63d5fe41797602b71))
+
 # [0.13.0](https://gitee.com/bzone/widgets-v3/compare/v0.12.0...v0.13.0) (2024-03-27)
 
 ### Bug Fixes
