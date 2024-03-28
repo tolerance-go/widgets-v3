@@ -1,3 +1,9 @@
+# [0.15.0](https://gitee.com/bzone/widgets-v3/compare/v0.14.0...v0.15.0) (2024-03-28)
+
+### Features
+
+- **FrontendFilteredSelect:** 支持 valueFieldName 传递函数形式 ([afa262a](https://gitee.com/bzone/widgets-v3/commits/afa262a69c86cc19ddec5a35030681b9965af013))
+
 # [0.14.0](https://gitee.com/bzone/widgets-v3/compare/v0.13.0...v0.14.0) (2024-03-28)
 
 ### Features
