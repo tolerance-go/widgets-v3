@@ -27,7 +27,9 @@ export type FrontendFilteredSelectListItem = {
 
 export type FrontendFilteredSelectProps<T = SelectValue> = {
   initialList?: FrontendFilteredSelectListItem[];
-  valueFieldName?: string;
+  valueFieldName?:
+    | string
+    | ((item: FrontendFilteredSelectListItem, index: number) => string | number);
   labelFieldName?: string | ((item: FrontendFilteredSelectListItem, index: number) => string);
   filterFieldName?: string | ((item: FrontendFilteredSelectListItem, index: number) => string);
   optionLabelFieldName?: string;
@@ -159,21 +161,34 @@ const FrontendFilteredSelect = forwardRef(
               ? labelFieldName(item, index)
               : item[labelFieldName];
 
-          const { disabled, value, title, label: itemLabel, children, className, style } = item;
+          const value =
+            typeof valueFieldName === 'function'
+              ? valueFieldName(item, index)
+              : item[valueFieldName];
+
+          const {
+            disabled,
+            value: itemValue,
+            title,
+            label: itemLabel,
+            children,
+            className,
+            style,
+          } = item;
 
           return (
             <Select.Option
               {...{
                 disabled,
-                value,
+                value: itemValue,
                 title,
                 label: itemLabel,
                 children,
                 className,
                 style,
               }}
-              key={item[valueFieldName]}
-              value={item[valueFieldName]}
+              key={value}
+              value={value}
               data-filter={filterLabel}
               data-option-label={optionLabelFieldName && item[optionLabelFieldName]}
             >
