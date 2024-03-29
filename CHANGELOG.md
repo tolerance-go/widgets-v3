@@ -1,3 +1,9 @@
+## [0.16.1](https://gitee.com/bzone/widgets-v3/compare/v0.16.0...v0.16.1) (2024-03-29)
+
+### Bug Fixes
+
+- **FullscreenImage:** 优化样式，只有点击遮罩和关闭按钮才可以关闭 ([68bdd6d](https://gitee.com/bzone/widgets-v3/commits/68bdd6d6cb0993b3799c152888608bd106557b26))
+
 # [0.16.0](https://gitee.com/bzone/widgets-v3/compare/v0.15.0...v0.16.0) (2024-03-29)
 
 ### Features
