@@ -37,17 +37,29 @@
 
   &-fullscreen-image {
     z-index: 1001; // 确保图片位于遮罩层之上
-    max-width: 90%;
-    max-height: 90%;
+    display: block; /* 确保图片不会被压缩或拉伸 */
+    width: auto; /* 自动调整宽度以保持比例 */
+    max-width: 90vw; /* 限制图片最大宽度，避免超出视口 */
+    height: auto; /* 自动调整高度以保持比例 */
+    max-height: 90vh; /* 限制图片最大高度，避免超出视口 */
+    object-fit: contain; /* 保证内容被替换的内容缩放以适应容器的内容框，保持其宽高比 */
+  }
+
+  &-content-wrapper {
+    position: relative;
+    display: inline-flex; /* 让容器的大小根据内部元素（图片）的大小自动调整 */
+    align-items: center;
+    justify-content: center;
   }
 
   &-close-button {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 1002; // 确保关闭按钮位于图片之上
+    position: absolute;
+    top: 0; /* 调整以确保按钮不会覆盖在图片上 */
+    right: 0;
+    z-index: 1002; /* 确保关闭按钮位于内容之上 */
     color: white;
     font-size: 30px;
+    transform: translateX(200%);
     cursor: pointer;
   }
 }

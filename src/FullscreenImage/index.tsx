@@ -10,14 +10,29 @@ type FullscreenImageProps = HTMLAttributes<HTMLImageElement> & {
 const FullscreenImage: React.FC<FullscreenImageProps> = (props) => {
   const { src, alt, ...imgProps } = props;
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const toggleFullscreen = () => setIsFullscreen(!isFullscreen);
+
+  const handleImageLoad = () => setIsLoading(false);
+  const handleImageError = () => setIsLoading(false);
 
   // 处理Esc键的功能
   const handleKeyDown = (event: KeyboardEvent) => {
     if (event.key === 'Escape' && isFullscreen) {
       setIsFullscreen(false);
     }
+  };
+
+  // 新增：处理点击遮罩或关闭按钮的事件
+  const handleCloseClick = (event: React.MouseEvent) => {
+    event.stopPropagation(); // 阻止事件冒泡
+    setIsFullscreen(false);
+  };
+
+  // 新增：处理点击全屏图片的事件，阻止事件冒泡
+  const handleImageClick = (event: React.MouseEvent) => {
+    event.stopPropagation();
   };
 
   useEffect(() => {
@@ -36,14 +51,30 @@ const FullscreenImage: React.FC<FullscreenImageProps> = (props) => {
         {...imgProps}
         src={src}
         alt={alt}
-        onClick={() => setIsFullscreen(true)}
-        className={classNames(imgProps.className, isFullscreen ? 'wg-hidden' : 'wg-interactive')} // 合并传入的className
+        onClick={() => {
+          setIsFullscreen(true);
+          setIsLoading(true);
+        }}
+        className={classNames(imgProps.className, 'wg-interactive')}
       />
       {isFullscreen && (
-        <div className="wg-fullscreen-container" onClick={toggleFullscreen}>
+        <div className="wg-fullscreen-container" onClick={handleCloseClick}>
+          <div className="wg-content-wrapper">
+            {!isLoading && (
+              <span className="wg-close-button" onClick={handleCloseClick}>
+                ✕
+              </span>
+            )}
+            <img
+              src={src}
+              alt={alt}
+              className="wg-fullscreen-image"
+              onClick={handleImageClick}
+              onLoad={handleImageLoad}
+              onError={handleImageError}
+            />
+          </div>
           <div className="wg-mask"></div>
-          <img src={src} alt={alt} className="wg-fullscreen-image" />
-          <span className="wg-close-button">✕</span>
         </div>
       )}
     </>
