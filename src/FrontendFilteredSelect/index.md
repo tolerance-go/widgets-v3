@@ -29,3 +29,7 @@ group:
 ## 自定义回填展示
 
 <code src="./demos/optionLabelProp" />
+
+## 编辑状态时，初始化展示
+
+<code src="./demos/fetchOnMount" />

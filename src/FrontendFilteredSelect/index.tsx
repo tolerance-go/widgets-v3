@@ -34,6 +34,7 @@ export type FrontendFilteredSelectProps<T = SelectValue> = {
   filterFieldName?: string | ((item: FrontendFilteredSelectListItem, index: number) => string);
   optionLabelFieldName?: string;
   request?: () => Promise<RequestResult<T>>;
+  fetchOnMount?: boolean; // New boolean prop to control fetch on component mount
 } & SelectProps<T>;
 
 export type FrontendFilteredSelectMethods<T = SelectValue> = {};
@@ -48,6 +49,7 @@ const FrontendFilteredSelect = forwardRef(
       filterFieldName = labelFieldName,
       optionLabelFieldName,
       request,
+      fetchOnMount = false, // Default to false if not provided
       ...selectProps
     }: FrontendFilteredSelectProps<T>,
     ref: ForwardedRef<FrontendFilteredSelectMethods<T>>,
@@ -104,6 +106,12 @@ const FrontendFilteredSelect = forwardRef(
         fetchRef.current();
       }
     }, [dropdownVisible]);
+
+    useEffect(() => {
+      if (fetchOnMount) {
+        fetchRef.current();
+      }
+    }, []);
 
     // 在组件内部创建methods对象
     const methods: FrontendFilteredSelectMethods<T> = {};
