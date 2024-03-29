@@ -1,3 +1,9 @@
+# [0.16.0](https://gitee.com/bzone/widgets-v3/compare/v0.15.0...v0.16.0) (2024-03-29)
+
+### Features
+
+- **FrontendFilteredSelect:** 新增 fetchOnMount 参数 ([af99467](https://gitee.com/bzone/widgets-v3/commits/af994671a02b2796ff0d9006bea053eb52ec9802))
+
 # [0.15.0](https://gitee.com/bzone/widgets-v3/compare/v0.14.0...v0.15.0) (2024-03-28)
 
 ### Features
