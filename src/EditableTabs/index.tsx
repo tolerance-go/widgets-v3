@@ -16,10 +16,11 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 import { SyntheticListenerMap } from '@dnd-kit/core/dist/hooks/utilities';
 import ModalForm from '../ModalForm';
+import useUpdateEffect from '../_utils/useUpdateEffect';
 
 const { TabPane } = Tabs;
 
-interface Item {
+export interface Item {
   key: string;
   label?: string;
 }
@@ -28,11 +29,11 @@ export interface EditableTabsProps {
   value?: Item[];
   onChange?: (items: Item[]) => void;
   initialItems?: Item[];
-  renderTabPane?: (args: { item: Item }) => React.ReactNode;
+  renderTabPane?: (args: { item: Item; index: number }) => React.ReactNode;
   getAddedItem?: (args: { newItem: Item }) => Item;
 }
 
-interface DraggableTabPaneProps {
+export interface DraggableTabPaneProps {
   key?: string;
   children?: React.ReactNode;
   label?: string;
@@ -41,7 +42,7 @@ interface DraggableTabPaneProps {
   onEdit: (key: string, newLabel: string) => void;
 }
 
-interface DragHandleProps {
+export interface DragHandleProps {
   listeners?: SyntheticListenerMap;
   attributes: DraggableAttributes;
 }
@@ -153,7 +154,7 @@ const EditableTabs: React.FC<EditableTabsProps> = ({
   renderTabPane,
   getAddedItem,
 }) => {
-  const [items, setItems] = useState<Item[]>(initialItems);
+  const [items, setItems] = useState<Item[]>(value ?? initialItems);
 
   const sensor = useSensor(PointerSensor, { activationConstraint: { distance: 10 } });
 
@@ -188,13 +189,17 @@ const EditableTabs: React.FC<EditableTabsProps> = ({
 
   const handleAdd = () => {
     const newItem: Item = {
-      key: Math.random() + '',
+      key: new Date().getTime() + '',
       label: `标签 ${items.length + 1}`,
     };
     const newItems = [...items, getAddedItem?.({ newItem }) ?? newItem];
     setItems(newItems);
     onChange?.(newItems);
   };
+
+  useUpdateEffect(() => {
+    setItems(value ?? [])
+  }, [value])
 
   return (
     <>
@@ -207,7 +212,7 @@ const EditableTabs: React.FC<EditableTabsProps> = ({
               </Button>
             }
           >
-            {items.map((item) => (
+            {items.map((item, index) => (
               <TabPane
                 tab={
                   <DraggableTabNode
@@ -219,7 +224,7 @@ const EditableTabs: React.FC<EditableTabsProps> = ({
                 }
                 key={item.key}
               >
-                {renderTabPane?.({ item })}
+                {renderTabPane?.({ item, index })}
               </TabPane>
             ))}
           </Tabs>

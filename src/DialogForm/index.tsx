@@ -17,6 +17,7 @@ type InitialFormValues = {
 };
 
 export type DialogFormBaseProps = React.PropsWithChildren<{
+  inForm?: boolean;
   width?: string | number;
   title?: string;
   trigger?: ReactElement;
@@ -53,6 +54,7 @@ const DialogFormInner = ({
   requestInitialFormValues,
   renderActionGroup,
   stopWrapClickPropagation,
+  inForm,
   ...restProps
 }: DialogFormInnerProps) => {
   const [isVisible, setIsVisible] = useState<boolean>(false);
@@ -93,6 +95,30 @@ const DialogFormInner = ({
     setInitialFormValues(undefined);
   };
 
+  const renderContent = () => {
+    if (formLoading) {
+      return <Spin />;
+    }
+
+    if (requestInitialFormValues) {
+      if (initialFormValues) {
+        return renderFormItems?.({ form, initialFormValues });
+      }
+
+      return null;
+    }
+
+    return renderFormItems?.({ form });
+  };
+
+  const renderForm = () => {
+    if (inForm) {
+      return renderContent();
+    }
+
+    return <Form {...restProps}>{renderContent()}</Form>;
+  };
+
   return (
     <>
       {trigger &&
@@ -116,7 +142,7 @@ const DialogFormInner = ({
           },
         }}
         type={type}
-        destroyOnClose
+        destroyOnClose={inForm ? false : true}
         width={width}
         title={title}
         visible={isVisible}
@@ -135,17 +161,7 @@ const DialogFormInner = ({
           renderCustomActionGroupInner(),
         ]}
       >
-        <Form {...restProps}>
-          {formLoading ? (
-            <Spin />
-          ) : requestInitialFormValues ? (
-            initialFormValues ? (
-              renderFormItems?.({ form, initialFormValues })
-            ) : null
-          ) : (
-            renderFormItems?.({ form })
-          )}
-        </Form>
+        {renderForm()}
       </Container>
     </>
   );

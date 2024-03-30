@@ -5,6 +5,9 @@ import {
   ProForm,
   BackendFilteredSelectListItem,
   EditableTable,
+  TabsForm,
+  ModalForm,
+  DrawerForm,
 } from 'widgets-v3';
 import delay from 'delay';
 
@@ -86,7 +89,7 @@ const editableInitialData = [
     age: 32,
     address: 'Sidney No. 1 Lake Park',
   },
-]
+];
 
 export default () => (
   <ProForm
@@ -122,16 +125,13 @@ export default () => (
             )}
           </Form.Item>
           <Form.Item label="E-mail">
-            {getFieldDecorator('email', {
-            })(<Input autoComplete="off" />)}
+            {getFieldDecorator('email', {})(<Input autoComplete="off" />)}
           </Form.Item>
           <Form.Item label="Password" hasFeedback>
-            {getFieldDecorator('password', {
-            })(<Input.Password autoComplete="off" />)}
+            {getFieldDecorator('password', {})(<Input.Password autoComplete="off" />)}
           </Form.Item>
           <Form.Item label="Confirm Password" hasFeedback>
-            {getFieldDecorator('confirm', {
-            })(<Input.Password />)}
+            {getFieldDecorator('confirm', {})(<Input.Password />)}
           </Form.Item>
           <Form.Item
             label={
@@ -206,7 +206,296 @@ export default () => (
               />,
             )}
           </Form.Item>
+          <Form.Item label="TabsForm">
+            <TabsForm
+              inForm
+              initialFormValues={[
+                {
+                  tabItem: {
+                    key: '1',
+                    label: 'tab1',
+                  },
+                  formValues: {
+                    email: '123@qq.com',
+                  },
+                },
+                {
+                  tabItem: {
+                    key: '2',
+                    label: 'tab2',
+                  },
+                  formValues: {
+                    email: '321@qq.com',
+                  },
+                },
+              ]}
+              renderItemFormItems={({ submitLoading, tabItem, initialItemFormValues }) => {
+                return (
+                  <>
+                    <Form.Item label="BackendFilteredSelect">
+                      {getFieldDecorator(`TabsForm.[${tabItem.key}].BackendFilteredSelect`, {
+                        rules: [
+                          {
+                            message: 'Please input your E-mail!',
+                          },
+                        ],
+                      })(
+                        <BackendFilteredSelect
+                          placeholder="请选择"
+                          pageSize={50}
+                          request={async (params) => {
+                            console.log('发出请求', params);
+                            await delay(1000);
+                            return {
+                              list: getPageItems(params.current, params.pageSize, 100),
+                              total: 100,
+                            };
+                          }}
+                        />,
+                      )}
+                    </Form.Item>
+                    <Form.Item label="E-mail">
+                      {getFieldDecorator(`TabsForm.[${tabItem.key}].email`, {
+                        initialValue: initialItemFormValues?.email,
+                      })(<Input autoComplete="off" />)}
+                    </Form.Item>
+                    <Form.Item label="Password" hasFeedback>
+                      {getFieldDecorator(
+                        `TabsForm.[${tabItem.key}].password`,
+                        {},
+                      )(<Input.Password autoComplete="off" />)}
+                    </Form.Item>
+                    <Form.Item label="Confirm Password" hasFeedback>
+                      {getFieldDecorator(
+                        `TabsForm.[${tabItem.key}].confirm`,
+                        {},
+                      )(<Input.Password />)}
+                    </Form.Item>
+                    <Form.Item
+                      label={
+                        <span>
+                          Nickname&nbsp;
+                          <Tooltip title="What do you want others to call you?">
+                            <Icon type="question-circle-o" />
+                          </Tooltip>
+                        </span>
+                      }
+                    >
+                      {getFieldDecorator(`TabsForm.[${tabItem.key}].nickname`, {
+                        rules: [{ message: 'Please input your nickname!', whitespace: true }],
+                      })(<Input />)}
+                    </Form.Item>
+                    <Form.Item label="Habitual Residence">
+                      {getFieldDecorator(`TabsForm.[${tabItem.key}].residence`, {
+                        initialValue: ['zhejiang', 'hangzhou', 'xihu'],
+                        rules: [
+                          {
+                            type: 'array',
 
+                            message: 'Please select your habitual residence!',
+                          },
+                        ],
+                      })(<Cascader options={residences} />)}
+                    </Form.Item>
+                    <Form.Item label="EditableTable">
+                      {getFieldDecorator(`TabsForm.[${tabItem.key}].res234234idence`, {
+                        initialValue: editableInitialData,
+                        rules: [
+                          {
+                            type: 'array',
+
+                            message: 'Please select your habitual residence!',
+                          },
+                        ],
+                      })(
+                        <EditableTable
+                          pagination={{
+                            defaultPageSize: 2,
+                          }}
+                          columns={[
+                            {
+                              title: '姓名',
+                              dataIndex: 'name',
+                              key: 'name',
+                              fieldDecoratorOptions: {
+                                rules: [{}],
+                              },
+                              editable: true, // 让这列可编辑
+                            },
+                            {
+                              title: '年龄',
+                              dataIndex: 'age',
+                              key: 'age',
+                              editable: true,
+                              renderInput(val, record, index, form) {
+                                return <InputNumber></InputNumber>;
+                              },
+                            },
+                            {
+                              title: '住址',
+                              dataIndex: 'address',
+                              key: 'address',
+                            },
+                          ]}
+                        />,
+                      )}
+                    </Form.Item>
+                  </>
+                );
+              }}
+            />
+          </Form.Item>
+          <Form.Item label="ModalForm">
+            <ModalForm
+              inForm
+              title="标题"
+              trigger={<Button type="primary">按钮</Button>}
+              renderFormItems={() => {
+                return [
+                  <Form.Item key={'email'} label="E-mail">
+                    {getFieldDecorator('ModalForm.email', {
+                      rules: [
+                        {
+                          required: true,
+                          message: 'Please input your E-mail!',
+                        },
+                      ],
+                    })(<Input autoComplete="off" />)}
+                  </Form.Item>,
+                  <Form.Item key={'password'} label="Password" hasFeedback>
+                    {getFieldDecorator('ModalForm.password', {
+                      rules: [
+                        {
+                          required: true,
+                          message: 'Please input your password!',
+                        },
+                      ],
+                    })(<Input.Password autoComplete="off" />)}
+                  </Form.Item>,
+                  <Form.Item key={'confirm'} label="Confirm Password" hasFeedback>
+                    {getFieldDecorator('ModalForm.confirm', {
+                      rules: [
+                        {
+                          required: true,
+                          message: 'Please confirm your password!',
+                        },
+                        {},
+                      ],
+                    })(<Input.Password />)}
+                  </Form.Item>,
+                  <Form.Item
+                    key={'nickname'}
+                    label={
+                      <span>
+                        Nickname&nbsp;
+                        <Tooltip title="What do you want others to call you?">
+                          <Icon type="question-circle-o" />
+                        </Tooltip>
+                      </span>
+                    }
+                  >
+                    {getFieldDecorator('ModalForm.nickname', {
+                      rules: [
+                        {
+                          required: true,
+                          message: 'Please input your nickname!',
+                          whitespace: true,
+                        },
+                      ],
+                    })(<Input />)}
+                  </Form.Item>,
+                  <Form.Item key={'residence'} label="Habitual Residence">
+                    {getFieldDecorator('ModalForm.residence', {
+                      initialValue: ['zhejiang', 'hangzhou', 'xihu'],
+                      rules: [
+                        {
+                          type: 'array',
+                          required: true,
+                          message: 'Please select your habitual residence!',
+                        },
+                      ],
+                    })(<Cascader options={residences} />)}
+                  </Form.Item>,
+                ];
+              }}
+            />
+          </Form.Item>
+
+          <Form.Item label="DrawerForm">
+            <DrawerForm
+              inForm
+              title="标题"
+              trigger={<Button type="primary">按钮</Button>}
+              renderFormItems={() => {
+                return [
+                  <Form.Item key={'email'} label="E-mail">
+                    {getFieldDecorator('DrawerForm.email', {
+                      rules: [
+                        {
+                          required: true,
+                          message: 'Please input your E-mail!',
+                        },
+                      ],
+                    })(<Input autoComplete="off" />)}
+                  </Form.Item>,
+                  <Form.Item key={'password'} label="Password" hasFeedback>
+                    {getFieldDecorator('DrawerForm.password', {
+                      rules: [
+                        {
+                          required: true,
+                          message: 'Please input your password!',
+                        },
+                      ],
+                    })(<Input.Password autoComplete="off" />)}
+                  </Form.Item>,
+                  <Form.Item key={'confirm'} label="Confirm Password" hasFeedback>
+                    {getFieldDecorator('DrawerForm.confirm', {
+                      rules: [
+                        {
+                          required: true,
+                          message: 'Please confirm your password!',
+                        },
+                        {},
+                      ],
+                    })(<Input.Password />)}
+                  </Form.Item>,
+                  <Form.Item
+                    key={'nickname'}
+                    label={
+                      <span>
+                        Nickname&nbsp;
+                        <Tooltip title="What do you want others to call you?">
+                          <Icon type="question-circle-o" />
+                        </Tooltip>
+                      </span>
+                    }
+                  >
+                    {getFieldDecorator('DrawerForm.nickname', {
+                      rules: [
+                        {
+                          required: true,
+                          message: 'Please input your nickname!',
+                          whitespace: true,
+                        },
+                      ],
+                    })(<Input />)}
+                  </Form.Item>,
+                  <Form.Item key={'residence'} label="Habitual Residence">
+                    {getFieldDecorator('DrawerForm.residence', {
+                      initialValue: ['zhejiang', 'hangzhou', 'xihu'],
+                      rules: [
+                        {
+                          type: 'array',
+                          required: true,
+                          message: 'Please select your habitual residence!',
+                        },
+                      ],
+                    })(<Cascader options={residences} />)}
+                  </Form.Item>,
+                ];
+              }}
+            />
+          </Form.Item>
           <Form.Item>
             <Button loading={submitLoading} type="primary" htmlType="submit">
               Submit

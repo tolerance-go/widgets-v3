@@ -15,6 +15,7 @@ export { default as useUpdateEffect } from './_utils/useUpdateEffect';
 export { default as SchemaForm } from './SchemaForm';
 export { default as FullscreenImage } from './FullscreenImage';
 export { default as EditableTabs } from './EditableTabs';
+export { default as TabsForm } from './TabsForm';
 
 export type { BackendFilteredSelectListItem } from './BackendFilteredSelect';
 export type { FrontendFilteredSelectListItem } from './FrontendFilteredSelect';
