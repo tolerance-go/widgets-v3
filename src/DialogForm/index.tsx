@@ -2,6 +2,8 @@ import { Button, Form, Spin, message } from 'antd';
 import { FormComponentProps, WrappedFormUtils } from 'antd/es/form/Form';
 import React, { ReactElement, useEffect, useState } from 'react';
 import Container from './Container';
+import { ModalProps } from 'antd/es/modal';
+import { DrawerProps } from 'antd/es/drawer';
 
 // 辅助函数来检测一个对象是否是Promise
 // 这是Promise遵循的Promise/A+规范的一部分
@@ -27,6 +29,8 @@ export type DialogFormBaseProps = React.PropsWithChildren<{
     toggleModal: () => void;
     form: WrappedFormUtils;
   }) => React.ReactNode;
+  // 阻止最外层点击冒泡
+  stopWrapClickPropagation?: boolean;
 }>;
 
 export type DialogFormProps =
@@ -48,6 +52,7 @@ const DialogFormInner = ({
   renderFormItems,
   requestInitialFormValues,
   renderActionGroup,
+  stopWrapClickPropagation,
   ...restProps
 }: DialogFormInnerProps) => {
   const [isVisible, setIsVisible] = useState<boolean>(false);
@@ -90,8 +95,26 @@ const DialogFormInner = ({
 
   return (
     <>
-      {trigger && React.cloneElement(trigger, { onClick: toggleModal })}
+      {trigger &&
+        React.cloneElement(trigger, {
+          onClick: (e: React.MouseEvent<HTMLElement>) => {
+            trigger.props.onClick?.(e);
+            toggleModal();
+          },
+        })}
       <Container
+        wrapProps={{
+          onClick: (e: React.MouseEvent<HTMLElement>) => {
+            if (stopWrapClickPropagation) {
+              e.stopPropagation();
+            }
+
+            // 如果是最外层点击，也就是 mask 上点击，需要手动关闭
+            if (e.currentTarget === e.target) {
+              toggleModal();
+            }
+          },
+        }}
         type={type}
         destroyOnClose
         width={width}
