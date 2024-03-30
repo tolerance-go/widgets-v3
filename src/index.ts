@@ -14,7 +14,9 @@ export { default as EditableTable } from './EditableTable';
 export { default as useUpdateEffect } from './_utils/useUpdateEffect';
 export { default as SchemaForm } from './SchemaForm';
 export { default as FullscreenImage } from './FullscreenImage';
+export { default as EditableTabs } from './EditableTabs';
 
 export type { BackendFilteredSelectListItem } from './BackendFilteredSelect';
 export type { FrontendFilteredSelectListItem } from './FrontendFilteredSelect';
 export type { SearchTableProps } from './SearchTable';
+export type { EditableTabsProps } from './EditableTabs';
