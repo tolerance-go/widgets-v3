@@ -1,3 +1,12 @@
+## [0.18.1](https://gitee.com/bzone/widgets-v3/compare/v0.18.0...v0.18.1) (2024-03-31)
+
+
+### Bug Fixes
+
+* **ProForm:** 修复组件返回类型报错 ([93d5d4e](https://gitee.com/bzone/widgets-v3/commits/93d5d4ec5f107863196a706bf838ba7c580a3c19))
+
+
+
 # [0.18.0](https://gitee.com/bzone/widgets-v3/compare/v0.17.0...v0.18.0) (2024-03-31)
 
 
