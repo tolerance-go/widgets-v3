@@ -1,9 +1,10 @@
 import { Button, Form, Spin, message } from 'antd';
 import { FormComponentProps, WrappedFormUtils } from 'antd/es/form/Form';
-import React, { ReactElement, useEffect, useState } from 'react';
+import React, { ReactElement, useContext, useEffect, useState } from 'react';
 import Container from './Container';
 import { ModalProps } from 'antd/es/modal';
 import { DrawerProps } from 'antd/es/drawer';
+import { FormContext } from '../_utils/FormContext';
 
 // 辅助函数来检测一个对象是否是Promise
 // 这是Promise遵循的Promise/A+规范的一部分
@@ -17,7 +18,6 @@ type InitialFormValues = {
 };
 
 export type DialogFormBaseProps = React.PropsWithChildren<{
-  inForm?: boolean;
   width?: string | number;
   title?: string;
   trigger?: ReactElement;
@@ -54,13 +54,13 @@ const DialogFormInner = ({
   requestInitialFormValues,
   renderActionGroup,
   stopWrapClickPropagation,
-  inForm,
   ...restProps
 }: DialogFormInnerProps) => {
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const [formLoading, setFormLoading] = useState<boolean>(false); // 新增状态，用于跟踪异步表单项的加载状态
   const [initialFormValues, setInitialFormValues] = useState<InitialFormValues>();
-
+  // 使用 FormContext 来确定是否嵌套在 Form 中
+  const existingForm = useContext(FormContext);
   // 切换模态框的显示状态
   const toggleModal = () => setIsVisible(!isVisible);
 
@@ -102,21 +102,30 @@ const DialogFormInner = ({
 
     if (requestInitialFormValues) {
       if (initialFormValues) {
-        return renderFormItems?.({ form, initialFormValues });
+        return renderFormItems?.({
+          form: existingForm || form,
+          initialFormValues,
+        });
       }
 
       return null;
     }
 
-    return renderFormItems?.({ form });
+    return renderFormItems?.({
+      form: existingForm || form,
+    });
   };
 
   const renderForm = () => {
-    if (inForm) {
+    if (existingForm) {
       return renderContent();
     }
 
-    return <Form {...restProps}>{renderContent()}</Form>;
+    return (
+      <FormContext.Provider value={form}>
+        <Form {...restProps}>{renderContent()}</Form>;
+      </FormContext.Provider>
+    );
   };
 
   return (
@@ -142,7 +151,7 @@ const DialogFormInner = ({
           },
         }}
         type={type}
-        destroyOnClose={inForm ? false : true}
+        destroyOnClose={existingForm ? false : true}
         width={width}
         title={title}
         visible={isVisible}

@@ -1,10 +1,11 @@
 import { Form, Spin, message } from 'antd';
 import { FormComponentProps, WrappedFormUtils } from 'antd/es/form/Form';
 import * as PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import EditableTabs, { EditableTabsProps, Item } from '../EditableTabs';
 import { MakeOptional } from '../_utils/MakeOptional';
 import useUpdateEffect from '../_utils/useUpdateEffect';
+import { FormContext } from '../_utils/FormContext';
 
 export interface RequestParams {
   values: Record<string, any>;
@@ -23,7 +24,6 @@ export type TabsFormProps = {
   }) => PropTypes.ReactNodeLike;
   requestInitialFormValues?: () => Promise<Record<string, any>>;
   initialFormValues?: Record<string, any>;
-  inForm?: boolean;
   initialTabItems?: EditableTabsProps['initialItems'];
 };
 
@@ -35,7 +35,6 @@ const TabsFormInner: React.FC<TabsFormInnerProps> = ({
   renderItemFormItems,
   request,
   requestInitialFormValues,
-  inForm,
   initialTabItems,
   ...restFormProps
 }) => {
@@ -46,6 +45,9 @@ const TabsFormInner: React.FC<TabsFormInnerProps> = ({
   const [initialFormValues, setInitialFormValues] = useState<Record<string, any> | undefined>(
     propInitialFormValues,
   );
+
+  // 使用 FormContext 来确定是否嵌套在 Form 中
+  const existingForm = useContext(FormContext);
 
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
@@ -128,7 +130,7 @@ const TabsFormInner: React.FC<TabsFormInnerProps> = ({
             renderTabPane={({ item, index }) => {
               return renderItemFormItems?.({
                 index,
-                form,
+                form: existingForm || form,
                 submitLoading,
                 tabItem: item,
                 initialItemFormValues: initialFormValues?.[item.key],
@@ -146,7 +148,7 @@ const TabsFormInner: React.FC<TabsFormInnerProps> = ({
         onChange={setTabItems}
         renderTabPane={({ item, index }) => {
           return renderItemFormItems?.({
-            form,
+            form: existingForm || form,
             index,
             submitLoading,
             tabItem: item,
@@ -157,14 +159,16 @@ const TabsFormInner: React.FC<TabsFormInnerProps> = ({
     );
   };
 
-  if (inForm) {
+  if (existingForm) {
     return renderContent();
   }
 
   return (
-    <Form onSubmit={handleSubmit} {...restFormProps}>
-      {renderContent()}
-    </Form>
+    <FormContext.Provider value={form}>
+      <Form onSubmit={handleSubmit} {...restFormProps}>
+        {renderContent()}
+      </Form>
+    </FormContext.Provider>
   );
 };
 

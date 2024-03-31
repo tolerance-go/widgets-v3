@@ -203,7 +203,6 @@ export default () => (
           </Form.Item>
           <Form.Item label="TabsForm">
             <TabsForm
-              inForm
               initialTabItems={[
                 {
                   key: 'key1',
@@ -222,11 +221,11 @@ export default () => (
                   email: '321@qq.com',
                 },
               }}
-              renderItemFormItems={({ submitLoading, tabItem, initialItemFormValues }) => {
+              renderItemFormItems={({ submitLoading, tabItem, initialItemFormValues, form }) => {
                 return (
                   <>
                     <Form.Item label="BackendFilteredSelect">
-                      {getFieldDecorator(`TabsForm.[${tabItem.key}].BackendFilteredSelect`, {
+                      {form.getFieldDecorator(`TabsForm.[${tabItem.key}].BackendFilteredSelect`, {
                         rules: [
                           {
                             message: 'Please input your E-mail!',
@@ -248,18 +247,18 @@ export default () => (
                       )}
                     </Form.Item>
                     <Form.Item label="E-mail">
-                      {getFieldDecorator(`TabsForm.[${tabItem.key}].email`, {
+                      {form.getFieldDecorator(`TabsForm.[${tabItem.key}].email`, {
                         initialValue: initialItemFormValues?.email,
                       })(<Input autoComplete="off" />)}
                     </Form.Item>
                     <Form.Item label="Password" hasFeedback>
-                      {getFieldDecorator(
+                      {form.getFieldDecorator(
                         `TabsForm.[${tabItem.key}].password`,
                         {},
                       )(<Input.Password autoComplete="off" />)}
                     </Form.Item>
                     <Form.Item label="Confirm Password" hasFeedback>
-                      {getFieldDecorator(
+                      {form.getFieldDecorator(
                         `TabsForm.[${tabItem.key}].confirm`,
                         {},
                       )(<Input.Password />)}
@@ -274,12 +273,12 @@ export default () => (
                         </span>
                       }
                     >
-                      {getFieldDecorator(`TabsForm.[${tabItem.key}].nickname`, {
+                      {form.getFieldDecorator(`TabsForm.[${tabItem.key}].nickname`, {
                         rules: [{ message: 'Please input your nickname!', whitespace: true }],
                       })(<Input />)}
                     </Form.Item>
                     <Form.Item label="Habitual Residence">
-                      {getFieldDecorator(`TabsForm.[${tabItem.key}].residence`, {
+                      {form.getFieldDecorator(`TabsForm.[${tabItem.key}].residence`, {
                         initialValue: ['zhejiang', 'hangzhou', 'xihu'],
                         rules: [
                           {
@@ -291,7 +290,7 @@ export default () => (
                       })(<Cascader options={residences} />)}
                     </Form.Item>
                     <Form.Item label="EditableTable">
-                      {getFieldDecorator(`TabsForm.[${tabItem.key}].res234234idence`, {
+                      {form.getFieldDecorator(`TabsForm.[${tabItem.key}].res234234idence`, {
                         initialValue: editableInitialData,
                         rules: [
                           {
@@ -340,13 +339,12 @@ export default () => (
           </Form.Item>
           <Form.Item label="ModalForm">
             <ModalForm
-              inForm
               title="标题"
               trigger={<Button type="primary">按钮</Button>}
-              renderFormItems={() => {
+              renderFormItems={({ form }) => {
                 return [
                   <Form.Item key={'email'} label="E-mail">
-                    {getFieldDecorator('ModalForm.email', {
+                    {form.getFieldDecorator('ModalForm.email', {
                       rules: [
                         {
                           message: 'Please input your E-mail!',
@@ -355,7 +353,7 @@ export default () => (
                     })(<Input autoComplete="off" />)}
                   </Form.Item>,
                   <Form.Item key={'password'} label="Password" hasFeedback>
-                    {getFieldDecorator('ModalForm.password', {
+                    {form.getFieldDecorator('ModalForm.password', {
                       rules: [
                         {
                           message: 'Please input your password!',
@@ -364,7 +362,7 @@ export default () => (
                     })(<Input.Password autoComplete="off" />)}
                   </Form.Item>,
                   <Form.Item key={'confirm'} label="Confirm Password" hasFeedback>
-                    {getFieldDecorator('ModalForm.confirm', {
+                    {form.getFieldDecorator('ModalForm.confirm', {
                       rules: [
                         {
                           message: 'Please confirm your password!',
@@ -384,7 +382,7 @@ export default () => (
                       </span>
                     }
                   >
-                    {getFieldDecorator('ModalForm.nickname', {
+                    {form.getFieldDecorator('ModalForm.nickname', {
                       rules: [
                         {
                           message: 'Please input your nickname!',
@@ -394,7 +392,7 @@ export default () => (
                     })(<Input />)}
                   </Form.Item>,
                   <Form.Item key={'residence'} label="Habitual Residence">
-                    {getFieldDecorator('ModalForm.residence', {
+                    {form.getFieldDecorator('ModalForm.residence', {
                       initialValue: ['zhejiang', 'hangzhou', 'xihu'],
                       rules: [
                         {
@@ -412,13 +410,12 @@ export default () => (
 
           <Form.Item label="DrawerForm">
             <DrawerForm
-              inForm
               title="标题"
               trigger={<Button type="primary">按钮</Button>}
-              renderFormItems={() => {
+              renderFormItems={({ form }) => {
                 return [
                   <Form.Item key={'email'} label="E-mail">
-                    {getFieldDecorator('DrawerForm.email', {
+                    {form.getFieldDecorator('DrawerForm.email', {
                       rules: [
                         {
                           message: 'Please input your E-mail!',
@@ -427,7 +424,7 @@ export default () => (
                     })(<Input autoComplete="off" />)}
                   </Form.Item>,
                   <Form.Item key={'password'} label="Password" hasFeedback>
-                    {getFieldDecorator('DrawerForm.password', {
+                    {form.getFieldDecorator('DrawerForm.password', {
                       rules: [
                         {
                           message: 'Please input your password!',
@@ -436,7 +433,7 @@ export default () => (
                     })(<Input.Password autoComplete="off" />)}
                   </Form.Item>,
                   <Form.Item key={'confirm'} label="Confirm Password" hasFeedback>
-                    {getFieldDecorator('DrawerForm.confirm', {
+                    {form.getFieldDecorator('DrawerForm.confirm', {
                       rules: [
                         {
                           message: 'Please confirm your password!',
@@ -456,7 +453,7 @@ export default () => (
                       </span>
                     }
                   >
-                    {getFieldDecorator('DrawerForm.nickname', {
+                    {form.getFieldDecorator('DrawerForm.nickname', {
                       rules: [
                         {
                           message: 'Please input your nickname!',
@@ -466,7 +463,7 @@ export default () => (
                     })(<Input />)}
                   </Form.Item>,
                   <Form.Item key={'residence'} label="Habitual Residence">
-                    {getFieldDecorator('DrawerForm.residence', {
+                    {form.getFieldDecorator('DrawerForm.residence', {
                       initialValue: ['zhejiang', 'hangzhou', 'xihu'],
                       rules: [
                         {

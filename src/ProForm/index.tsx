@@ -1,7 +1,8 @@
 import { Form, message } from 'antd';
 import { FormComponentProps, WrappedFormUtils } from 'antd/es/form/Form';
 import * as PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React, { createContext, useContext, useState } from 'react';
+import { FormContext } from '../_utils/FormContext';
 
 export interface RequestParams {
   values: Record<string, any>;
@@ -26,6 +27,8 @@ const AdvancedProFormInner: React.FC<AdvancedProFormProps> = ({
   ...restFormProps
 }) => {
   const [submitLoading, setSubmitLoading] = useState(false);
+  // 检查是否已经存在 form 上下文
+  const existingForm = useContext(FormContext);
 
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
@@ -65,11 +68,20 @@ const AdvancedProFormInner: React.FC<AdvancedProFormProps> = ({
       setSubmitLoading(false);
     }
   };
-  return (
-    <Form onSubmit={handleSubmit} {...restFormProps}>
-      {renderFormItems?.({ form, submitLoading })}
-    </Form>
-  );
+
+  // 如果已经存在 form 上下文，则不创建新的 Provider
+  if (existingForm) {
+    return renderFormItems?.({ form, submitLoading });
+  } else {
+    // 否则，创建一个新的 Provider，并标记为嵌套
+    return (
+      <FormContext.Provider value={form}>
+        <Form onSubmit={handleSubmit} {...restFormProps}>
+          {renderFormItems?.({ form, submitLoading })}
+        </Form>
+      </FormContext.Provider>
+    );
+  }
 };
 
 const WrappedAdvancedProForm = Form.create<AdvancedProFormProps>({
