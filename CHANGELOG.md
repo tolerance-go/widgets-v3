@@ -1,3 +1,17 @@
+# [0.18.0](https://gitee.com/bzone/widgets-v3/compare/v0.17.0...v0.18.0) (2024-03-31)
+
+
+### Features
+
+* **Form:** 自动检测是否为嵌套 form，同构嵌套表单组件的代码，无需做修改 ([0aa78e2](https://gitee.com/bzone/widgets-v3/commits/0aa78e21fe4928a91e35ce13451c059a1d25df12))
+
+
+### BREAKING CHANGES
+
+* **Form:** 删除 inForm 参数
+
+
+
 # [0.17.0](https://gitee.com/bzone/widgets-v3/compare/v0.16.1...v0.17.0) (2024-03-31)
 
 
