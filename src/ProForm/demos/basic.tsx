@@ -105,7 +105,6 @@ export default () => (
             {getFieldDecorator('BackendFilteredSelect', {
               rules: [
                 {
-                  required: true,
                   message: 'Please input your E-mail!',
                 },
               ],
@@ -144,7 +143,7 @@ export default () => (
             }
           >
             {getFieldDecorator('nickname', {
-              rules: [{ required: true, message: 'Please input your nickname!', whitespace: true }],
+              rules: [{ message: 'Please input your nickname!', whitespace: true }],
             })(<Input />)}
           </Form.Item>
           <Form.Item label="Habitual Residence">
@@ -153,7 +152,7 @@ export default () => (
               rules: [
                 {
                   type: 'array',
-                  required: true,
+
                   message: 'Please select your habitual residence!',
                 },
               ],
@@ -165,7 +164,7 @@ export default () => (
               rules: [
                 {
                   type: 'array',
-                  required: true,
+
                   message: 'Please select your habitual residence!',
                 },
               ],
@@ -180,11 +179,7 @@ export default () => (
                     dataIndex: 'name',
                     key: 'name',
                     fieldDecoratorOptions: {
-                      rules: [
-                        {
-                          required: true,
-                        },
-                      ],
+                      rules: [{}],
                     },
                     editable: true, // 让这列可编辑
                   },
@@ -209,26 +204,24 @@ export default () => (
           <Form.Item label="TabsForm">
             <TabsForm
               inForm
-              initialFormValues={[
+              initialTabItems={[
                 {
-                  tabItem: {
-                    key: '1',
-                    label: 'tab1',
-                  },
-                  formValues: {
-                    email: '123@qq.com',
-                  },
+                  key: 'key1',
+                  label: 'tab1',
                 },
                 {
-                  tabItem: {
-                    key: '2',
-                    label: 'tab2',
-                  },
-                  formValues: {
-                    email: '321@qq.com',
-                  },
+                  key: 'key2',
+                  label: 'tab2',
                 },
               ]}
+              initialFormValues={{
+                key1: {
+                  email: '123@qq.com',
+                },
+                key2: {
+                  email: '321@qq.com',
+                },
+              }}
               renderItemFormItems={({ submitLoading, tabItem, initialItemFormValues }) => {
                 return (
                   <>
@@ -356,7 +349,6 @@ export default () => (
                     {getFieldDecorator('ModalForm.email', {
                       rules: [
                         {
-                          required: true,
                           message: 'Please input your E-mail!',
                         },
                       ],
@@ -366,7 +358,6 @@ export default () => (
                     {getFieldDecorator('ModalForm.password', {
                       rules: [
                         {
-                          required: true,
                           message: 'Please input your password!',
                         },
                       ],
@@ -376,7 +367,6 @@ export default () => (
                     {getFieldDecorator('ModalForm.confirm', {
                       rules: [
                         {
-                          required: true,
                           message: 'Please confirm your password!',
                         },
                         {},
@@ -397,7 +387,6 @@ export default () => (
                     {getFieldDecorator('ModalForm.nickname', {
                       rules: [
                         {
-                          required: true,
                           message: 'Please input your nickname!',
                           whitespace: true,
                         },
@@ -410,7 +399,7 @@ export default () => (
                       rules: [
                         {
                           type: 'array',
-                          required: true,
+
                           message: 'Please select your habitual residence!',
                         },
                       ],
@@ -432,7 +421,6 @@ export default () => (
                     {getFieldDecorator('DrawerForm.email', {
                       rules: [
                         {
-                          required: true,
                           message: 'Please input your E-mail!',
                         },
                       ],
@@ -442,7 +430,6 @@ export default () => (
                     {getFieldDecorator('DrawerForm.password', {
                       rules: [
                         {
-                          required: true,
                           message: 'Please input your password!',
                         },
                       ],
@@ -452,7 +439,6 @@ export default () => (
                     {getFieldDecorator('DrawerForm.confirm', {
                       rules: [
                         {
-                          required: true,
                           message: 'Please confirm your password!',
                         },
                         {},
@@ -473,7 +459,6 @@ export default () => (
                     {getFieldDecorator('DrawerForm.nickname', {
                       rules: [
                         {
-                          required: true,
                           message: 'Please input your nickname!',
                           whitespace: true,
                         },
@@ -486,7 +471,7 @@ export default () => (
                       rules: [
                         {
                           type: 'array',
-                          required: true,
+
                           message: 'Please select your habitual residence!',
                         },
                       ],

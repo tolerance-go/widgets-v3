@@ -96,54 +96,32 @@ export default () => (
       await delay(1000);
       return;
     }}
-    // initialFormValues={[
-    //   {
-    //     tabItem: {
-    //       key: '1',
-    //       label: 'tab1',
-    //     },
-    //     formValues: {
-    //       email: '123@qq.com',
-    //     },
-    //   },
-    //   {
-    //     tabItem: {
-    //       key: '2',
-    //       label: 'tab2',
-    //     },
-    //     formValues: {
-    //       email: '321@qq.com',
-    //     },
-    //   },
-    // ]}
+    initialTabItems={[
+      {
+        key: 'key1',
+        label: 'tab1',
+      },
+      {
+        key: 'key2',
+        label: 'tab2',
+      },
+    ]}
     requestInitialFormValues={async () => {
       await delay(1000);
-      return [
-        {
-          tabItem: {
-            key: '1',
-            label: 'tab1',
-          },
-          formValues: {
-            email: '123@qq.com',
-          },
+      return {
+        key1: {
+          email: '123@qq.com',
         },
-        {
-          tabItem: {
-            key: '2',
-            label: 'tab2',
-          },
-          formValues: {
-            email: '321@qq.com',
-          },
+        key2: {
+          email: '321@qq.com',
         },
-      ];
+      };
     }}
     renderItemFormItems={({
       form: { getFieldDecorator },
       submitLoading,
       tabItem,
-      initialItemFormValues: initialFormValues,
+      initialItemFormValues,
     }) => {
       return (
         <>
@@ -171,7 +149,7 @@ export default () => (
           </Form.Item>
           <Form.Item label="E-mail">
             {getFieldDecorator(`${tabItem.key}.email`, {
-              initialValue: initialFormValues?.email,
+              initialValue: initialItemFormValues?.email,
             })(<Input autoComplete="off" />)}
           </Form.Item>
           <Form.Item label="Password" hasFeedback>

@@ -6,13 +6,8 @@ import EditableTabs, { EditableTabsProps, Item } from '../EditableTabs';
 import { MakeOptional } from '../_utils/MakeOptional';
 import useUpdateEffect from '../_utils/useUpdateEffect';
 
-type ValueItem = {
-  tabItem: Item;
-  formValues?: Record<string, any>;
-};
-
 export interface RequestParams {
-  values: ValueItem[];
+  values: Record<string, any>;
 }
 
 export interface RequestResult {}
@@ -26,9 +21,10 @@ export type TabsFormProps = {
     initialItemFormValues?: Record<string, any>;
     index: number;
   }) => PropTypes.ReactNodeLike;
-  requestInitialFormValues?: () => Promise<ValueItem[]>;
-  initialFormValues?: ValueItem[];
+  requestInitialFormValues?: () => Promise<Record<string, any>>;
+  initialFormValues?: Record<string, any>;
   inForm?: boolean;
+  initialTabItems?: EditableTabsProps['initialItems'];
 };
 
 export type TabsFormInnerProps = TabsFormProps & FormComponentProps;
@@ -40,15 +36,14 @@ const TabsFormInner: React.FC<TabsFormInnerProps> = ({
   request,
   requestInitialFormValues,
   inForm,
+  initialTabItems,
   ...restFormProps
 }) => {
   const [submitLoading, setSubmitLoading] = useState(false);
 
-  const [tabItems, setTabItems] = useState(() =>
-    propInitialFormValues?.map((item) => item.tabItem),
-  );
+  const [tabItems, setTabItems] = useState(initialTabItems);
   const [formLoading, setFormLoading] = useState<boolean>(false); // 新增状态，用于跟踪异步表单项的加载状态
-  const [initialFormValues, setInitialFormValues] = useState<ValueItem[] | undefined>(
+  const [initialFormValues, setInitialFormValues] = useState<Record<string, any> | undefined>(
     propInitialFormValues,
   );
 
@@ -70,16 +65,8 @@ const TabsFormInner: React.FC<TabsFormInnerProps> = ({
         });
       });
 
-      // 新增部分：过滤formValues以匹配当前tabItems的key
-      const mergedFormValues = (tabItems ?? []).map((item) => {
-        return {
-          tabItem: item,
-          formValues: allFormValues[item.key],
-        };
-      });
-
       setSubmitLoading(true);
-      await request({ values: mergedFormValues });
+      await request({ values: allFormValues });
     } catch (error) {
       let errorMessage;
 
@@ -106,7 +93,6 @@ const TabsFormInner: React.FC<TabsFormInnerProps> = ({
         try {
           const values = await requestInitialFormValues();
           setInitialFormValues(values);
-          setTabItems(values.map((item) => item.tabItem));
         } catch (error) {
           let errorMessage;
 
@@ -145,8 +131,7 @@ const TabsFormInner: React.FC<TabsFormInnerProps> = ({
                 form,
                 submitLoading,
                 tabItem: item,
-                initialItemFormValues: initialFormValues.find((it) => it.tabItem.key === item.key)
-                  ?.formValues,
+                initialItemFormValues: initialFormValues?.[item.key],
               });
             }}
           />
@@ -165,8 +150,7 @@ const TabsFormInner: React.FC<TabsFormInnerProps> = ({
             index,
             submitLoading,
             tabItem: item,
-            initialItemFormValues: initialFormValues?.find((it) => it.tabItem.key === item.key)
-              ?.formValues,
+            initialItemFormValues: initialFormValues?.[item.key],
           });
         }}
       />
