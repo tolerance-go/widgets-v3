@@ -71,7 +71,7 @@ const AdvancedProFormInner: React.FC<AdvancedProFormProps> = ({
 
   // 如果已经存在 form 上下文，则不创建新的 Provider
   if (existingForm) {
-    return renderFormItems?.({ form, submitLoading });
+    return <>{renderFormItems?.({ form, submitLoading })}</>;
   } else {
     // 否则，创建一个新的 Provider，并标记为嵌套
     return (
