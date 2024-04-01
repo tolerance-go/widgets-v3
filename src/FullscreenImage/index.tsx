@@ -5,10 +5,11 @@ import { classNames } from '../_utils/classNames';
 type FullscreenImageProps = HTMLAttributes<HTMLImageElement> & {
   src: string;
   alt?: string;
+  trigger?: React.ReactElement;
 };
 
 const FullscreenImage: React.FC<FullscreenImageProps> = (props) => {
-  const { src, alt, ...imgProps } = props;
+  const { src, alt, trigger, ...imgProps } = props;
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -47,16 +48,27 @@ const FullscreenImage: React.FC<FullscreenImageProps> = (props) => {
 
   return (
     <>
-      <img
-        {...imgProps}
-        src={src}
-        alt={alt}
-        onClick={() => {
-          setIsFullscreen(true);
-          setIsLoading(true);
-        }}
-        className={classNames(imgProps.className, 'wg-interactive')}
-      />
+      {trigger ? (
+        React.cloneElement(trigger, {
+          onClick: (e: React.MouseEvent<HTMLElement>) => {
+            trigger.props.onClick?.(e);
+
+            setIsFullscreen(true);
+            setIsLoading(true);
+          },
+        })
+      ) : (
+        <img
+          {...imgProps}
+          src={src}
+          alt={alt}
+          onClick={() => {
+            setIsFullscreen(true);
+            setIsLoading(true);
+          }}
+          className={classNames(imgProps.className, 'wg-interactive')}
+        />
+      )}
       {isFullscreen && (
         <div className="wg-fullscreen-container" onClick={handleCloseClick}>
           <div className="wg-content-wrapper">
