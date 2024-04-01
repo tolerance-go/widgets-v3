@@ -10,7 +10,16 @@ import { Button, Form, Icon, Input, Popconfirm, Table, message } from 'antd';
 import { FormComponentProps } from 'antd/es/form';
 import { GetFieldDecoratorOptions, WrappedFormUtils } from 'antd/es/form/Form';
 import { ColumnProps, TableProps } from 'antd/es/table';
-import React, { Dispatch, SetStateAction, useCallback, useContext, useMemo, useState } from 'react';
+import React, {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import useUpdateEffect from '../_utils/useUpdateEffect';
 
 const OPERATION_DATA_INDEX = 'Editable_operation';
@@ -55,7 +64,8 @@ type EditableTableProps<T> = {
   columns?: ExtendedColumnProps<T>[];
   // 因为有内部的新增行，所以需要规定静态的 key 字段表示唯一 id
   rowKey?: string | number;
-} & Omit<TableProps<T>, 'columns' | 'rowKey'>;
+  selectedRowFieldName?: string;
+} & Omit<TableProps<T>, 'columns' | 'rowKey' | 'onChange'>;
 
 // 扩展 ColumnProps 接口来添加额外的属性
 interface ExtendedColumnProps<T> extends ColumnProps<T> {
@@ -199,9 +209,18 @@ const EditableTable = <T extends Record<string, any> = Record<string, any>>({
   columns = [],
   value,
   onChange,
+  rowSelection: externalRowSelection,
+  selectedRowFieldName = 'rowSelected',
   ...restTableProps
 }: EditableTableProps<T>) => {
   const [dataSource, setDataSource] = useState<T[]>(value ?? initialData);
+
+  // 初始化选中行的状态
+  const [selectedRowKeys, setSelectedRowKeys] = useState<string[] | number[]>(() => {
+    // 假设 dataSource 中某个属性（如 $rowSelected）表示该行初始时是否选中
+    return dataSource.filter((item) => item[selectedRowFieldName]).map((item) => item[rowKey]);
+  });
+
   const [editingRowIds, setEditingRowIds] = useState<Record<string, boolean>>({});
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -462,6 +481,42 @@ const EditableTable = <T extends Record<string, any> = Record<string, any>>({
       };
     });
 
+  const externalRowSelectionRef = useRef(externalRowSelection);
+
+  useEffect(() => {
+    externalRowSelectionRef.current = externalRowSelection;
+  }, [externalRowSelection]);
+
+  // 处理行选择改变
+  const handleRowSelectionChange = useCallback(
+    (selectedRowKeys: string[] | number[], selectedRows: T[]) => {
+      setSelectedRowKeys(selectedRowKeys);
+
+      // 更新 dataSource 中的 $rowSelected 状态
+      const newData = dataSource.map((item) => {
+        const isSelected = (selectedRowKeys as React.Key[]).includes(item[rowKey]);
+        return { ...item, [selectedRowFieldName]: isSelected };
+      });
+      setDataSource(newData);
+
+      // 如果有外部传入的 rowSelection.onChange，则调用
+      externalRowSelectionRef.current?.onChange?.(
+        selectedRowKeys as number[] | string[],
+        selectedRows,
+      );
+    },
+    [dataSource, rowKey],
+  );
+
+  // 定义 rowSelection 对象
+  const rowSelection = useMemo(() => {
+    if (!externalRowSelectionRef.current) return undefined;
+    return {
+      selectedRowKeys: selectedRowKeys,
+      onChange: handleRowSelectionChange,
+    };
+  }, [selectedRowKeys, handleRowSelectionChange]);
+
   return (
     <EditableRowEditingContext.Provider value={editableRowEditingContext}>
       <DndContext sensors={sensors} onDragEnd={onDragEnd}>
@@ -469,6 +524,7 @@ const EditableTable = <T extends Record<string, any> = Record<string, any>>({
           <Form>
             <Table
               {...restTableProps}
+              rowSelection={rowSelection}
               onRow={(record, index) => {
                 return {
                   record,
