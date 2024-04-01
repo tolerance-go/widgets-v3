@@ -213,8 +213,8 @@ const EditableTable = <T extends Record<string, any> = Record<string, any>>({
   onChange,
   rowSelection: externalRowSelection,
   selectedRowFieldName = 'rowSelected',
-  sortable,
-  editable,
+  sortable = true,
+  editable = true,
   ...restTableProps
 }: EditableTableProps<T>) => {
   const [dataSource, setDataSource] = useState<T[]>(value ?? initialData);
@@ -468,6 +468,7 @@ const EditableTable = <T extends Record<string, any> = Record<string, any>>({
               </EditableRowContext.Consumer>
             ),
           } as ExtendedColumnProps<T>,
+          ...columns,
         ]
       : columns
   )

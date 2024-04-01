@@ -64,7 +64,6 @@ const DemoPage = () => {
           },
         ]}
       />
-      <pre>{JSON.stringify(value, null, 2)}</pre>
     </>
   );
 };
