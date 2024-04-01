@@ -38,3 +38,7 @@ group:
 ## 选中行
 
 <code src="./demos/selectable" />
+
+## 功能开关
+
+<code src="./demos/enable" />

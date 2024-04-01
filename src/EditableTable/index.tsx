@@ -65,6 +65,8 @@ type EditableTableProps<T> = {
   // 因为有内部的新增行，所以需要规定静态的 key 字段表示唯一 id
   rowKey?: string | number;
   selectedRowFieldName?: string;
+  sortable?: boolean;
+  editable?: boolean;
 } & Omit<TableProps<T>, 'columns' | 'rowKey' | 'onChange'>;
 
 // 扩展 ColumnProps 接口来添加额外的属性
@@ -211,6 +213,8 @@ const EditableTable = <T extends Record<string, any> = Record<string, any>>({
   onChange,
   rowSelection: externalRowSelection,
   selectedRowFieldName = 'rowSelected',
+  sortable,
+  editable,
   ...restTableProps
 }: EditableTableProps<T>) => {
   const [dataSource, setDataSource] = useState<T[]>(value ?? initialData);
@@ -446,25 +450,28 @@ const EditableTable = <T extends Record<string, any> = Record<string, any>>({
     },
   };
 
-  const mergedColumns = [
-    {
-      title: '排序', // 拖拽手柄列没有标题
-      dataIndex: 'dragHandle',
-      width: 70, // 根据需要调整宽度
-      align: 'center',
-      render: (text, record) => (
-        <EditableRowContext.Consumer>
-          {(rowContext) => {
-            const { form, editing, setEditing } = rowContext!;
+  const mergedColumns = (
+    sortable
+      ? [
+          {
+            title: '排序', // 拖拽手柄列没有标题
+            dataIndex: 'dragHandle',
+            width: 70, // 根据需要调整宽度
+            align: 'center',
+            render: (text, record) => (
+              <EditableRowContext.Consumer>
+                {(rowContext) => {
+                  const { form, editing, setEditing } = rowContext!;
 
-            return <DragHandle disabled={editing} id={record[rowKey].toString()} />; // 使用DragHandle组件
-          }}
-        </EditableRowContext.Consumer>
-      ),
-    } as ExtendedColumnProps<T>,
-    ...columns,
-  ]
-    .concat([operationColumn])
+                  return <DragHandle disabled={editing} id={record[rowKey].toString()} />; // 使用DragHandle组件
+                }}
+              </EditableRowContext.Consumer>
+            ),
+          } as ExtendedColumnProps<T>,
+        ]
+      : columns
+  )
+    .concat(editable ? [operationColumn] : [])
     .map((col): ExtendedColumnProps<T> => {
       return {
         ...col,
@@ -539,23 +546,27 @@ const EditableTable = <T extends Record<string, any> = Record<string, any>>({
                 },
                 table: (props) => (
                   <>
-                    <Button
-                      block
-                      type="dashed"
-                      onClick={() => handleAdd('top')}
-                      style={{ marginBottom: 8 }}
-                    >
-                      首部添加一行数据
-                    </Button>
+                    {editable && (
+                      <Button
+                        block
+                        type="dashed"
+                        onClick={() => handleAdd('top')}
+                        style={{ marginBottom: 8 }}
+                      >
+                        首部添加一行数据
+                      </Button>
+                    )}
                     <table {...props}></table>
-                    <Button
-                      block
-                      type="dashed"
-                      onClick={() => handleAdd('bottom')}
-                      style={{ marginTop: 8 }}
-                    >
-                      尾部添加一行数据
-                    </Button>
+                    {editable && (
+                      <Button
+                        block
+                        type="dashed"
+                        onClick={() => handleAdd('bottom')}
+                        style={{ marginTop: 8 }}
+                      >
+                        尾部添加一行数据
+                      </Button>
+                    )}
                   </>
                 ),
               }}
