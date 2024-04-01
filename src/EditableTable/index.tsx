@@ -562,6 +562,18 @@ const EditableTable = <T extends Record<string, any> = Record<string, any>>({
               bordered
               dataSource={dataSource}
               columns={mergedColumns}
+              onChange={(pagination) => {
+                const { current, pageSize } = pagination;
+
+                setCurrentPage(current ?? 1);
+
+                setPageSize(
+                  pageSize ??
+                    (restTableProps.pagination !== false
+                      ? restTableProps.pagination?.defaultPageSize ?? defaultPageSize
+                      : defaultPageSize),
+                );
+              }}
               // pagination={false}
               pagination={
                 restTableProps.pagination === false
@@ -570,20 +582,6 @@ const EditableTable = <T extends Record<string, any> = Record<string, any>>({
                       ...restTableProps.pagination,
                       current: currentPage,
                       pageSize: pageSize,
-                      onChange: (page, pageSize) => {
-                        setCurrentPage(page);
-
-                        setPageSize(
-                          pageSize ??
-                            (restTableProps.pagination !== false
-                              ? restTableProps.pagination?.defaultPageSize ?? defaultPageSize
-                              : defaultPageSize),
-                        );
-
-                        if (restTableProps.pagination !== false) {
-                          restTableProps.pagination?.onChange?.(page, pageSize);
-                        }
-                      },
                       showSizeChanger: true,
                       pageSizeOptions: [
                         '10',
