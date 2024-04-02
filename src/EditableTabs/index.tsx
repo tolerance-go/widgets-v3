@@ -35,13 +35,14 @@ export interface EditableTabsProps {
   getAddedItem?: (args: { newItem: Item }) => Item;
 }
 
-export interface DraggableTabPaneProps {
+export interface ComposeTabNodeProps {
   key?: string;
   children?: React.ReactNode;
   label?: string;
   dataNodeKey: string;
   onRemove: (key: string) => void;
   onEdit: (key: string, newLabel: string) => void;
+  setActiveTabKey: (key: string) => void;
 }
 
 export interface DragHandleProps {
@@ -57,9 +58,10 @@ const DragHandle = forwardRef<HTMLSpanElement, DragHandleProps>((props, ref) => 
 
 interface RemoveIconProps {
   onRemove: () => void;
+  onIconClick: () => void;
 }
 
-const RemoveIcon: React.FC<RemoveIconProps> = ({ onRemove }) => (
+const RemoveIcon: React.FC<RemoveIconProps> = ({ onRemove, onIconClick }) => (
   <Popconfirm
     title="确定要删除这个标签页吗？"
     onConfirm={(e) => {
@@ -73,7 +75,10 @@ const RemoveIcon: React.FC<RemoveIconProps> = ({ onRemove }) => (
     <Icon
       type="close"
       style={{ cursor: 'pointer', marginLeft: 14 }}
-      onClick={(e) => e.stopPropagation()}
+      onClick={(e) => {
+        e.stopPropagation();
+        onIconClick();
+      }}
     />
   </Popconfirm>
 );
@@ -120,12 +125,13 @@ const EditIcon: React.FC<{ currentLabel?: string; onEdit?: (label: string) => vo
   ></ModalForm>
 );
 
-const DraggableTabNode: React.FC<DraggableTabPaneProps> = ({
+const ComposeTabNode: React.FC<ComposeTabNodeProps> = ({
   children,
   dataNodeKey,
   label,
   onRemove,
   onEdit,
+  setActiveTabKey,
 }) => {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
     id: dataNodeKey,
@@ -144,7 +150,12 @@ const DraggableTabNode: React.FC<DraggableTabPaneProps> = ({
       <DragHandle listeners={listeners} attributes={attributes} />
       <div>{label}</div>
       <EditIcon currentLabel={label} onEdit={(newLabel) => onEdit(dataNodeKey, newLabel)} />
-      <RemoveIcon onRemove={() => onRemove(dataNodeKey)} />
+      <RemoveIcon
+        onRemove={() => onRemove(dataNodeKey)}
+        onIconClick={() => {
+          setActiveTabKey(dataNodeKey);
+        }}
+      />
     </div>
   );
 };
@@ -159,6 +170,8 @@ const EditableTabs: React.FC<EditableTabsProps> = ({
   onTabItemAdd,
 }) => {
   const [items, setItems] = useState<Item[]>(value ?? initialItems);
+
+  const [activeTabKey, setActiveTabKey] = useState<string | undefined>(() => items[0]?.key);
 
   const sensor = useSensor(PointerSensor, { activationConstraint: { distance: 10 } });
 
@@ -212,6 +225,8 @@ const EditableTabs: React.FC<EditableTabsProps> = ({
       <DndContext sensors={[sensor]} onDragEnd={onDragEnd}>
         <SortableContext items={items.map((i) => i.key)} strategy={horizontalListSortingStrategy}>
           <Tabs
+            activeKey={activeTabKey}
+            onChange={setActiveTabKey}
             tabBarExtraContent={
               <Button type="dashed" onClick={handleAdd}>
                 新增一页
@@ -221,11 +236,12 @@ const EditableTabs: React.FC<EditableTabsProps> = ({
             {items.map((item, index) => (
               <TabPane
                 tab={
-                  <DraggableTabNode
+                  <ComposeTabNode
                     dataNodeKey={item.key}
                     label={item.label}
                     onRemove={handleRemove}
                     onEdit={handleEdit} // 这里传递 onEdit 函数
+                    setActiveTabKey={setActiveTabKey}
                   />
                 }
                 key={item.key}

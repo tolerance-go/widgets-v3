@@ -226,6 +226,7 @@ export default () => (
                   <>
                     <Form.Item label="BackendFilteredSelect">
                       {form.getFieldDecorator(`TabsForm.[${tabItem.key}].BackendFilteredSelect`, {
+                        preserve: false,
                         rules: [
                           {
                             message: 'Please input your E-mail!',
@@ -248,20 +249,19 @@ export default () => (
                     </Form.Item>
                     <Form.Item label="E-mail">
                       {form.getFieldDecorator(`TabsForm.[${tabItem.key}].email`, {
+                        preserve: false,
                         initialValue: initialItemFormValues?.email,
                       })(<Input autoComplete="off" />)}
                     </Form.Item>
                     <Form.Item label="Password" hasFeedback>
-                      {form.getFieldDecorator(
-                        `TabsForm.[${tabItem.key}].password`,
-                        {},
-                      )(<Input.Password autoComplete="off" />)}
+                      {form.getFieldDecorator(`TabsForm.[${tabItem.key}].password`, {
+                        preserve: false,
+                      })(<Input.Password autoComplete="off" />)}
                     </Form.Item>
                     <Form.Item label="Confirm Password" hasFeedback>
-                      {form.getFieldDecorator(
-                        `TabsForm.[${tabItem.key}].confirm`,
-                        {},
-                      )(<Input.Password />)}
+                      {form.getFieldDecorator(`TabsForm.[${tabItem.key}].confirm`, {
+                        preserve: false,
+                      })(<Input.Password />)}
                     </Form.Item>
                     <Form.Item
                       label={
@@ -274,11 +274,13 @@ export default () => (
                       }
                     >
                       {form.getFieldDecorator(`TabsForm.[${tabItem.key}].nickname`, {
+                        preserve: false,
                         rules: [{ message: 'Please input your nickname!', whitespace: true }],
                       })(<Input />)}
                     </Form.Item>
                     <Form.Item label="Habitual Residence">
                       {form.getFieldDecorator(`TabsForm.[${tabItem.key}].residence`, {
+                        preserve: false,
                         initialValue: ['zhejiang', 'hangzhou', 'xihu'],
                         rules: [
                           {
@@ -291,6 +293,7 @@ export default () => (
                     </Form.Item>
                     <Form.Item label="EditableTable">
                       {form.getFieldDecorator(`TabsForm.[${tabItem.key}].res234234idence`, {
+                        preserve: false,
                         initialValue: editableInitialData,
                         rules: [
                           {
