@@ -1,3 +1,18 @@
+# [0.20.0](https://gitee.com/bzone/widgets-v3/compare/v0.19.0...v0.20.0) (2024-04-02)
+
+### Bug Fixes
+
+- **EditableTable:** 兼容恢复开关默认值 ([05b190b](https://gitee.com/bzone/widgets-v3/commits/05b190bc888856a227839150253560cc6d229e80))
+- **EditableTable:** 修复分页大小切换失效的问题 ([9612221](https://gitee.com/bzone/widgets-v3/commits/9612221ee3862a73ba39061c6e769932fd86f167))
+- **EditableTabs:** 修复点击删除的时候 TabsForm 无法删除表单内存数据 ([79723ff](https://gitee.com/bzone/widgets-v3/commits/79723ff1c49bc663ec7e14a3ae7ff07235ab910d))
+
+### Features
+
+- **EditableTable:** 新增功能开关 ([8b5791c](https://gitee.com/bzone/widgets-v3/commits/8b5791cf8e55e0a22f2f33e2b3034efb54441cf0))
+- **EditableTable:** 支持行编辑功能 ([a39385a](https://gitee.com/bzone/widgets-v3/commits/a39385aa0dd38aeda0d2d8841fd339f35c6d3e88))
+- **Form:** 新增 onValuesChange 的接口 ([96ff6c2](https://gitee.com/bzone/widgets-v3/commits/96ff6c2aa9fb0bc7ce9a7d4a8905a609b2fff3a3))
+- **FormDependency:** 新增 FormDependency 组件 ([87a6fa8](https://gitee.com/bzone/widgets-v3/commits/87a6fa8c150e4247a62a72454950bb3ff8ac60a1))
+
 # [0.19.0](https://gitee.com/bzone/widgets-v3/compare/v0.18.1...v0.19.0) (2024-04-01)
 
 ### Features
