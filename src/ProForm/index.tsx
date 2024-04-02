@@ -1,7 +1,7 @@
 import { Form, message } from 'antd';
 import { FormComponentProps, WrappedFormUtils } from 'antd/es/form/Form';
 import * as PropTypes from 'prop-types';
-import React, { createContext, useContext, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { FormContext } from '../_utils/FormContext';
 
 export interface RequestParams {
@@ -16,6 +16,7 @@ export type ProFormProps = {
     form: WrappedFormUtils;
     submitLoading: boolean;
   }) => PropTypes.ReactNodeLike;
+  onValuesChange?: (changedValues: Record<string, any>, allValues: Record<string, any>) => void;
 };
 
 export type AdvancedProFormProps = ProFormProps & FormComponentProps;
@@ -71,7 +72,7 @@ const AdvancedProFormInner: React.FC<AdvancedProFormProps> = ({
 
   // 如果已经存在 form 上下文，则不创建新的 Provider
   if (existingForm) {
-    return <>{renderFormItems?.({ form, submitLoading })}</>;
+    return <>{renderFormItems?.({ form: existingForm, submitLoading })}</>;
   } else {
     // 否则，创建一个新的 Provider，并标记为嵌套
     return (
@@ -85,7 +86,10 @@ const AdvancedProFormInner: React.FC<AdvancedProFormProps> = ({
 };
 
 const WrappedAdvancedProForm = Form.create<AdvancedProFormProps>({
-  name: 'advanced_base_form',
+  name: 'ProForm',
+  onValuesChange(props, changedValues, allValues) {
+    props.onValuesChange?.(changedValues, allValues);
+  },
 })(AdvancedProFormInner);
 
 export default WrappedAdvancedProForm;

@@ -21,6 +21,7 @@ export type SearchFormProps = {
   }) => (PropTypes.ReactNodeLike | SearchFormItem)[];
   onSearch?: (values: Record<string, any>) => void;
   onReset?: () => void;
+  onValuesChange?: (changedValues: Record<string, any>, allValues: Record<string, any>) => void;
 } & FormProps;
 
 export type AdvancedSearchFormProps = SearchFormProps & FormComponentProps;
@@ -152,7 +153,10 @@ const AdvancedSearchFormInner: React.FC<AdvancedSearchFormProps> = ({
 };
 
 const WrappedAdvancedSearchForm = Form.create<AdvancedSearchFormProps>({
-  name: 'advanced_search_form',
+  name: 'SearchForm',
+  onValuesChange(props, changedValues, allValues) {
+    props.onValuesChange?.(changedValues, allValues);
+  },
 })(AdvancedSearchFormInner);
 
 export default WrappedAdvancedSearchForm;

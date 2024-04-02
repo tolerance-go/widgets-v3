@@ -1,10 +1,8 @@
 import { Button, Form, Spin, message } from 'antd';
 import { FormComponentProps, WrappedFormUtils } from 'antd/es/form/Form';
 import React, { ReactElement, useContext, useEffect, useState } from 'react';
-import Container from './Container';
-import { ModalProps } from 'antd/es/modal';
-import { DrawerProps } from 'antd/es/drawer';
 import { FormContext } from '../_utils/FormContext';
+import Container from './Container';
 
 // 辅助函数来检测一个对象是否是Promise
 // 这是Promise遵循的Promise/A+规范的一部分
@@ -32,6 +30,7 @@ export type DialogFormBaseProps = React.PropsWithChildren<{
   }) => React.ReactNode;
   // 阻止最外层点击冒泡
   stopWrapClickPropagation?: boolean;
+  onValuesChange?: (changedValues: Record<string, any>, allValues: Record<string, any>) => void;
 }>;
 
 export type DialogFormProps =
@@ -176,6 +175,11 @@ const DialogFormInner = ({
   );
 };
 
-const DialogForm = Form.create<DialogFormInnerProps>({ name: 'DialogForm' })(DialogFormInner);
+const DialogForm = Form.create<DialogFormInnerProps>({
+  name: 'DialogForm',
+  onValuesChange(props, changedValues, allValues) {
+    props.onValuesChange?.(changedValues, allValues);
+  },
+})(DialogFormInner);
 
 export default DialogForm;

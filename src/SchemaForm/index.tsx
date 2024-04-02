@@ -7,7 +7,8 @@ import {
   WrappedFormUtils,
 } from 'antd/es/form/Form';
 import { ColProps, RowProps } from 'antd/es/grid';
-import React, { ForwardedRef, forwardRef, useImperativeHandle } from 'react';
+import React, { ForwardedRef, forwardRef, useContext, useImperativeHandle } from 'react';
+import { FormContext } from 'src/_utils/FormContext';
 
 // 新增FormItemSchema类型，包括getFieldDecorator的参数
 type FormSchema = {
@@ -57,7 +58,7 @@ export type FormComponentSchema =
 
 export type SchemaFormProps = {
   schema?: FormComponentSchema[];
-  externalForm?: WrappedFormUtils;
+  onValuesChange?: (changedValues: Record<string, any>, allValues: Record<string, any>) => void;
 };
 
 export type SchemaFormInnerProps = SchemaFormProps & FormComponentProps;
@@ -65,11 +66,9 @@ export type SchemaFormInnerProps = SchemaFormProps & FormComponentProps;
 export type SchemaFormMethods = {};
 
 const SchemaForm = forwardRef(
-  (
-    { schema, form, wrappedComponentRef, externalForm }: SchemaFormInnerProps,
-    ref: ForwardedRef<SchemaFormMethods>,
-  ) => {
-    const usedForm = externalForm ?? form;
+  ({ schema, form }: SchemaFormInnerProps, ref: ForwardedRef<SchemaFormMethods>) => {
+    // 检查是否已经存在 form 上下文
+    const existingForm = useContext(FormContext);
 
     const methods: SchemaFormMethods = {};
 
@@ -85,10 +84,14 @@ const SchemaForm = forwardRef(
         case 'Node':
           return schema.component;
         case 'Form':
-          return (
-            <Form {...schema.props} key={schema.props?.key ? schema.props.key : index}>
-              {schema.children?.map((item) => renderComponent(item, index))}
-            </Form>
+          return existingForm ? (
+            schema.children?.map((item) => renderComponent(item, index))
+          ) : (
+            <FormContext.Provider value={form}>
+              <Form {...schema.props} key={schema.props?.key ? schema.props.key : index}>
+                {schema.children?.map((item) => renderComponent(item, index))}
+              </Form>
+            </FormContext.Provider>
           );
         case 'FormItem':
           return (
@@ -99,7 +102,7 @@ const SchemaForm = forwardRef(
         case 'FormField':
           return (
             <React.Fragment key={schema.id}>
-              {usedForm.getFieldDecorator(
+              {(existingForm || form).getFieldDecorator(
                 schema.id,
                 schema.options,
               )(renderComponent(schema.children, index))}
@@ -132,4 +135,9 @@ const SchemaForm = forwardRef(
   },
 );
 
-export default Form.create<SchemaFormInnerProps>({ name: 'schema_form' })(SchemaForm);
+export default Form.create<SchemaFormInnerProps>({
+  name: 'SchemaForm',
+  onValuesChange(props, changedValues, allValues) {
+    props.onValuesChange?.(changedValues, allValues);
+  },
+})(SchemaForm);

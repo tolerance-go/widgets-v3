@@ -3,8 +3,6 @@ import { FormComponentProps, WrappedFormUtils } from 'antd/es/form/Form';
 import * as PropTypes from 'prop-types';
 import React, { useContext, useEffect, useState } from 'react';
 import EditableTabs, { EditableTabsProps, Item } from '../EditableTabs';
-import { MakeOptional } from '../_utils/MakeOptional';
-import useUpdateEffect from '../_utils/useUpdateEffect';
 import { FormContext } from '../_utils/FormContext';
 
 export interface RequestParams {
@@ -25,6 +23,7 @@ export type TabsFormProps = {
   requestInitialFormValues?: () => Promise<Record<string, any>>;
   initialFormValues?: Record<string, any>;
   initialTabItems?: EditableTabsProps['initialItems'];
+  onValuesChange?: (changedValues: Record<string, any>, allValues: Record<string, any>) => void;
 };
 
 export type TabsFormInnerProps = TabsFormProps & FormComponentProps;
@@ -173,7 +172,10 @@ const TabsFormInner: React.FC<TabsFormInnerProps> = ({
 };
 
 const TabsForm = Form.create<TabsFormInnerProps>({
-  name: 'tabs_form',
+  name: 'TabsForm',
+  onValuesChange(props, changedValues, allValues) {
+    props.onValuesChange?.(changedValues, allValues);
+  },
 })(TabsFormInner);
 
 export default TabsForm;
