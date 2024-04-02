@@ -27,6 +27,8 @@ export interface Item {
 
 export interface EditableTabsProps {
   value?: Item[];
+  onTabItemAdd?: (key: string) => void;
+  onTabItemRemove?: (key: string) => void;
   onChange?: (items: Item[]) => void;
   initialItems?: Item[];
   renderTabPane?: (args: { item: Item; index: number }) => React.ReactNode;
@@ -153,6 +155,8 @@ const EditableTabs: React.FC<EditableTabsProps> = ({
   initialItems = [],
   renderTabPane,
   getAddedItem,
+  onTabItemRemove,
+  onTabItemAdd,
 }) => {
   const [items, setItems] = useState<Item[]>(value ?? initialItems);
 
@@ -185,6 +189,7 @@ const EditableTabs: React.FC<EditableTabsProps> = ({
     const newItems = items.filter((item) => item.key !== keyToRemove);
     setItems(newItems);
     onChange?.(newItems);
+    onTabItemRemove?.(keyToRemove);
   };
 
   const handleAdd = () => {
@@ -195,11 +200,12 @@ const EditableTabs: React.FC<EditableTabsProps> = ({
     const newItems = [...items, getAddedItem?.({ newItem }) ?? newItem];
     setItems(newItems);
     onChange?.(newItems);
+    onTabItemAdd?.(newItem.key);
   };
 
   useUpdateEffect(() => {
-    setItems(value ?? [])
-  }, [value])
+    setItems(value ?? []);
+  }, [value]);
 
   return (
     <>

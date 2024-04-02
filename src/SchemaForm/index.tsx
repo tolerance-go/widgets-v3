@@ -9,6 +9,7 @@ import {
 import { ColProps, RowProps } from 'antd/es/grid';
 import React, { ForwardedRef, forwardRef, useContext, useImperativeHandle } from 'react';
 import { FormContext } from 'src/_utils/FormContext';
+import { createFormEventBusWrapper } from 'src/_utils/createFormEventBusWrapper';
 
 // 新增FormItemSchema类型，包括getFieldDecorator的参数
 type FormSchema = {
@@ -135,9 +136,11 @@ const SchemaForm = forwardRef(
   },
 );
 
-export default Form.create<SchemaFormInnerProps>({
-  name: 'SchemaForm',
-  onValuesChange(props, changedValues, allValues) {
-    props.onValuesChange?.(changedValues, allValues);
-  },
-})(SchemaForm);
+export default createFormEventBusWrapper(
+  Form.create<SchemaFormInnerProps>({
+    name: 'SchemaForm',
+    onValuesChange(props, changedValues, allValues) {
+      props.onValuesChange?.(changedValues, allValues);
+    },
+  })(SchemaForm),
+);

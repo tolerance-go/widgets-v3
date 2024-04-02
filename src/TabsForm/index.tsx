@@ -3,7 +3,9 @@ import { FormComponentProps, WrappedFormUtils } from 'antd/es/form/Form';
 import * as PropTypes from 'prop-types';
 import React, { useContext, useEffect, useState } from 'react';
 import EditableTabs, { EditableTabsProps, Item } from '../EditableTabs';
-import { FormContext } from '../_utils/FormContext';
+import { FormContext, FormEventBusContext } from '../_utils/FormContext';
+import { createFormEventBusWrapper } from 'src/_utils/createFormEventBusWrapper';
+import useUpdateEffect from 'src/_utils/useUpdateEffect';
 
 export interface RequestParams {
   values: Record<string, any>;
@@ -47,6 +49,7 @@ const TabsFormInner: React.FC<TabsFormInnerProps> = ({
 
   // 使用 FormContext 来确定是否嵌套在 Form 中
   const existingForm = useContext(FormContext);
+  const formEventBus = useContext(FormEventBusContext);
 
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
@@ -116,6 +119,10 @@ const TabsFormInner: React.FC<TabsFormInnerProps> = ({
     fetchInitialFormValues();
   }, []);
 
+  useUpdateEffect(() => {
+    formEventBus?.emit('onTabsFormTabItemsChange');
+  }, [tabItems]);
+
   const renderContent = () => {
     if (formLoading) {
       return <Spin />;
@@ -171,11 +178,13 @@ const TabsFormInner: React.FC<TabsFormInnerProps> = ({
   );
 };
 
-const TabsForm = Form.create<TabsFormInnerProps>({
-  name: 'TabsForm',
-  onValuesChange(props, changedValues, allValues) {
-    props.onValuesChange?.(changedValues, allValues);
-  },
-})(TabsFormInner);
+const TabsForm = createFormEventBusWrapper(
+  Form.create<TabsFormInnerProps>({
+    name: 'TabsForm',
+    onValuesChange(props, changedValues, allValues) {
+      props.onValuesChange?.(changedValues, allValues);
+    },
+  })(TabsFormInner),
+);
 
 export default TabsForm;

@@ -3,6 +3,7 @@ import { FormComponentProps, WrappedFormUtils } from 'antd/es/form/Form';
 import * as PropTypes from 'prop-types';
 import React, { useContext, useState } from 'react';
 import { FormContext } from '../_utils/FormContext';
+import { createFormEventBusWrapper } from 'src/_utils/createFormEventBusWrapper';
 
 export interface RequestParams {
   values: Record<string, any>;
@@ -85,11 +86,13 @@ const AdvancedProFormInner: React.FC<AdvancedProFormProps> = ({
   }
 };
 
-const WrappedAdvancedProForm = Form.create<AdvancedProFormProps>({
-  name: 'ProForm',
-  onValuesChange(props, changedValues, allValues) {
-    props.onValuesChange?.(changedValues, allValues);
-  },
-})(AdvancedProFormInner);
+const WrappedAdvancedProForm = createFormEventBusWrapper(
+  Form.create<AdvancedProFormProps>({
+    name: 'ProForm',
+    onValuesChange(props, changedValues, allValues) {
+      props.onValuesChange?.(changedValues, allValues);
+    },
+  })(AdvancedProFormInner),
+);
 
 export default WrappedAdvancedProForm;
