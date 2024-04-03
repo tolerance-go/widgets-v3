@@ -1,3 +1,9 @@
+# [0.21.0](https://gitee.com/bzone/widgets-v3/compare/v0.20.0...v0.21.0) (2024-04-03)
+
+### Features
+
+- **FrontendFilteredSelect:** 新增 valueEnum 接口 ([40968d8](https://gitee.com/bzone/widgets-v3/commits/40968d892f12243b02799abaae85e991c4bfa913))
+
 # [0.20.0](https://gitee.com/bzone/widgets-v3/compare/v0.19.0...v0.20.0) (2024-04-02)
 
 ### Bug Fixes
