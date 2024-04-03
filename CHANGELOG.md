@@ -1,3 +1,14 @@
+# [0.22.0](https://gitee.com/bzone/widgets-v3/compare/v0.21.0...v0.22.0) (2024-04-03)
+
+### Features
+
+- **FrontendFilteredSelect:** onChange 回调注入 methods 方法集 ([bccdf5e](https://gitee.com/bzone/widgets-v3/commits/bccdf5e790d0c4670607aff67bf1d3ab4d9fe29a))
+- **SearchTable:** column 的 render 方法注入请求额外数据用于枚举等特殊渲染 ([cbfad65](https://gitee.com/bzone/widgets-v3/commits/cbfad65998f8dd49d235adb210188128fc27bf84))
+
+### BREAKING CHANGES
+
+- **SearchTable:** request 返回的数据列表字段从 data 改为 list
+
 # [0.21.0](https://gitee.com/bzone/widgets-v3/compare/v0.20.0...v0.21.0) (2024-04-03)
 
 ### Features
