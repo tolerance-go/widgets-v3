@@ -33,3 +33,7 @@ group:
 ## 编辑状态时，初始化展示
 
 <code src="./demos/fetchOnMount" />
+
+## 静态枚举
+
+<code src="./demos/static" />

@@ -35,6 +35,7 @@ export type FrontendFilteredSelectProps<T = SelectValue> = {
   optionLabelFieldName?: string;
   request?: () => Promise<RequestResult<T>>;
   fetchOnMount?: boolean; // New boolean prop to control fetch on component mount
+  valueEnum?: Record<string, any> | Map<number | string, string>;
 } & SelectProps<T>;
 
 export type FrontendFilteredSelectMethods<T = SelectValue> = {};
@@ -50,11 +51,25 @@ const FrontendFilteredSelect = forwardRef(
       optionLabelFieldName,
       request,
       fetchOnMount = false, // Default to false if not provided
+      valueEnum,
       ...selectProps
     }: FrontendFilteredSelectProps<T>,
     ref: ForwardedRef<FrontendFilteredSelectMethods<T>>,
   ) => {
-    const [list, setList] = useState<FrontendFilteredSelectListItem[]>(initialList);
+    const [list, setList] = useState<FrontendFilteredSelectListItem[]>(() => {
+      if (valueEnum) {
+        return (
+          valueEnum instanceof Map ? Array.from(valueEnum.entries()) : Object.entries(valueEnum)
+        ).map(([value, label]) => {
+          return {
+            label,
+            value,
+          };
+        });
+      }
+
+      return initialList;
+    });
     const [loading, setLoading] = useState(false);
     const [searchText, setSearchText] = useState<string>();
 
