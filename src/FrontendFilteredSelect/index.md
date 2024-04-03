@@ -37,3 +37,7 @@ group:
 ## 静态枚举
 
 <code src="./demos/static" />
+
+## 根据 value 获取选项
+
+<code src="./demos/findOption" />

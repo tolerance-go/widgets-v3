@@ -36,9 +36,18 @@ export type FrontendFilteredSelectProps<T = SelectValue> = {
   request?: () => Promise<RequestResult<T>>;
   fetchOnMount?: boolean; // New boolean prop to control fetch on component mount
   valueEnum?: Record<string, any> | Map<number | string, string>;
-} & SelectProps<T>;
+  onChange?: (
+    value: T,
+    option: React.ReactElement<any> | React.ReactElement<any>[],
+    options: {
+      methods: FrontendFilteredSelectMethods<T>;
+    },
+  ) => void;
+} & Omit<SelectProps<T>, 'onChange'>;
 
-export type FrontendFilteredSelectMethods<T = SelectValue> = {};
+export type FrontendFilteredSelectMethods<T = SelectValue> = {
+  getListItem: (value: T) => FrontendFilteredSelectListItem | undefined;
+};
 
 // Add generic type T to the component function
 const FrontendFilteredSelect = forwardRef(
@@ -52,6 +61,7 @@ const FrontendFilteredSelect = forwardRef(
       request,
       fetchOnMount = false, // Default to false if not provided
       valueEnum,
+      onChange,
       ...selectProps
     }: FrontendFilteredSelectProps<T>,
     ref: ForwardedRef<FrontendFilteredSelectMethods<T>>,
@@ -128,8 +138,18 @@ const FrontendFilteredSelect = forwardRef(
       }
     }, []);
 
+    const getItemValue = (item: FrontendFilteredSelectListItem, index: number) => {
+      return typeof valueFieldName === 'function'
+        ? valueFieldName(item, index)
+        : item[valueFieldName];
+    };
+
     // 在组件内部创建methods对象
-    const methods: FrontendFilteredSelectMethods<T> = {};
+    const methods: FrontendFilteredSelectMethods<T> = {
+      getListItem: (value: T) => {
+        return list.find((item, index) => getItemValue(item, index) === value);
+      },
+    };
 
     // 更新useImperativeHandle钩子，直接使用methods对象
     useImperativeHandle(ref, () => methods);
@@ -137,6 +157,9 @@ const FrontendFilteredSelect = forwardRef(
     return (
       <Select
         {...(selectProps as SelectProps<SelectValue>)}
+        onChange={(value, option) => {
+          onChange?.(value as T, option, { methods });
+        }}
         allowClear
         showSearch
         showArrow
