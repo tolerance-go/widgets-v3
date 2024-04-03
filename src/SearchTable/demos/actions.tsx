@@ -131,7 +131,7 @@ export default () => (
       await delay(1000);
       return {
         total: 100,
-        data: [
+        list: [
           {
             key: '1',
             name: '胡彦斌',

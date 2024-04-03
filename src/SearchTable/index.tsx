@@ -1,5 +1,14 @@
 import { Alert, Button, Col, Row, Table, Tabs } from 'antd';
-import { PaginationConfig, SorterResult, TableCurrentDataSource, TableProps } from 'antd/es/table';
+import {
+  ColumnProps,
+  PaginationConfig,
+  SortOrder,
+  SorterResult,
+  TableCurrentDataSource,
+  TableEventListeners,
+  TableProps,
+  TableStateFilters,
+} from 'antd/es/table';
 import React, {
   ForwardedRef,
   forwardRef,
@@ -23,8 +32,9 @@ export interface RequestParams<T> {
 }
 
 export interface RequestResult<T> {
-  data: T[];
+  list: T[];
   total: number;
+  data?: Record<string, any>;
 }
 
 type TableTabItem = {
@@ -35,6 +45,29 @@ type TableTabItem = {
 type TableSelectionState<T> = {
   selectedRowKeys: string[] | number[];
   selectedRows: T[];
+};
+
+type SearchTableColumnProps<T> = Omit<
+  ColumnProps<T>,
+  'title' | 'children' | 'onHeaderCell' | 'render'
+> & {
+  title?:
+    | React.ReactNode
+    | ((options: {
+        filters: TableStateFilters;
+        sortOrder?: SortOrder;
+        sortColumn?: SearchTableColumnProps<T> | null;
+      }) => React.ReactNode);
+  children?: SearchTableColumnProps<T>[];
+  onHeaderCell?: (props: SearchTableColumnProps<T>) => TableEventListeners;
+  render?: (
+    text: any,
+    record: T,
+    index: number,
+    args: {
+      data: Record<string, any>;
+    },
+  ) => React.ReactNode;
 };
 
 export type SearchTableProps<T extends {} = {}> = {
@@ -58,12 +91,12 @@ export type SearchTableProps<T extends {} = {}> = {
     selectedRowsInfo: TableSelectionState<T>;
   }) => React.ReactNode;
   columns?:
-    | TableProps<T>['columns']
+    | SearchTableColumnProps<T>[]
     | ((args: {
         methods: SearchTableMethods<T>;
         activeTabKey?: string;
         selectedRowsInfo: TableSelectionState<T>;
-      }) => TableProps<T>['columns']);
+      }) => SearchTableColumnProps<T>[]);
 } & Omit<TableProps<T>, 'columns'>;
 
 export type SearchTableMethods<T> = {
@@ -88,7 +121,8 @@ const SearchTable = forwardRef(
     }: SearchTableProps<T>,
     ref: ForwardedRef<SearchTableMethods<T>>,
   ) => {
-    const [data, setData] = useState<T[]>([]);
+    const [list, setList] = useState<T[]>([]);
+    const [data, setData] = useState<Record<string, any>>({});
     const [loading, setLoading] = useState(false);
 
     const [tableState, setTableState] = useState<{
@@ -103,7 +137,7 @@ const SearchTable = forwardRef(
       pagination: { current: 1, pageSize: 10 },
       filters: {},
       sorter: {},
-      extra: { currentDataSource: data },
+      extra: { currentDataSource: list },
       searchValues: {},
     });
 
@@ -127,7 +161,8 @@ const SearchTable = forwardRef(
 
       setLoading(true);
       const result = await request(params);
-      setData(result.data); // TypeScript now knows this is T[]
+      setList(result.list); // TypeScript now knows this is T[]
+      result.data && setData(result.data);
       clearSelection();
       setTableState((prevState) => ({
         ...prevState,
@@ -212,7 +247,7 @@ const SearchTable = forwardRef(
                   return !(selectedRowsInfo.selectedRowKeys as string[]).includes(key);
                 });
                 // 需要找到这些键对应的行数据
-                const nextSelectedRows = data.filter(
+                const nextSelectedRows = list.filter(
                   (row, index) =>
                     nextSelectedRowKeys.includes(
                       row[typeof rowKey === 'function' ? rowKey(row, index) : rowKey],
@@ -377,11 +412,20 @@ const SearchTable = forwardRef(
         )}
         <Table
           {...tableProps}
-          columns={mergedColumns}
+          columns={mergedColumns?.map((col) => {
+            return {
+              ...col,
+              render: col.render
+                ? (text, record, index) => {
+                    return col.render!(text, record, index, { data });
+                  }
+                : undefined,
+            } as ColumnProps<T>;
+          })}
           rowKey={rowKey}
           // 应用处理过的rowSelection
           rowSelection={handleRowSelection}
-          dataSource={data}
+          dataSource={list}
           pagination={{
             ...tableState.pagination,
             // 通常我们希望对结果进行向上取整，确保所有记录都可以被展示，即使最后一页的记录数不足一页的容量。

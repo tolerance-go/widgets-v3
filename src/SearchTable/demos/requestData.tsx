@@ -1,6 +1,6 @@
 import { Button, Cascader, Form, Icon, Input, Tooltip } from 'antd';
 import React from 'react';
-import { Action, DrawerForm, ProDescriptions, SearchTable } from 'widgets-v3';
+import { DrawerForm, ProDescriptions, SearchTable } from 'widgets-v3';
 import delay from 'delay';
 
 const residences = [
@@ -40,65 +40,6 @@ const residences = [
 
 export default () => (
   <SearchTable
-    headerTitle="批量选择"
-    rowSelection={{}}
-    renderActionGroup={({ selectedRowsInfo }) => {
-      return [
-        <Action
-          key="btn1"
-          trigger={
-            <Button type="primary">批量处理(选中了{selectedRowsInfo.selectedRows.length}项)</Button>
-          }
-          request={async () => {
-            await delay(1000);
-          }}
-        />,
-      ];
-    }}
-    renderBatchActionGroup={({ selectedRowsInfo, methods }) => {
-      return [
-        <Action
-          key="btn1"
-          trigger={
-            <Button type="link" size="small">
-              批量操作1
-            </Button>
-          }
-          request={async () => {
-            await delay(1000);
-            methods.reload({
-              pagination: {
-                current: 1,
-              },
-            });
-          }}
-        />,
-        <Action
-          key="btn12"
-          trigger={
-            <Button type="link" size="small">
-              批量操作2
-            </Button>
-          }
-          request={async () => {
-            await delay(1000);
-            methods.reload({
-              pagination: {
-                current: 1,
-              },
-            });
-          }}
-        />,
-      ];
-    }}
-    renderSelectionDetail={({ selectedRowsInfo }) => {
-      return (
-        <span>
-          容器数量: {selectedRowsInfo.selectedRowKeys.length * 11} 个 调用量:{' '}
-          {selectedRowsInfo.selectedRowKeys.length * 100} 次
-        </span>
-      );
-    }}
     columns={[
       {
         title: '姓名',
@@ -119,6 +60,14 @@ export default () => (
         title: '住址',
         dataIndex: 'address',
         key: 'address',
+      },
+      {
+        title: '肤色',
+        dataIndex: 'skinColorType',
+        key: 'skinColorType',
+        render(text, record, index, { data: { skinColorTypeMap } }) {
+          return skinColorTypeMap?.get(text);
+        },
       },
       {
         title: '操作',
@@ -266,7 +215,16 @@ export default () => (
     request={async (params) => {
       console.log('params', params);
       await delay(1000);
+      const skinColorTypeMap = new Map([
+        [1, '黄色'],
+        [2, '白色'],
+        [3, '黑色'],
+      ]);
+
       return {
+        data: {
+          skinColorTypeMap,
+        },
         total: 100,
         list: [
           {
@@ -274,12 +232,14 @@ export default () => (
             name: '胡彦斌',
             age: 32,
             address: '西湖区湖底公园1号',
+            skinColorType: 1,
           },
           {
             key: '2',
             name: '胡彦祖',
             age: 42,
             address: '西湖区湖底公园1号',
+            skinColorType: 2,
           },
         ],
       };
