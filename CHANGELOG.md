@@ -1,3 +1,12 @@
+## [0.23.1](https://gitee.com/bzone/widgets-v3/compare/v0.23.0...v0.23.1) (2024-04-05)
+
+
+### Bug Fixes
+
+* **LoginForm:** 修复宽度，指定大小 ([888d152](https://gitee.com/bzone/widgets-v3/commits/888d152d0dd12024167e95c0fa2258d1f96b6b92))
+
+
+
 # [0.23.0](https://gitee.com/bzone/widgets-v3/compare/v0.22.0...v0.23.0) (2024-04-05)
 
 
