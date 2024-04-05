@@ -4,6 +4,7 @@ import * as PropTypes from 'prop-types';
 import React, { useContext, useState } from 'react';
 import { FormContext } from '../_utils/FormContext';
 import { createFormEventBusWrapper } from 'src/_utils/createFormEventBusWrapper';
+import { handleError } from 'src/_utils/handleError';
 
 export interface RequestParams {
   values: Record<string, any>;
@@ -53,19 +54,7 @@ const AdvancedProFormInner: React.FC<AdvancedProFormProps> = ({
       setSubmitLoading(true);
       await request({ values: formValues });
     } catch (error) {
-      let errorMessage;
-
-      // 判断错误的类型
-      if (typeof error === 'string') {
-        // 如果错误是一个字符串
-        errorMessage = error;
-      } else if (error instanceof Error) {
-        // 如果错误是Error对象
-        errorMessage = error.message;
-      }
-
-      console.log(error);
-      message.error(errorMessage || '提交表单异常');
+      handleError(error, '提交表单异常'); // Using the common error handling function
     } finally {
       setSubmitLoading(false);
     }

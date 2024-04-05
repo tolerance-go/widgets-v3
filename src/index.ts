@@ -17,6 +17,7 @@ export { default as FullscreenImage } from './FullscreenImage';
 export { default as EditableTabs } from './EditableTabs';
 export { default as TabsForm } from './TabsForm';
 export { default as FormDependency } from './FormDependency';
+export { default as LoginForm } from './LoginForm';
 export { default as Store, StoreContext } from './Store';
 
 export type { BackendFilteredSelectListItem } from './BackendFilteredSelect';
