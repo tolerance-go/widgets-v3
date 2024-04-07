@@ -20,8 +20,10 @@ export { default as FormDependency } from './FormDependency';
 export { default as LoginForm } from './LoginForm';
 export { default as Store, StoreContext } from './Store';
 export { default as FormField } from './FormField';
+export { default as EditableGroups } from './EditableGroups';
 
 export type { BackendFilteredSelectListItem } from './BackendFilteredSelect';
 export type { FrontendFilteredSelectListItem } from './FrontendFilteredSelect';
 export type { SearchTableProps } from './SearchTable';
 export type { EditableTabsProps } from './EditableTabs';
+export type { EditableGroupsProps } from './EditableGroups';

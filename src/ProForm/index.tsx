@@ -21,9 +21,9 @@ export type ProFormProps = {
   onValuesChange?: (changedValues: Record<string, any>, allValues: Record<string, any>) => void;
 };
 
-export type AdvancedProFormProps = ProFormProps & FormComponentProps;
+export type ProFormInnerProps = ProFormProps & FormComponentProps;
 
-const AdvancedProFormInner: React.FC<AdvancedProFormProps> = ({
+const ProFormInner: React.FC<ProFormInnerProps> = ({
   form,
   renderFormItems,
   request,
@@ -75,13 +75,13 @@ const AdvancedProFormInner: React.FC<AdvancedProFormProps> = ({
   }
 };
 
-const WrappedAdvancedProForm = createFormEventBusWrapper(
-  Form.create<AdvancedProFormProps>({
+const ProForm = createFormEventBusWrapper(
+  Form.create<ProFormInnerProps>({
     name: 'ProForm',
     onValuesChange(props, changedValues, allValues) {
       props.onValuesChange?.(changedValues, allValues);
     },
-  })(AdvancedProFormInner),
+  })(ProFormInner),
 );
 
-export default WrappedAdvancedProForm;
+export default ProForm;
