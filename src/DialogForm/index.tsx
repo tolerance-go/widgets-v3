@@ -123,7 +123,7 @@ const DialogFormInner = ({
 
     return (
       <FormContext.Provider value={form}>
-        <Form {...restProps}>{renderContent()}</Form>;
+        <Form {...restProps}>{renderContent()}</Form>
       </FormContext.Provider>
     );
   };
