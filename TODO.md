@@ -130,3 +130,7 @@ renderActionGroup={({ toggleModal, form }) => { return [ <Action key="btn1" trig
 ---
 
 后端分页下拉框，如果搜索没有数据的话，展示 空状态
+
+---
+
+重构 图片预览组件，效果对其 antd@5
