@@ -86,7 +86,7 @@ const DialogFormInner = ({
   // 自定义操作组件的渲染
   const renderCustomActionGroupInner = () => {
     if (typeof renderActionGroup === 'function') {
-      return renderActionGroup({ toggleModal, form });
+      return renderActionGroup({ toggleModal, form: existingForm || form });
     }
     return null;
   };

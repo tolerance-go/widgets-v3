@@ -83,10 +83,11 @@ const RemoveIcon: React.FC<RemoveIconProps> = ({ onRemove, onIconClick }) => (
   </Popconfirm>
 );
 
-const EditIcon: React.FC<{ currentLabel?: string; onEdit?: (label: string) => void }> = ({
-  onEdit,
-  currentLabel,
-}) => (
+const EditIcon: React.FC<{
+  currentLabel?: string;
+  onEdit?: (label: string) => void;
+  dataNodeKey: string;
+}> = ({ onEdit, currentLabel, dataNodeKey }) => (
   <ModalForm
     title="编辑标签"
     stopWrapClickPropagation
@@ -102,7 +103,7 @@ const EditIcon: React.FC<{ currentLabel?: string; onEdit?: (label: string) => vo
         <Button
           type="primary"
           onClick={(e) => {
-            onEdit?.(form.getFieldValue('label'));
+            onEdit?.(form.getFieldValue(`${dataNodeKey}.tab.label`));
             toggleModal();
           }}
         >
@@ -115,7 +116,7 @@ const EditIcon: React.FC<{ currentLabel?: string; onEdit?: (label: string) => vo
         <>
           <Form.Item label="原标签">{currentLabel}</Form.Item>
           <Form.Item label="修改后">
-            {form.getFieldDecorator('label', {
+            {form.getFieldDecorator(`${dataNodeKey}.tab.label`, {
               initialValue: currentLabel,
             })(<Input autoFocus></Input>)}
           </Form.Item>
@@ -149,7 +150,11 @@ const ComposeTabNode: React.FC<ComposeTabNodeProps> = ({
     <div ref={setNodeRef} style={style}>
       <DragHandle listeners={listeners} attributes={attributes} />
       <div>{label}</div>
-      <EditIcon currentLabel={label} onEdit={(newLabel) => onEdit(dataNodeKey, newLabel)} />
+      <EditIcon
+        dataNodeKey={dataNodeKey}
+        currentLabel={label}
+        onEdit={(newLabel) => onEdit(dataNodeKey, newLabel)}
+      />
       <RemoveIcon
         onRemove={() => onRemove(dataNodeKey)}
         onIconClick={() => {

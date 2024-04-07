@@ -90,6 +90,10 @@ const TabsFormInner: React.FC<TabsFormInnerProps> = ({
     }
   };
 
+  const handlerEditableTabsChange = (items: Item[]) => {
+    setTabItems(items);
+  };
+
   useEffect(() => {
     const fetchInitialFormValues = async () => {
       if (requestInitialFormValues) {
@@ -132,7 +136,7 @@ const TabsFormInner: React.FC<TabsFormInnerProps> = ({
         return (
           <EditableTabs
             value={tabItems}
-            onChange={setTabItems}
+            onChange={handlerEditableTabsChange}
             renderTabPane={({ item, index }) => {
               return renderItemFormItems?.({
                 index,
@@ -151,7 +155,7 @@ const TabsFormInner: React.FC<TabsFormInnerProps> = ({
     return (
       <EditableTabs
         value={tabItems}
-        onChange={setTabItems}
+        onChange={handlerEditableTabsChange}
         renderTabPane={({ item, index }) => {
           return renderItemFormItems?.({
             form: existingForm || form,
