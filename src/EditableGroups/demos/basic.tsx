@@ -49,6 +49,23 @@ const DemoPage = () => {
               <Button type="primary" onClick={() => methods.addItem({ key: Math.random() + '' })}>
                 新增 {item.key}
               </Button>
+              <Button
+                icon="plus"
+                onClick={() => methods.addItem({ key: Math.random() + '', data: 'new item' })}
+              >
+                新增
+              </Button>
+              <Button icon="delete" onClick={() => methods.deleteItem(index)}>
+                删除
+              </Button>
+              <Button
+                icon="down"
+                onClick={() =>
+                  methods.insertItem(index + 1, { key: Math.random() + '', data: 'inserted item' })
+                }
+              >
+                插入
+              </Button>
             </div>
           );
         }}
