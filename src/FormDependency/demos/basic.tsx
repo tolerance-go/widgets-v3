@@ -1,4 +1,4 @@
-import { Button, Cascader, Form, Icon, Input, InputNumber, Tooltip } from 'antd';
+import { Button, Cascader, Col, Form, Icon, Input, InputNumber, Row, Tooltip } from 'antd';
 import React from 'react';
 import {
   BackendFilteredSelect,
@@ -9,6 +9,7 @@ import {
   ModalForm,
   DrawerForm,
   FormDependency,
+  GroupsForm,
 } from 'widgets-v3';
 import delay from 'delay';
 
@@ -103,7 +104,15 @@ export default () => (
       return (
         <>
           <FormDependency>
-            {({ BackendFilteredSelect, email, EditableTable, TabsForm, ModalForm, DrawerForm }) => {
+            {({
+              BackendFilteredSelect,
+              EditableGroups,
+              email,
+              EditableTable,
+              TabsForm,
+              ModalForm,
+              DrawerForm,
+            }) => {
               return (
                 <>
                   <div>BackendFilteredSelect: {BackendFilteredSelect}</div>
@@ -112,6 +121,7 @@ export default () => (
                   <pre>TabsForm: {JSON.stringify(TabsForm, null, 2)}</pre>
                   <pre>ModalForm: {JSON.stringify(ModalForm, null, 2)}</pre>
                   <pre>DrawerForm: {JSON.stringify(DrawerForm, null, 2)}</pre>
+                  <pre>EditableGroups: {JSON.stringify(EditableGroups, null, 2)}</pre>
                 </>
               );
             }}
@@ -495,6 +505,104 @@ export default () => (
                     })(<Cascader options={residences} />)}
                   </Form.Item>,
                 ];
+              }}
+            />
+          </Form.Item>
+          <Form.Item label="EditableGroups">
+            <GroupsForm
+              labelCol={{ span: 8 }}
+              wrapperCol={{ span: 16 }}
+              request={async (params) => {
+                console.log(params);
+                await delay(1000);
+                return;
+              }}
+              renderGroupTitle={({ item }) => {
+                return `标题-${item.key}`;
+              }}
+              initialGroupItems={[
+                {
+                  key: 'key1',
+                  label: 'tab1',
+                },
+                {
+                  key: 'key2',
+                  label: 'tab2',
+                },
+              ]}
+              initialFormValues={{
+                key1: {
+                  email: '123@qq.com',
+                },
+                key2: {
+                  email: '321@qq.com',
+                },
+              }}
+              renderItemFormItems={({
+                form: { getFieldDecorator },
+                submitLoading,
+                groupItem,
+                initialItemFormValues,
+                index,
+                groupItems,
+              }) => {
+                return (
+                  <>
+                    <Row gutter={10}>
+                      <Col span={index === 0 ? 8 : 12}>
+                        <Form.Item label="BackendFilteredSelect">
+                          {getFieldDecorator(
+                            `EditableGroups.${groupItem.key}.BackendFilteredSelect`,
+                            {
+                              rules: [
+                                {
+                                  message: 'Please input your E-mail!',
+                                },
+                              ],
+                            },
+                          )(
+                            <BackendFilteredSelect
+                              placeholder="请选择"
+                              pageSize={50}
+                              request={async (params) => {
+                                console.log('发出请求', params);
+                                await delay(1000);
+                                return {
+                                  list: getPageItems(params.current, params.pageSize, 100),
+                                  total: 100,
+                                };
+                              }}
+                            />,
+                          )}
+                        </Form.Item>
+                      </Col>
+                      <Col span={index === 0 ? 8 : 12}>
+                        <Form.Item label="E-mail">
+                          {getFieldDecorator(`EditableGroups.${groupItem.key}.email`, {
+                            initialValue: initialItemFormValues?.email,
+                          })(<Input autoComplete="off" />)}
+                        </Form.Item>
+                      </Col>
+                      {index === 0 && (
+                        <Col span={8}>
+                          <Form.Item label="other">
+                            {getFieldDecorator(
+                              `EditableGroups.${groupItem.key}.other`,
+                              {},
+                            )(<Input autoComplete="off" />)}
+                          </Form.Item>
+                        </Col>
+                      )}
+                    </Row>
+
+                    <Form.Item label="Password" hasFeedback>
+                      {getFieldDecorator(
+                        `EditableGroups.${groupItem.key}.password`,
+                        {},
+                      )(<Input.Password autoComplete="off" />)}
+                    </Form.Item>
+                  </>
+                );
               }}
             />
           </Form.Item>

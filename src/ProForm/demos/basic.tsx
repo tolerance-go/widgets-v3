@@ -1,4 +1,4 @@
-import { Button, Cascader, Form, Icon, Input, InputNumber, Tooltip } from 'antd';
+import { Button, Cascader, Col, Form, Icon, Input, InputNumber, Row, Tooltip } from 'antd';
 import React from 'react';
 import {
   BackendFilteredSelect,
@@ -8,6 +8,8 @@ import {
   TabsForm,
   ModalForm,
   DrawerForm,
+  EditableGroups,
+  GroupsForm,
 } from 'widgets-v3';
 import delay from 'delay';
 
@@ -478,6 +480,96 @@ export default () => (
                     })(<Cascader options={residences} />)}
                   </Form.Item>,
                 ];
+              }}
+            />
+          </Form.Item>
+          <Form.Item label="EditableGroups">
+            <GroupsForm
+              labelCol={{ span: 8 }}
+              wrapperCol={{ span: 16 }}
+              request={async (params) => {
+                console.log(params);
+                await delay(1000);
+                return;
+              }}
+              renderGroupTitle={({ item }) => {
+                return `标题-${item.key}`;
+              }}
+              initialGroupItems={[
+                {
+                  key: 'key1',
+                  label: 'tab1',
+                },
+                {
+                  key: 'key2',
+                  label: 'tab2',
+                },
+              ]}
+              renderItemFormItems={({
+                form: { getFieldDecorator },
+                submitLoading,
+                groupItem,
+                initialItemFormValues,
+                index,
+                groupItems,
+              }) => {
+                return (
+                  <>
+                    <Row gutter={10}>
+                      <Col span={index === 0 ? 8 : 12}>
+                        <Form.Item label="BackendFilteredSelect">
+                          {getFieldDecorator(
+                            `EditableGroups.${groupItem.key}.BackendFilteredSelect`,
+                            {
+                              rules: [
+                                {
+                                  message: 'Please input your E-mail!',
+                                },
+                              ],
+                            },
+                          )(
+                            <BackendFilteredSelect
+                              placeholder="请选择"
+                              pageSize={50}
+                              request={async (params) => {
+                                console.log('发出请求', params);
+                                await delay(1000);
+                                return {
+                                  list: getPageItems(params.current, params.pageSize, 100),
+                                  total: 100,
+                                };
+                              }}
+                            />,
+                          )}
+                        </Form.Item>
+                      </Col>
+                      <Col span={index === 0 ? 8 : 12}>
+                        <Form.Item label="E-mail">
+                          {getFieldDecorator(`EditableGroups.${groupItem.key}.email`, {
+                            initialValue: initialItemFormValues?.email,
+                          })(<Input autoComplete="off" />)}
+                        </Form.Item>
+                      </Col>
+                      {index === 0 && (
+                        <Col span={8}>
+                          <Form.Item label="other">
+                            {getFieldDecorator(
+                              `EditableGroups.${groupItem.key}.other`,
+                              {},
+                            )(<Input autoComplete="off" />)}
+                          </Form.Item>
+                        </Col>
+                      )}
+                    </Row>
+
+                    <Form.Item label="Password" hasFeedback>
+                      {getFieldDecorator(
+                        `EditableGroups.${groupItem.key}.password`,
+                        {},
+                      )(<Input.Password autoComplete="off" />)}
+                    </Form.Item>
+                  </>
+                );
               }}
             />
           </Form.Item>
