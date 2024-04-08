@@ -1,0 +1,75 @@
+@icon-size: 24px;
+@mask-border-color: #fff;
+@placeholder-icon-color: #000;
+
+.image-cropper-container {
+  position: relative;
+  display: inline-block;
+
+  .image-preview img,
+  .image-to-crop {
+    display: block; // 防止图片下方出现空白
+    max-width: 100%;
+  }
+
+  .camera-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    color: @icon-size;
+    color: @placeholder-icon-color;
+    font-size: @icon-size;
+    transform: translate(-50%, -50%);
+  }
+
+  .image-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 200px; // 示例高度，根据需要调整
+    border: 2px dashed @mask-border-color;
+    cursor: pointer;
+
+    .placeholder-icon {
+      color: @placeholder-icon-color;
+      font-size: @icon-size;
+    }
+
+    p {
+      margin-top: 10px;
+      color: @placeholder-icon-color;
+    }
+  }
+}
+
+.modal-content {
+  position: relative;
+}
+
+.image-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+
+  .crop-mask {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: grid;
+    grid-template-rows: repeat(3, 1fr);
+    grid-template-columns: repeat(3, 1fr);
+    width: 100%; // 确保遮罩容器覆盖整个图片区域
+    height: 100%;
+    pointer-events: none; // 防止遮罩干扰图片操作
+
+    .mask {
+      background-color: rgba(0, 0, 0, 0.5); // 遮罩的背景色
+      &:nth-child(5) {
+        background-color: transparent; // 中间块透明
+      }
+    }
+  }
+}
