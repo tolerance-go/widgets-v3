@@ -1,0 +1,33 @@
+name: Build and Deploy Documentation
+
+on:
+  push:
+    branches:
+      - master  # 当向master分支push时触发
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v2
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16'  # 可以根据你的项目需求选择Node.js的版本
+
+    - name: Install Yarn  # 这一步是可选的，根据需要决定是否包含
+      run: npm install -g yarn
+
+    - name: Install Dependencies
+      run: yarn install  # 使用yarn安装依赖
+
+    - name: Build Docs
+      run: npm run docs:build  # 构建文档
+
+    - name: Deploy to GitHub Pages
+      uses: JamesIves/github-pages-deploy-action@4.1.5
+      with:
+        branch: gh-pages  # 部署到gh-pages分支
+        folder: docs-dist  # 指定构建产物目录
