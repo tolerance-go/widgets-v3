@@ -33,6 +33,7 @@ export interface RequestParams {
 export interface RequestResult {}
 
 export type GroupsFormProps = {
+  mergeIntoForm?: false | string;
   getAddedItem?: (args: { newItem: GroupsFormItem }) => GroupsFormItem;
   request?: (params: RequestParams) => Promise<void>;
   renderItemFormItems?: (params: {
@@ -42,6 +43,7 @@ export type GroupsFormProps = {
     initialItemFormValues?: Record<string, any>;
     index: number;
     groupItems: GroupsFormItem[];
+    parentsFieldId: string;
   }) => PropTypes.ReactNodeLike;
   requestInitialFormValues?: () => Promise<Record<string, any>>;
   initialFormValues?: Record<string, any>;
@@ -61,6 +63,7 @@ const GroupsFormInner: React.FC<GroupsFormInnerProps> = ({
   initialGroupItems,
   renderGroupTitle,
   getAddedItem,
+  mergeIntoForm,
   ...restFormProps
 }) => {
   const editableGroupsRef = useRef<EditableGroupsMethods<GroupsFormItem>>(null);
@@ -75,6 +78,28 @@ const GroupsFormInner: React.FC<GroupsFormInnerProps> = ({
   // 使用 FormContext 来确定是否嵌套在 Form 中
   const existingForm = useContext(FormContext);
   const formEventBus = useContext(FormEventBusContext);
+
+  const parseParentsForm = () => {
+    if (typeof mergeIntoForm === 'string') {
+      if (!existingForm) {
+        throw new Error('不存在父级环境中的 form');
+      }
+
+      return {
+        ifUsedParentForm: true,
+        parentsFieldId: `${mergeIntoForm}.`,
+        usedForm: existingForm,
+      };
+    }
+
+    return {
+      ifUsedParentForm: false,
+      parentsFieldId: '',
+      usedForm: form,
+    };
+  };
+
+  const { ifUsedParentForm, parentsFieldId, usedForm } = parseParentsForm();
 
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
@@ -177,7 +202,17 @@ const GroupsFormInner: React.FC<GroupsFormInnerProps> = ({
               size="small"
               icon="plus"
               type="link"
-              onClick={() => methods.insertItem(index + 1, { key: Math.random() + '' })}
+              onClick={() => {
+                const newKey = new Date().getTime() + '';
+
+                const newItem = { key: newKey };
+                methods.insertItem(index + 1, getAddedItem?.({ newItem }) || newItem);
+
+                setInitialFormValues((prev) => ({
+                  ...prev,
+                  [newKey]: usedForm.getFieldValue(`${parentsFieldId}${item.key}`),
+                }));
+              }}
             >
               复制
             </Button>
@@ -186,11 +221,12 @@ const GroupsFormInner: React.FC<GroupsFormInnerProps> = ({
       >
         {renderItemFormItems?.({
           index,
-          form: existingForm || form,
+          form: ifUsedParentForm ? existingForm || form : form,
           submitLoading,
           groupItem: item,
           initialItemFormValues: initialFormValues?.[item.key],
           groupItems,
+          parentsFieldId,
         })}
       </Card>
     );
@@ -240,7 +276,7 @@ const GroupsFormInner: React.FC<GroupsFormInnerProps> = ({
     return renderEditableGroupsSection();
   };
 
-  if (existingForm) {
+  if (ifUsedParentForm) {
     return renderContent();
   }
 

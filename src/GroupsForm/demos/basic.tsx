@@ -99,8 +99,14 @@ export default () => (
       await delay(1000);
       return;
     }}
+    getAddedItem={({ newItem }) => {
+      return {
+        ...newItem,
+        label: 'hi',
+      };
+    }}
     renderGroupTitle={({ item }) => {
-      return `标题-${item.key}`;
+      return `标题-${item.label}`;
     }}
     initialGroupItems={[
       {
@@ -134,53 +140,26 @@ export default () => (
       return (
         <>
           <Row>
-            <Col span={index === 0 ? 8 : 12}>
-              <Form.Item label="BackendFilteredSelect">
-                {getFieldDecorator(`${groupItem.key}.BackendFilteredSelect`, {
-                  rules: [
-                    {
-                      message: 'Please input your E-mail!',
-                    },
-                  ],
-                })(
-                  <BackendFilteredSelect
-                    placeholder="请选择"
-                    pageSize={50}
-                    request={async (params) => {
-                      console.log('发出请求', params);
-                      await delay(1000);
-                      return {
-                        list: getPageItems(params.current, params.pageSize, 100),
-                        total: 100,
-                      };
-                    }}
-                  />,
-                )}
+            <Col span={12}>
+              <Form.Item label="name">
+                {getFieldDecorator(`${groupItem.key}.name`, {
+                  initialValue: initialItemFormValues?.name,
+                })(<Input autoComplete="off" />)}
               </Form.Item>
             </Col>
-            <Col span={index === 0 ? 8 : 12}>
+            <Col span={12}>
               <Form.Item label="E-mail">
                 {getFieldDecorator(`${groupItem.key}.email`, {
                   initialValue: initialItemFormValues?.email,
                 })(<Input autoComplete="off" />)}
               </Form.Item>
             </Col>
-            {index === 0 && (
-              <Col span={8}>
-                <Form.Item label="other">
-                  {getFieldDecorator(`${groupItem.key}.other`, {
-                    initialValue: initialItemFormValues?.email,
-                  })(<Input autoComplete="off" />)}
-                </Form.Item>
-              </Col>
-            )}
           </Row>
 
           <Form.Item label="Password" hasFeedback>
-            {getFieldDecorator(
-              `${groupItem.key}.password`,
-              {},
-            )(<Input.Password autoComplete="off" />)}
+            {getFieldDecorator(`${groupItem.key}.password`, {
+              initialValue: initialItemFormValues?.password,
+            })(<Input autoComplete="off" />)}
           </Form.Item>
 
           {groupItems.length - 1 === index && (

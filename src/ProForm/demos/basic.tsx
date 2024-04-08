@@ -485,6 +485,7 @@ export default () => (
           </Form.Item>
           <Form.Item label="EditableGroups">
             <GroupsForm
+              mergeIntoForm={'EditableGroups'}
               labelCol={{ span: 8 }}
               wrapperCol={{ span: 16 }}
               request={async (params) => {
@@ -493,7 +494,7 @@ export default () => (
                 return;
               }}
               renderGroupTitle={({ item }) => {
-                return `标题-${item.key}`;
+                return `标题-${item.label}`;
               }}
               initialGroupItems={[
                 {
@@ -505,6 +506,14 @@ export default () => (
                   label: 'tab2',
                 },
               ]}
+              initialFormValues={{
+                key1: {
+                  email: '123@qq.com',
+                },
+                key2: {
+                  email: '321@qq.com',
+                },
+              }}
               renderItemFormItems={({
                 form: { getFieldDecorator },
                 submitLoading,
@@ -512,61 +521,31 @@ export default () => (
                 initialItemFormValues,
                 index,
                 groupItems,
+                parentsFieldId,
               }) => {
                 return (
                   <>
                     <Row gutter={10}>
-                      <Col span={index === 0 ? 8 : 12}>
-                        <Form.Item label="BackendFilteredSelect">
-                          {getFieldDecorator(
-                            `EditableGroups.${groupItem.key}.BackendFilteredSelect`,
-                            {
-                              rules: [
-                                {
-                                  message: 'Please input your E-mail!',
-                                },
-                              ],
-                            },
-                          )(
-                            <BackendFilteredSelect
-                              placeholder="请选择"
-                              pageSize={50}
-                              request={async (params) => {
-                                console.log('发出请求', params);
-                                await delay(1000);
-                                return {
-                                  list: getPageItems(params.current, params.pageSize, 100),
-                                  total: 100,
-                                };
-                              }}
-                            />,
-                          )}
+                      <Col span={12}>
+                        <Form.Item label="name">
+                          {getFieldDecorator(`${parentsFieldId}${groupItem.key}.name`, {
+                            initialValue: initialItemFormValues?.name,
+                          })(<Input autoComplete="off" />)}
                         </Form.Item>
                       </Col>
-                      <Col span={index === 0 ? 8 : 12}>
+                      <Col span={12}>
                         <Form.Item label="E-mail">
-                          {getFieldDecorator(`EditableGroups.${groupItem.key}.email`, {
+                          {getFieldDecorator(`${parentsFieldId}${groupItem.key}.email`, {
                             initialValue: initialItemFormValues?.email,
                           })(<Input autoComplete="off" />)}
                         </Form.Item>
                       </Col>
-                      {index === 0 && (
-                        <Col span={8}>
-                          <Form.Item label="other">
-                            {getFieldDecorator(
-                              `EditableGroups.${groupItem.key}.other`,
-                              {},
-                            )(<Input autoComplete="off" />)}
-                          </Form.Item>
-                        </Col>
-                      )}
                     </Row>
 
                     <Form.Item label="Password" hasFeedback>
-                      {getFieldDecorator(
-                        `EditableGroups.${groupItem.key}.password`,
-                        {},
-                      )(<Input.Password autoComplete="off" />)}
+                      {getFieldDecorator(`${parentsFieldId}${groupItem.key}.password`, {
+                        initialValue: initialItemFormValues?.password,
+                      })(<Input autoComplete="off" />)}
                     </Form.Item>
                   </>
                 );
