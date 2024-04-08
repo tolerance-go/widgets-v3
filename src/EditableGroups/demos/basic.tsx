@@ -42,6 +42,7 @@ const DemoPage = () => {
                 display: 'flex',
                 alignItems: 'center',
                 gap: 10,
+                background: 'white',
               }}
             >
               <DragHandle listeners={listeners} attributes={attributes} />
