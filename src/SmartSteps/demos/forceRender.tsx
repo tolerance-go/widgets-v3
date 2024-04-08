@@ -1,14 +1,24 @@
 import { Button, Row } from 'antd';
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { SmartSteps } from 'widgets-v3';
+
+const Child = ({ title }: { title: React.ReactNode }) => {
+  useEffect(() => {
+    console.log(title);
+  }, []);
+
+  return <>{title}</>;
+};
 
 const App: React.FC = () => {
   return (
     <SmartSteps
+      forceRender
       steps={[{ title: '第一步', subTitle: '子标题' }, { title: '第二步' }, { title: '第三步' }]}
-      renderContent={({ index, methods: { goNext, goBack }, isFirst, isLast }) => (
+      renderContent={({ item, index, methods: { goNext, goBack }, isFirst, isLast }) => (
         <div>
           <p>当前是第 {index + 1} 步</p>
+          <Child title={item.title} />
           <div
             style={{
               display: 'flex',
