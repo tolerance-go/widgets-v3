@@ -15,7 +15,7 @@ import {
   useSortable,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import React, { useState } from 'react';
+import React, { ForwardedRef, forwardRef, useImperativeHandle, useState } from 'react';
 
 interface SortableItemProps<T extends Record<string, any> = Record<string, any>> {
   id: string;
@@ -38,7 +38,9 @@ function SortableItem<T extends Record<string, any> = Record<string, any>>({
   methods,
   renderGroupItem,
 }: SortableItemProps<T>) {
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
+    id,
+  });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -81,13 +83,16 @@ export type EditableGroupsMethods<T> = {
   moveItem: (from: number, to: number) => void;
 };
 
-const EditableGroups = <T extends Record<string, any> = Record<string, any>>({
-  value,
-  onChange,
-  initialItems = [],
-  renderGroupItem,
-  rowKey = 'key' as keyof T,
-}: EditableGroupsProps<T>) => {
+const EditableGroups = <T extends Record<string, any> = Record<string, any>>(
+  {
+    value,
+    onChange,
+    initialItems = [],
+    renderGroupItem,
+    rowKey = 'key' as keyof T,
+  }: EditableGroupsProps<T>,
+  ref: ForwardedRef<EditableGroupsMethods<T>>,
+) => {
   const [items, setItems] = useState<T[]>(value ?? initialItems);
 
   const sensors = useSensors(
@@ -120,6 +125,17 @@ const EditableGroups = <T extends Record<string, any> = Record<string, any>>({
       onChange?.(nextItems);
     },
   };
+
+  // 使用 useImperativeHandle 来暴露组件方法
+  useImperativeHandle(ref, () => ({
+    // 你可以在这里暴露任何内部方法，例如：
+    addItem: methods.addItem,
+    deleteItem: methods.deleteItem,
+    insertItem: methods.insertItem,
+    getItem: methods.getItem,
+    moveItem: methods.moveItem,
+    // 可以根据需要添加更多方法
+  }));
 
   return (
     <DndContext
@@ -155,4 +171,6 @@ const EditableGroups = <T extends Record<string, any> = Record<string, any>>({
   );
 };
 
-export default EditableGroups;
+export default forwardRef(EditableGroups) as <T extends Record<string, any> = Record<string, any>>(
+  props: EditableGroupsProps<T> & { ref?: ForwardedRef<EditableGroupsMethods<T>> },
+) => JSX.Element;
