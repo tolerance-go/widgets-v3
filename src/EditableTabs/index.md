@@ -1,5 +1,6 @@
 ---
 group:
+  title: Editable
   order: 4
 ---
 

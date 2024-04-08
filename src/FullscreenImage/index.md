@@ -1,5 +1,6 @@
 ---
 group:
+  title: Display
   order: 3
 ---
 
