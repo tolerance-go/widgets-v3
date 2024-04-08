@@ -1,9 +1,10 @@
 import { Button, Form, Spin, message } from 'antd';
 import { FormComponentProps, WrappedFormUtils } from 'antd/es/form/Form';
 import React, { ReactElement, useContext, useEffect, useState } from 'react';
-import { FormContext } from '../_utils/FormContext';
+import { FormContext, FormParentsFieldIdContext } from '../_utils/FormContext';
 import Container from './Container';
 import { createFormEventBusWrapper } from 'src/_utils/createFormEventBusWrapper';
+import { useParentsFormMeta } from 'src/_utils/useParentsFormMeta';
 
 // 辅助函数来检测一个对象是否是Promise
 // 这是Promise遵循的Promise/A+规范的一部分
@@ -17,12 +18,14 @@ type InitialFormValues = {
 };
 
 export type DialogFormBaseProps = React.PropsWithChildren<{
+  mergeIntoForm?: false | string;
   width?: string | number;
   title?: string;
   trigger?: ReactElement;
   renderFormItems?: (args: {
     form: WrappedFormUtils;
     initialFormValues?: InitialFormValues;
+    parentsFieldId: string;
   }) => React.ReactNode;
   requestInitialFormValues?: () => Promise<InitialFormValues>;
   renderActionGroup?: (args: {
@@ -54,13 +57,19 @@ const DialogFormInner = ({
   requestInitialFormValues,
   renderActionGroup,
   stopWrapClickPropagation,
+  mergeIntoForm,
   ...restProps
 }: DialogFormInnerProps) => {
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const [formLoading, setFormLoading] = useState<boolean>(false); // 新增状态，用于跟踪异步表单项的加载状态
   const [initialFormValues, setInitialFormValues] = useState<InitialFormValues>();
   // 使用 FormContext 来确定是否嵌套在 Form 中
-  const existingForm = useContext(FormContext);
+
+  const { ifUsedParentForm, parentsFieldId, usedForm } = useParentsFormMeta({
+    mergeIntoForm,
+    form,
+  });
+
   // 切换模态框的显示状态
   const toggleModal = () => setIsVisible(!isVisible);
 
@@ -86,7 +95,7 @@ const DialogFormInner = ({
   // 自定义操作组件的渲染
   const renderCustomActionGroupInner = () => {
     if (typeof renderActionGroup === 'function') {
-      return renderActionGroup({ toggleModal, form: existingForm || form });
+      return renderActionGroup({ toggleModal, form: usedForm });
     }
     return null;
   };
@@ -103,8 +112,9 @@ const DialogFormInner = ({
     if (requestInitialFormValues) {
       if (initialFormValues) {
         return renderFormItems?.({
-          form: existingForm || form,
+          form: usedForm,
           initialFormValues,
+          parentsFieldId,
         });
       }
 
@@ -112,13 +122,18 @@ const DialogFormInner = ({
     }
 
     return renderFormItems?.({
-      form: existingForm || form,
+      form: usedForm,
+      parentsFieldId,
     });
   };
 
   const renderForm = () => {
-    if (existingForm) {
-      return renderContent();
+    if (ifUsedParentForm) {
+      return (
+        <FormParentsFieldIdContext.Provider value={parentsFieldId}>
+          {renderContent()}
+        </FormParentsFieldIdContext.Provider>
+      );
     }
 
     return (
@@ -151,7 +166,8 @@ const DialogFormInner = ({
           },
         }}
         type={type}
-        destroyOnClose={existingForm ? false : true}
+        forceRender={ifUsedParentForm ? true : false}
+        destroyOnClose={ifUsedParentForm ? false : true}
         width={width}
         title={title}
         visible={isVisible}

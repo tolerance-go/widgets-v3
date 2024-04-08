@@ -2,9 +2,10 @@ import { Form, message } from 'antd';
 import { FormComponentProps, WrappedFormUtils } from 'antd/es/form/Form';
 import * as PropTypes from 'prop-types';
 import React, { useContext, useState } from 'react';
-import { FormContext } from '../_utils/FormContext';
+import { FormContext, FormParentsFieldIdContext } from '../_utils/FormContext';
 import { createFormEventBusWrapper } from 'src/_utils/createFormEventBusWrapper';
 import { handleError } from 'src/_utils/handleError';
+import { useParentsFormMeta } from 'src/_utils/useParentsFormMeta';
 
 export interface RequestParams {
   values: Record<string, any>;
@@ -13,10 +14,12 @@ export interface RequestParams {
 export interface RequestResult {}
 
 export type ProFormProps = {
+  mergeIntoForm?: false | string;
   request?: (params: RequestParams) => Promise<void>;
   renderFormItems?: (params: {
     form: WrappedFormUtils;
     submitLoading: boolean;
+    parentsFieldId: string;
   }) => PropTypes.ReactNodeLike;
   onValuesChange?: (changedValues: Record<string, any>, allValues: Record<string, any>) => void;
 };
@@ -27,11 +30,14 @@ const ProFormInner: React.FC<ProFormInnerProps> = ({
   form,
   renderFormItems,
   request,
+  mergeIntoForm,
   ...restFormProps
 }) => {
   const [submitLoading, setSubmitLoading] = useState(false);
-  // 检查是否已经存在 form 上下文
-  const existingForm = useContext(FormContext);
+  const { ifUsedParentForm, parentsFieldId, usedForm } = useParentsFormMeta({
+    mergeIntoForm,
+    form,
+  });
 
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
@@ -61,14 +67,18 @@ const ProFormInner: React.FC<ProFormInnerProps> = ({
   };
 
   // 如果已经存在 form 上下文，则不创建新的 Provider
-  if (existingForm) {
-    return <>{renderFormItems?.({ form: existingForm, submitLoading })}</>;
+  if (ifUsedParentForm) {
+    return (
+      <FormParentsFieldIdContext.Provider value={parentsFieldId}>
+        {renderFormItems?.({ form: usedForm, submitLoading, parentsFieldId })}
+      </FormParentsFieldIdContext.Provider>
+    );
   } else {
     // 否则，创建一个新的 Provider，并标记为嵌套
     return (
       <FormContext.Provider value={form}>
         <Form onSubmit={handleSubmit} {...restFormProps}>
-          {renderFormItems?.({ form, submitLoading })}
+          {renderFormItems?.({ form, submitLoading, parentsFieldId })}
         </Form>
       </FormContext.Provider>
     );

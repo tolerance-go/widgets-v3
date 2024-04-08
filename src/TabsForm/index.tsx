@@ -3,9 +3,10 @@ import { FormComponentProps, WrappedFormUtils } from 'antd/es/form/Form';
 import * as PropTypes from 'prop-types';
 import React, { useContext, useEffect, useState } from 'react';
 import EditableTabs, { EditableTabsProps, Item } from '../EditableTabs';
-import { FormContext, FormEventBusContext } from '../_utils/FormContext';
+import { FormContext, FormEventBusContext, FormParentsFieldIdContext } from '../_utils/FormContext';
 import { createFormEventBusWrapper } from 'src/_utils/createFormEventBusWrapper';
 import useUpdateEffect from 'src/_utils/useUpdateEffect';
+import { useParentsFormMeta } from 'src/_utils/useParentsFormMeta';
 
 export interface RequestParams {
   values: Record<string, any>;
@@ -14,6 +15,7 @@ export interface RequestParams {
 export interface RequestResult {}
 
 export type TabsFormProps = {
+  mergeIntoForm?: false | string;
   request?: (params: RequestParams) => Promise<void>;
   renderItemFormItems?: (params: {
     form: WrappedFormUtils;
@@ -21,6 +23,7 @@ export type TabsFormProps = {
     tabItem: Item;
     initialItemFormValues?: Record<string, any>;
     index: number;
+    parentsFieldId: string;
   }) => PropTypes.ReactNodeLike;
   requestInitialFormValues?: () => Promise<Record<string, any>>;
   initialFormValues?: Record<string, any>;
@@ -37,6 +40,7 @@ const TabsFormInner: React.FC<TabsFormInnerProps> = ({
   request,
   requestInitialFormValues,
   initialTabItems,
+  mergeIntoForm,
   ...restFormProps
 }) => {
   const [submitLoading, setSubmitLoading] = useState(false);
@@ -48,8 +52,12 @@ const TabsFormInner: React.FC<TabsFormInnerProps> = ({
   );
 
   // 使用 FormContext 来确定是否嵌套在 Form 中
-  const existingForm = useContext(FormContext);
   const formEventBus = useContext(FormEventBusContext);
+
+  const { ifUsedParentForm, parentsFieldId, usedForm } = useParentsFormMeta({
+    mergeIntoForm,
+    form,
+  });
 
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
@@ -140,10 +148,11 @@ const TabsFormInner: React.FC<TabsFormInnerProps> = ({
             renderTabPane={({ item, index }) => {
               return renderItemFormItems?.({
                 index,
-                form: existingForm || form,
+                form: usedForm,
                 submitLoading,
                 tabItem: item,
                 initialItemFormValues: initialFormValues?.[item.key],
+                parentsFieldId,
               });
             }}
           />
@@ -158,19 +167,24 @@ const TabsFormInner: React.FC<TabsFormInnerProps> = ({
         onChange={handlerEditableTabsChange}
         renderTabPane={({ item, index }) => {
           return renderItemFormItems?.({
-            form: existingForm || form,
+            form: usedForm,
             index,
             submitLoading,
             tabItem: item,
             initialItemFormValues: initialFormValues?.[item.key],
+            parentsFieldId,
           });
         }}
       />
     );
   };
 
-  if (existingForm) {
-    return renderContent();
+  if (ifUsedParentForm) {
+    return (
+      <FormParentsFieldIdContext.Provider value={parentsFieldId}>
+        {renderContent()}
+      </FormParentsFieldIdContext.Provider>
+    );
   }
 
   return (

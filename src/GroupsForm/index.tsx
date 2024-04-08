@@ -3,12 +3,13 @@ import { FormComponentProps, FormProps, WrappedFormUtils } from 'antd/es/form/Fo
 import * as PropTypes from 'prop-types';
 import React, { forwardRef, useContext, useEffect, useRef, useState } from 'react';
 import EditableGroups, { EditableGroupsMethods, EditableGroupsProps } from '../EditableGroups';
-import { FormContext, FormEventBusContext } from '../_utils/FormContext';
+import { FormContext, FormEventBusContext, FormParentsFieldIdContext } from '../_utils/FormContext';
 import { createFormEventBusWrapper } from 'src/_utils/createFormEventBusWrapper';
 import useUpdateEffect from 'src/_utils/useUpdateEffect';
 import { handleError } from 'src/_utils/handleError';
 import { DraggableAttributes } from '@dnd-kit/core';
 import { SyntheticListenerMap } from '@dnd-kit/core/dist/hooks/utilities';
+import { useParentsFormMeta } from 'src/_utils/useParentsFormMeta';
 
 interface DragHandleProps {
   listeners?: SyntheticListenerMap;
@@ -76,30 +77,12 @@ const GroupsFormInner: React.FC<GroupsFormInnerProps> = ({
   );
 
   // 使用 FormContext 来确定是否嵌套在 Form 中
-  const existingForm = useContext(FormContext);
   const formEventBus = useContext(FormEventBusContext);
 
-  const parseParentsForm = () => {
-    if (typeof mergeIntoForm === 'string') {
-      if (!existingForm) {
-        throw new Error('不存在父级环境中的 form');
-      }
-
-      return {
-        ifUsedParentForm: true,
-        parentsFieldId: `${mergeIntoForm}.`,
-        usedForm: existingForm,
-      };
-    }
-
-    return {
-      ifUsedParentForm: false,
-      parentsFieldId: '',
-      usedForm: form,
-    };
-  };
-
-  const { ifUsedParentForm, parentsFieldId, usedForm } = parseParentsForm();
+  const { ifUsedParentForm, parentsFieldId, usedForm } = useParentsFormMeta({
+    mergeIntoForm,
+    form,
+  });
 
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
@@ -221,7 +204,7 @@ const GroupsFormInner: React.FC<GroupsFormInnerProps> = ({
       >
         {renderItemFormItems?.({
           index,
-          form: ifUsedParentForm ? existingForm || form : form,
+          form: usedForm,
           submitLoading,
           groupItem: item,
           initialItemFormValues: initialFormValues?.[item.key],
@@ -277,7 +260,11 @@ const GroupsFormInner: React.FC<GroupsFormInnerProps> = ({
   };
 
   if (ifUsedParentForm) {
-    return renderContent();
+    return (
+      <FormParentsFieldIdContext.Provider value={parentsFieldId}>
+        {renderContent()}
+      </FormParentsFieldIdContext.Provider>
+    );
   }
 
   return (

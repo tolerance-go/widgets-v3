@@ -46,7 +46,6 @@ function SortableItem<T extends Record<string, any> = Record<string, any>>({
     transform: CSS.Transform.toString(transform),
     transition,
   };
-
   return (
     <div ref={setNodeRef} style={style}>
       {renderGroupItem?.({

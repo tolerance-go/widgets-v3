@@ -205,6 +205,7 @@ export default () => (
           </Form.Item>
           <Form.Item label="TabsForm">
             <TabsForm
+              mergeIntoForm="TabsForm"
               initialTabItems={[
                 {
                   key: 'key1',
@@ -223,18 +224,27 @@ export default () => (
                   email: '321@qq.com',
                 },
               }}
-              renderItemFormItems={({ submitLoading, tabItem, initialItemFormValues, form }) => {
+              renderItemFormItems={({
+                submitLoading,
+                tabItem,
+                initialItemFormValues,
+                form,
+                parentsFieldId,
+              }) => {
                 return (
                   <>
                     <Form.Item label="BackendFilteredSelect">
-                      {form.getFieldDecorator(`TabsForm.[${tabItem.key}].BackendFilteredSelect`, {
-                        preserve: false,
-                        rules: [
-                          {
-                            message: 'Please input your E-mail!',
-                          },
-                        ],
-                      })(
+                      {form.getFieldDecorator(
+                        `${parentsFieldId}${tabItem.key}.BackendFilteredSelect`,
+                        {
+                          preserve: false,
+                          rules: [
+                            {
+                              message: 'Please input your E-mail!',
+                            },
+                          ],
+                        },
+                      )(
                         <BackendFilteredSelect
                           placeholder="请选择"
                           pageSize={50}
@@ -250,20 +260,165 @@ export default () => (
                       )}
                     </Form.Item>
                     <Form.Item label="E-mail">
-                      {form.getFieldDecorator(`TabsForm.[${tabItem.key}].email`, {
+                      {form.getFieldDecorator(`${parentsFieldId}${tabItem.key}.email`, {
                         preserve: false,
                         initialValue: initialItemFormValues?.email,
                       })(<Input autoComplete="off" />)}
                     </Form.Item>
                     <Form.Item label="Password" hasFeedback>
-                      {form.getFieldDecorator(`TabsForm.[${tabItem.key}].password`, {
+                      {form.getFieldDecorator(`${parentsFieldId}${tabItem.key}.password`, {
                         preserve: false,
                       })(<Input.Password autoComplete="off" />)}
                     </Form.Item>
                     <Form.Item label="Confirm Password" hasFeedback>
-                      {form.getFieldDecorator(`TabsForm.[${tabItem.key}].confirm`, {
+                      {form.getFieldDecorator(`${parentsFieldId}${tabItem.key}.confirm`, {
                         preserve: false,
                       })(<Input.Password />)}
+                    </Form.Item>
+                    <Form.Item label="ModalForm">
+                      <ModalForm
+                        mergeIntoForm="ModalForm"
+                        width={'80%'}
+                        title="标题"
+                        trigger={<Button type="primary">按钮</Button>}
+                        renderFormItems={({ form, parentsFieldId }) => {
+                          return [
+                            <Form.Item key={'email'} label="E-mail">
+                              {form.getFieldDecorator(`${parentsFieldId}email`, {
+                                rules: [
+                                  {
+                                    message: 'Please input your E-mail!',
+                                  },
+                                ],
+                              })(<Input autoComplete="off" />)}
+                            </Form.Item>,
+                            <Form.Item key={'password'} label="Password" hasFeedback>
+                              {form.getFieldDecorator(`${parentsFieldId}password`, {
+                                rules: [
+                                  {
+                                    message: 'Please input your password!',
+                                  },
+                                ],
+                              })(<Input.Password autoComplete="off" />)}
+                            </Form.Item>,
+                            <Form.Item key={'confirm'} label="Confirm Password" hasFeedback>
+                              {form.getFieldDecorator(`${parentsFieldId}confirm`, {
+                                rules: [
+                                  {
+                                    message: 'Please confirm your password!',
+                                  },
+                                  {},
+                                ],
+                              })(<Input.Password />)}
+                            </Form.Item>,
+                            <Form.Item
+                              key={'nickname'}
+                              label={
+                                <span>
+                                  Nickname&nbsp;
+                                  <Tooltip title="What do you want others to call you?">
+                                    <Icon type="question-circle-o" />
+                                  </Tooltip>
+                                </span>
+                              }
+                            >
+                              {form.getFieldDecorator(`${parentsFieldId}nickname`, {
+                                rules: [
+                                  {
+                                    message: 'Please input your nickname!',
+                                    whitespace: true,
+                                  },
+                                ],
+                              })(<Input />)}
+                            </Form.Item>,
+                            <Form.Item key={'residence'} label="Habitual Residence">
+                              {form.getFieldDecorator(`${parentsFieldId}residence`, {
+                                initialValue: ['zhejiang', 'hangzhou', 'xihu'],
+                                rules: [
+                                  {
+                                    type: 'array',
+
+                                    message: 'Please select your habitual residence!',
+                                  },
+                                ],
+                              })(<Cascader options={residences} />)}
+                            </Form.Item>,
+                            <Form.Item label="EditableGroups">
+                              <GroupsForm
+                                mergeIntoForm={'EditableGroups'}
+                                labelCol={{ span: 8 }}
+                                wrapperCol={{ span: 16 }}
+                                renderGroupTitle={({ item }) => {
+                                  return `标题-${item.label}`;
+                                }}
+                                initialGroupItems={[
+                                  {
+                                    key: 'key1',
+                                    label: 'tab1',
+                                  },
+                                  {
+                                    key: 'key2',
+                                    label: 'tab2',
+                                  },
+                                ]}
+                                initialFormValues={{
+                                  key1: {
+                                    email: '123@qq.com',
+                                  },
+                                  key2: {
+                                    email: '321@qq.com',
+                                  },
+                                }}
+                                renderItemFormItems={({
+                                  form: { getFieldDecorator },
+                                  submitLoading,
+                                  groupItem,
+                                  initialItemFormValues,
+                                  index,
+                                  groupItems,
+                                  parentsFieldId,
+                                }) => {
+                                  return (
+                                    <>
+                                      <Row gutter={10}>
+                                        <Col span={12}>
+                                          <Form.Item label="name">
+                                            {getFieldDecorator(
+                                              `${parentsFieldId}${groupItem.key}.name`,
+                                              {
+                                                initialValue: initialItemFormValues?.name,
+                                              },
+                                            )(<Input autoComplete="off" />)}
+                                          </Form.Item>
+                                        </Col>
+                                        <Col span={12}>
+                                          <Form.Item label="E-mail">
+                                            {getFieldDecorator(
+                                              `${parentsFieldId}${groupItem.key}.email`,
+                                              {
+                                                initialValue: initialItemFormValues?.email,
+                                              },
+                                            )(<Input autoComplete="off" />)}
+                                          </Form.Item>
+                                        </Col>
+                                      </Row>
+
+                                      <Form.Item label="Password" hasFeedback>
+                                        {getFieldDecorator(
+                                          `${parentsFieldId}${groupItem.key}.password`,
+                                          {
+                                            initialValue: initialItemFormValues?.password,
+                                          },
+                                        )(<Input autoComplete="off" />)}
+                                      </Form.Item>
+                                    </>
+                                  );
+                                }}
+                              />
+                            </Form.Item>,
+                          ];
+                        }}
+                      />
                     </Form.Item>
                     <Form.Item
                       label={
@@ -275,13 +430,13 @@ export default () => (
                         </span>
                       }
                     >
-                      {form.getFieldDecorator(`TabsForm.[${tabItem.key}].nickname`, {
+                      {form.getFieldDecorator(`${parentsFieldId}${tabItem.key}.nickname`, {
                         preserve: false,
                         rules: [{ message: 'Please input your nickname!', whitespace: true }],
                       })(<Input />)}
                     </Form.Item>
                     <Form.Item label="Habitual Residence">
-                      {form.getFieldDecorator(`TabsForm.[${tabItem.key}].residence`, {
+                      {form.getFieldDecorator(`${parentsFieldId}${tabItem.key}.residence`, {
                         preserve: false,
                         initialValue: ['zhejiang', 'hangzhou', 'xihu'],
                         rules: [
@@ -294,7 +449,7 @@ export default () => (
                       })(<Cascader options={residences} />)}
                     </Form.Item>
                     <Form.Item label="EditableTable">
-                      {form.getFieldDecorator(`TabsForm.[${tabItem.key}].res234234idence`, {
+                      {form.getFieldDecorator(`${parentsFieldId}${tabItem.key}.res234234idence`, {
                         preserve: false,
                         initialValue: editableInitialData,
                         rules: [
@@ -344,12 +499,14 @@ export default () => (
           </Form.Item>
           <Form.Item label="ModalForm">
             <ModalForm
+              mergeIntoForm="ModalForm"
+              width={'80%'}
               title="标题"
               trigger={<Button type="primary">按钮</Button>}
-              renderFormItems={({ form }) => {
+              renderFormItems={({ form, parentsFieldId }) => {
                 return [
                   <Form.Item key={'email'} label="E-mail">
-                    {form.getFieldDecorator('ModalForm.email', {
+                    {form.getFieldDecorator(`${parentsFieldId}email`, {
                       rules: [
                         {
                           message: 'Please input your E-mail!',
@@ -358,7 +515,7 @@ export default () => (
                     })(<Input autoComplete="off" />)}
                   </Form.Item>,
                   <Form.Item key={'password'} label="Password" hasFeedback>
-                    {form.getFieldDecorator('ModalForm.password', {
+                    {form.getFieldDecorator(`${parentsFieldId}password`, {
                       rules: [
                         {
                           message: 'Please input your password!',
@@ -367,7 +524,7 @@ export default () => (
                     })(<Input.Password autoComplete="off" />)}
                   </Form.Item>,
                   <Form.Item key={'confirm'} label="Confirm Password" hasFeedback>
-                    {form.getFieldDecorator('ModalForm.confirm', {
+                    {form.getFieldDecorator(`${parentsFieldId}confirm`, {
                       rules: [
                         {
                           message: 'Please confirm your password!',
@@ -387,7 +544,7 @@ export default () => (
                       </span>
                     }
                   >
-                    {form.getFieldDecorator('ModalForm.nickname', {
+                    {form.getFieldDecorator(`${parentsFieldId}nickname`, {
                       rules: [
                         {
                           message: 'Please input your nickname!',
@@ -397,7 +554,7 @@ export default () => (
                     })(<Input />)}
                   </Form.Item>,
                   <Form.Item key={'residence'} label="Habitual Residence">
-                    {form.getFieldDecorator('ModalForm.residence', {
+                    {form.getFieldDecorator(`${parentsFieldId}residence`, {
                       initialValue: ['zhejiang', 'hangzhou', 'xihu'],
                       rules: [
                         {
@@ -407,6 +564,70 @@ export default () => (
                         },
                       ],
                     })(<Cascader options={residences} />)}
+                  </Form.Item>,
+                  <Form.Item label="EditableGroups">
+                    <GroupsForm
+                      mergeIntoForm={'EditableGroups'}
+                      labelCol={{ span: 8 }}
+                      wrapperCol={{ span: 16 }}
+                      renderGroupTitle={({ item }) => {
+                        return `标题-${item.label}`;
+                      }}
+                      initialGroupItems={[
+                        {
+                          key: 'key1',
+                          label: 'tab1',
+                        },
+                        {
+                          key: 'key2',
+                          label: 'tab2',
+                        },
+                      ]}
+                      initialFormValues={{
+                        key1: {
+                          email: '123@qq.com',
+                        },
+                        key2: {
+                          email: '321@qq.com',
+                        },
+                      }}
+                      renderItemFormItems={({
+                        form: { getFieldDecorator },
+                        submitLoading,
+                        groupItem,
+                        initialItemFormValues,
+                        index,
+                        groupItems,
+                        parentsFieldId,
+                      }) => {
+                        return (
+                          <>
+                            <Row gutter={10}>
+                              <Col span={12}>
+                                <Form.Item label="name">
+                                  {getFieldDecorator(`${parentsFieldId}${groupItem.key}.name`, {
+                                    initialValue: initialItemFormValues?.name,
+                                  })(<Input autoComplete="off" />)}
+                                </Form.Item>
+                              </Col>
+                              <Col span={12}>
+                                <Form.Item label="E-mail">
+                                  {getFieldDecorator(`${parentsFieldId}${groupItem.key}.email`, {
+                                    initialValue: initialItemFormValues?.email,
+                                  })(<Input autoComplete="off" />)}
+                                </Form.Item>
+                              </Col>
+                            </Row>
+
+                            <Form.Item label="Password" hasFeedback>
+                              {getFieldDecorator(`${parentsFieldId}${groupItem.key}.password`, {
+                                initialValue: initialItemFormValues?.password,
+                              })(<Input autoComplete="off" />)}
+                            </Form.Item>
+                          </>
+                        );
+                      }}
+                    />
                   </Form.Item>,
                 ];
               }}
@@ -415,12 +636,13 @@ export default () => (
 
           <Form.Item label="DrawerForm">
             <DrawerForm
+              mergeIntoForm="DrawerForm"
               title="标题"
               trigger={<Button type="primary">按钮</Button>}
-              renderFormItems={({ form }) => {
+              renderFormItems={({ form, parentsFieldId }) => {
                 return [
                   <Form.Item key={'email'} label="E-mail">
-                    {form.getFieldDecorator('DrawerForm.email', {
+                    {form.getFieldDecorator(`${parentsFieldId}email`, {
                       rules: [
                         {
                           message: 'Please input your E-mail!',
@@ -429,7 +651,7 @@ export default () => (
                     })(<Input autoComplete="off" />)}
                   </Form.Item>,
                   <Form.Item key={'password'} label="Password" hasFeedback>
-                    {form.getFieldDecorator('DrawerForm.password', {
+                    {form.getFieldDecorator(`${parentsFieldId}password`, {
                       rules: [
                         {
                           message: 'Please input your password!',
@@ -438,7 +660,7 @@ export default () => (
                     })(<Input.Password autoComplete="off" />)}
                   </Form.Item>,
                   <Form.Item key={'confirm'} label="Confirm Password" hasFeedback>
-                    {form.getFieldDecorator('DrawerForm.confirm', {
+                    {form.getFieldDecorator(`${parentsFieldId}confirm`, {
                       rules: [
                         {
                           message: 'Please confirm your password!',
@@ -458,7 +680,7 @@ export default () => (
                       </span>
                     }
                   >
-                    {form.getFieldDecorator('DrawerForm.nickname', {
+                    {form.getFieldDecorator(`${parentsFieldId}nickname`, {
                       rules: [
                         {
                           message: 'Please input your nickname!',
@@ -468,7 +690,7 @@ export default () => (
                     })(<Input />)}
                   </Form.Item>,
                   <Form.Item key={'residence'} label="Habitual Residence">
-                    {form.getFieldDecorator('DrawerForm.residence', {
+                    {form.getFieldDecorator(`${parentsFieldId}residence`, {
                       initialValue: ['zhejiang', 'hangzhou', 'xihu'],
                       rules: [
                         {
@@ -478,6 +700,152 @@ export default () => (
                         },
                       ],
                     })(<Cascader options={residences} />)}
+                  </Form.Item>,
+
+                  <Form.Item label="ModalForm">
+                    <ModalForm
+                      mergeIntoForm="ModalForm"
+                      width={'80%'}
+                      title="标题"
+                      trigger={<Button type="primary">按钮</Button>}
+                      renderFormItems={({ form, parentsFieldId }) => {
+                        return [
+                          <Form.Item key={'email'} label="E-mail">
+                            {form.getFieldDecorator(`${parentsFieldId}email`, {
+                              rules: [
+                                {
+                                  message: 'Please input your E-mail!',
+                                },
+                              ],
+                            })(<Input autoComplete="off" />)}
+                          </Form.Item>,
+                          <Form.Item key={'password'} label="Password" hasFeedback>
+                            {form.getFieldDecorator(`${parentsFieldId}password`, {
+                              rules: [
+                                {
+                                  message: 'Please input your password!',
+                                },
+                              ],
+                            })(<Input.Password autoComplete="off" />)}
+                          </Form.Item>,
+                          <Form.Item key={'confirm'} label="Confirm Password" hasFeedback>
+                            {form.getFieldDecorator(`${parentsFieldId}confirm`, {
+                              rules: [
+                                {
+                                  message: 'Please confirm your password!',
+                                },
+                                {},
+                              ],
+                            })(<Input.Password />)}
+                          </Form.Item>,
+                          <Form.Item
+                            key={'nickname'}
+                            label={
+                              <span>
+                                Nickname&nbsp;
+                                <Tooltip title="What do you want others to call you?">
+                                  <Icon type="question-circle-o" />
+                                </Tooltip>
+                              </span>
+                            }
+                          >
+                            {form.getFieldDecorator(`${parentsFieldId}nickname`, {
+                              rules: [
+                                {
+                                  message: 'Please input your nickname!',
+                                  whitespace: true,
+                                },
+                              ],
+                            })(<Input />)}
+                          </Form.Item>,
+                          <Form.Item key={'residence'} label="Habitual Residence">
+                            {form.getFieldDecorator(`${parentsFieldId}residence`, {
+                              initialValue: ['zhejiang', 'hangzhou', 'xihu'],
+                              rules: [
+                                {
+                                  type: 'array',
+
+                                  message: 'Please select your habitual residence!',
+                                },
+                              ],
+                            })(<Cascader options={residences} />)}
+                          </Form.Item>,
+                          <Form.Item label="EditableGroups">
+                            <GroupsForm
+                              mergeIntoForm={'EditableGroups'}
+                              labelCol={{ span: 8 }}
+                              wrapperCol={{ span: 16 }}
+                              renderGroupTitle={({ item }) => {
+                                return `标题-${item.label}`;
+                              }}
+                              initialGroupItems={[
+                                {
+                                  key: 'key1',
+                                  label: 'tab1',
+                                },
+                                {
+                                  key: 'key2',
+                                  label: 'tab2',
+                                },
+                              ]}
+                              initialFormValues={{
+                                key1: {
+                                  email: '123@qq.com',
+                                },
+                                key2: {
+                                  email: '321@qq.com',
+                                },
+                              }}
+                              renderItemFormItems={({
+                                form: { getFieldDecorator },
+                                submitLoading,
+                                groupItem,
+                                initialItemFormValues,
+                                index,
+                                groupItems,
+                                parentsFieldId,
+                              }) => {
+                                return (
+                                  <>
+                                    <Row gutter={10}>
+                                      <Col span={12}>
+                                        <Form.Item label="name">
+                                          {getFieldDecorator(
+                                            `${parentsFieldId}${groupItem.key}.name`,
+                                            {
+                                              initialValue: initialItemFormValues?.name,
+                                            },
+                                          )(<Input autoComplete="off" />)}
+                                        </Form.Item>
+                                      </Col>
+                                      <Col span={12}>
+                                        <Form.Item label="E-mail">
+                                          {getFieldDecorator(
+                                            `${parentsFieldId}${groupItem.key}.email`,
+                                            {
+                                              initialValue: initialItemFormValues?.email,
+                                            },
+                                          )(<Input autoComplete="off" />)}
+                                        </Form.Item>
+                                      </Col>
+                                    </Row>
+
+                                    <Form.Item label="Password" hasFeedback>
+                                      {getFieldDecorator(
+                                        `${parentsFieldId}${groupItem.key}.password`,
+                                        {
+                                          initialValue: initialItemFormValues?.password,
+                                        },
+                                      )(<Input autoComplete="off" />)}
+                                    </Form.Item>
+                                  </>
+                                );
+                              }}
+                            />
+                          </Form.Item>,
+                        ];
+                      }}
+                    />
                   </Form.Item>,
                 ];
               }}
