@@ -1,5 +1,6 @@
 ---
 group:
+  title: Form
   order: 6
 ---
 
