@@ -29,9 +29,9 @@ const ImageResizeModal: React.FC<ImageResizeModalProps> = ({ value, onChange }) 
   const holeX = (canvasWidth - holeWidth) / 2; // 镂空矩形的X位置
   const holeY = (canvasHeight - holeWidth) / 2; // 镂空矩形的Y位置
 
-  const scaleStep = 0.01;
+  const scaleStep = 0.001;
 
-  const [sliderMin, setSliderMin] = useState(1);
+  const [baseScale, setBaseScale] = useState(1); // 添加基础缩放比例的状态
 
   const showModal = () => setIsModalVisible(true);
   const handleCancel = () => {
@@ -79,11 +79,11 @@ const ImageResizeModal: React.FC<ImageResizeModalProps> = ({ value, onChange }) 
           setImage(img);
           showModal();
 
-          // 计算并更新 Slider 的 Min 和 Max
+          // 计算并更新基础缩放比例
           const maxHoleSide = Math.max(holeWidth, holeHeight);
           const minImageSide = Math.min(img.width, img.height);
-          const minScale = maxHoleSide / minImageSide; // 最小缩放比例，以确保覆盖镂空区域
-          setSliderMin(minScale);
+          const minScale = maxHoleSide / minImageSide;
+          setBaseScale(minScale); // 设置基础缩放比例
         };
         if (e.target?.result) {
           img.src = e.target.result.toString();
@@ -205,51 +205,41 @@ const ImageResizeModal: React.FC<ImageResizeModalProps> = ({ value, onChange }) 
   };
 
   const handleWheel = (e: React.WheelEvent) => {
-    e.preventDefault();
+    e.preventDefault(); // 防止页面滚动
 
-    if (!image) return;
+    if (!image || !canvasRef.current) return; // 如果没有图像或canvas没有被正确引用，则直接返回
 
     const direction = e.deltaY < 0 ? 1 : -1; // 根据滚轮方向确定是放大还是缩小
 
-    // 获取鼠标在canvas上的位置
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const rect = canvas.getBoundingClientRect();
+    // 获取鼠标相对于canvas的位置
+    const rect = canvasRef.current.getBoundingClientRect();
     const mouseX = e.clientX - rect.left;
     const mouseY = e.clientY - rect.top;
 
-    // 考虑当前图片位置和缩放比例，计算鼠标相对于图片的位置
+    // 计算鼠标位置相对于图像的位置
     const mouseImgX = (mouseX - imagePos.x) / scale;
     const mouseImgY = (mouseY - imagePos.y) / scale;
 
     setScale((prevScale) => {
-      let newScale = Math.max(scaleStep, prevScale + direction * scaleStep);
+      let newScale = Math.max(scaleStep, prevScale + direction * scaleStep); // 计算新的缩放比例
 
-      // 新增限制：确保图像的最小边长不低于镂空矩形的最大边长
-      const maxSideLength = Math.max(holeWidth, holeHeight); // 镂空矩形的最大边长
-      const minImageSide = Math.min(image.width * newScale, image.height * newScale); // 图像缩放后的最小边长
+      // 强制执行最小缩放比例以确保图像覆盖镂空区域
+      const maxSideLength = Math.max(holeWidth, holeHeight);
+      const minImageSide = Math.min(image.width * newScale, image.height * newScale);
       if (minImageSide < maxSideLength) {
-        // 如果图像的最小边长低于镂空矩形的最大边长，则不进行缩放
-        return prevScale; // 返回原先的缩放比例
+        return prevScale; // 如果新缩放比例太小，保持之前的缩放比例
       }
 
-      // 基于新的缩放比例，重新计算图片的位置，以使鼠标下的点保持静止
+      // 计算新位置以保持鼠标下的点静止
       const newPosX = mouseX - mouseImgX * newScale;
       const newPosY = mouseY - mouseImgY * newScale;
 
-      // 添加约束以确保图片始终覆盖镂空矩形区域
-      const maxX = holeX + holeWidth - image.width * newScale;
-      const maxY = holeY + holeHeight - image.height * newScale;
-      const minX = holeX;
-      const minY = holeY;
+      // 调整位置以确保图像始终覆盖镂空区域
+      const adjustedPos = adjustImagePosition(newPosX, newPosY, newScale);
 
-      let constrainedPosX = Math.min(Math.max(newPosX, maxX), minX);
-      let constrainedPosY = Math.min(Math.max(newPosY, maxY), minY);
+      setImagePos(adjustedPos); // 更新图像位置
 
-      setImagePos({ x: constrainedPosX, y: constrainedPosY });
-
-      return newScale;
+      return newScale; // 返回新的缩放比例
     });
   };
 
@@ -258,36 +248,54 @@ const ImageResizeModal: React.FC<ImageResizeModalProps> = ({ value, onChange }) 
     fileInputRef.current?.click();
   };
 
-  const handleScaleChange = (newScale: SliderValue) => {
-    if (!image) return;
+  const handleScaleChange = (offset: SliderValue) => {
+    if (!image || !canvasRef.current) return;
 
-    let scaleValue = Array.isArray(newScale) ? newScale[0] : newScale; // 处理 newScale 可能是数组的情况
+    let scaleOffset = Array.isArray(offset) ? offset[0] : offset;
+    let newScale = baseScale + scaleOffset; // 应用偏移量调整缩放比例
 
-    // 确保图像的最小边长不低于镂空矩形的最大边长
-    const maxHoleSide = Math.max(holeWidth, holeHeight); // 镂空区域的最大边长
-    const minImageSide = Math.min(image.width, image.height); // 图片的最小边
-    const minScale = maxHoleSide / minImageSide; // 最小缩放比例，以确保覆盖镂空区域
-    scaleValue = Math.max(scaleValue, minScale); // 应用最小缩放限制
+    // 计算新的缩放比例后，重新计算图片位置以避免出现空白
+    const rect = canvasRef.current.getBoundingClientRect();
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
 
-    // 假定在画布中心点模拟滚轮滚动效果
-    const centerX = canvasWidth / 2;
-    const centerY = canvasHeight / 2;
-
-    // 模拟鼠标相对于图片的位置
+    // 模拟鼠标相对于图片中心的位置
     const mouseImgX = (centerX - imagePos.x) / scale;
     const mouseImgY = (centerY - imagePos.y) / scale;
 
-    // 根据新的缩放级别计算图片的位置
-    const newPosX = centerX - mouseImgX * scaleValue;
-    const newPosY = centerY - mouseImgY * scaleValue;
+    // 基于新的缩放比例，重新计算图片的位置
+    const newPosX = centerX - mouseImgX * newScale;
+    const newPosY = centerY - mouseImgY * newScale;
+
+    // 确保新位置使图片完全覆盖镂空区域
+    const adjustedPos = adjustImagePosition(newPosX, newPosY, newScale);
 
     // 更新图像位置和缩放级别
-    setImagePos({ x: newPosX, y: newPosY });
-    setScale(scaleValue);
+    setImagePos(adjustedPos);
+    setScale(newScale);
 
-    // 重新绘制图像
+    // 重新绘制图像以反映更新
     drawImageCentered();
   };
+
+  // 添加一个新函数来调整图片位置，确保它始终覆盖镂空区域
+  function adjustImagePosition(newPosX: number, newPosY: number, newScale: number) {
+    const imageWidth = image!.width * newScale;
+    const imageHeight = image!.height * newScale;
+
+    // 计算确保图片覆盖镂空区域的位置约束
+    const maxX = holeX + holeWidth - imageWidth;
+    const maxY = holeY + holeHeight - imageHeight;
+    const minX = holeX;
+    const minY = holeY;
+
+    // 应用约束
+    const adjustedPosX = Math.min(Math.max(newPosX, maxX), minX);
+    const adjustedPosY = Math.min(Math.max(newPosY, maxY), minY);
+
+    return { x: adjustedPosX, y: adjustedPosY };
+  }
+
   const [showOverlay, setShowOverlay] = useState(false);
 
   return (
@@ -398,10 +406,10 @@ const ImageResizeModal: React.FC<ImageResizeModalProps> = ({ value, onChange }) 
             style={{
               flex: 1,
             }}
-            min={sliderMin}
-            max={sliderMin * 2}
+            min={0} // 最小偏移量
+            max={baseScale} // 假设允许的最大偏移量是基础缩放比例的一倍
             step={scaleStep}
-            value={scale}
+            value={scale - baseScale} // 计算当前偏移量
             onChange={handleScaleChange}
             tooltipVisible={false}
           />
