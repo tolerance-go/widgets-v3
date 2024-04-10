@@ -106,7 +106,6 @@ export default () => (
       )
     }
     searchForm={(searchFormParams) => {
-      console.log('searchFormParams', searchFormParams);
       return {
         renderFormItems: ({ form: { getFieldDecorator } }) => {
           return [
@@ -161,7 +160,6 @@ export default () => (
       };
     }}
     renderActionGroup={(renderActionGroupParams) => {
-      console.log('renderActionGroupParams', renderActionGroupParams);
       return [
         <Action
           key="btn1"

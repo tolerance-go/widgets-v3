@@ -150,3 +150,7 @@ GroupsForm 复制支持数据复制
 ---
 
 ~~Action 支持 trigger 为函数注入 loading~~
+
+---
+
+SearchTable 切换 tab 的时候，分页参数从 1 开始

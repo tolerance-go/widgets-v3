@@ -359,7 +359,13 @@ const SearchTable = forwardRef(
               <Tabs
                 activeKey={tableState.activeTabKey}
                 type="card"
-                onChange={(key) => setTableState((prev) => ({ ...prev, activeTabKey: key }))}
+                onChange={(key) =>
+                  setTableState((prev) => ({
+                    ...prev,
+                    pagination: { ...prev.pagination, current: 1 },
+                    activeTabKey: key,
+                  }))
+                }
               >
                 {tabs.map((item) => {
                   return <TabPane tab={item.title} key={item.key}></TabPane>;
