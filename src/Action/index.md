@@ -14,3 +14,7 @@ group:
 ## 抛出异常，打印消息
 
 <code src="./demos/message-error" />
+
+## 动态 trigger
+
+<code src="./demos/loading" />

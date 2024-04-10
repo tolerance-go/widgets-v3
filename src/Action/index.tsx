@@ -1,8 +1,9 @@
 import React, { ReactElement, useState, cloneElement } from 'react';
 import { Button, Spin, message } from 'antd';
+import { handleError } from 'src/_utils/handleError';
 
 type ActionProps = {
-  trigger?: ReactElement;
+  trigger?: ReactElement | ((args: { loading: boolean }) => ReactElement);
   request?: () => Promise<void>;
 };
 
@@ -20,19 +21,7 @@ const Action = ({ trigger, request }: ActionProps) => {
         try {
           await request(); // 等待异步请求完成
         } catch (error) {
-          let errorMessage;
-
-          // 判断错误的类型
-          if (typeof error === 'string') {
-            // 如果错误是一个字符串
-            errorMessage = error;
-          } else if (error instanceof Error) {
-            // 如果错误是Error对象
-            errorMessage = error.message;
-          }
-
-          console.log(error);
-          message.error(errorMessage || '操作异常');
+          handleError(error, '操作异常');
         } finally {
           setLoading(false); // 结束加载
         }
@@ -43,9 +32,11 @@ const Action = ({ trigger, request }: ActionProps) => {
     return null;
   }
 
+  const triggerEl = typeof trigger === 'function' ? trigger({ loading }) : trigger;
+
   // 使用 cloneElement 来增加原始 trigger 元素的 onClick 处理器
-  const enhancedTrigger = cloneElement(trigger, {
-    onClick: handleTriggerClick(trigger.props.onClick),
+  const enhancedTrigger = cloneElement(triggerEl, {
+    onClick: handleTriggerClick(triggerEl.props.onClick),
     loading,
     // 这里传递任何需要的额外 props
   });

@@ -7,7 +7,7 @@ export default () => (
   <Row gutter={10} type="flex">
     <Col>
       <Action
-        trigger={<Button type="primary">请求异常按钮</Button>}
+        trigger={<Button type="primary">请求异常按钮 Error</Button>}
         request={async () => {
           await delay(1000);
           throw new Error('自定义错误信息');
@@ -17,20 +17,10 @@ export default () => (
 
     <Col>
       <Action
-        trigger={<Button type="primary">请求异常按钮</Button>}
+        trigger={<Button type="primary">请求异常按钮 string</Button>}
         request={async () => {
           await delay(1000);
           throw '自定义错误信息';
-        }}
-      />
-    </Col>
-
-    <Col>
-      <Action
-        trigger={<Button type="primary">请求异常按钮</Button>}
-        request={async () => {
-          await delay(1000);
-          throw new Error();
         }}
       />
     </Col>

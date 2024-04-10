@@ -15,15 +15,6 @@ export default () => (
     </Col>
     <Col>
       <Action
-        trigger={<Button type="primary">请求异常按钮</Button>}
-        request={async () => {
-          await delay(1000);
-          throw new Error();
-        }}
-      />
-    </Col>
-    <Col>
-      <Action
         trigger={
           <Button
             type="primary"
