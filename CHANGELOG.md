@@ -1,3 +1,10 @@
+# [0.25.0](https://github.com/tolerance-go/widgets-v3/compare/v0.24.0...v0.25.0) (2024-04-10)
+
+### Features
+
+- **Action:** Action 支持 trigger 为函数注入 loading ([69581ee](https://github.com/tolerance-go/widgets-v3/commit/69581ee5856b3034a6666468c56524c89f2bac66))
+- **SearchTable:** 请求内部支持处理异常打印 ([47d9006](https://github.com/tolerance-go/widgets-v3/commit/47d9006353213faae65c4320c58aa390a453b5a9))
+
 # [0.24.0](https://github.com/tolerance-go/widgets-v3/compare/v0.23.2...v0.24.0) (2024-04-09)
 
 ### Bug Fixes
