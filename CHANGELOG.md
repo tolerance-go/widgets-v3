@@ -1,3 +1,9 @@
+## [0.26.2](https://github.com/tolerance-go/widgets-v3/compare/v0.26.1...v0.26.2) (2024-04-10)
+
+### Bug Fixes
+
+- **SearchTable:** 修复 reload 的时候，没有注入 tabItem ([4c54e32](https://github.com/tolerance-go/widgets-v3/commit/4c54e3270af7b29961ac4576e558bb014192c457))
+
 ## [0.26.1](https://github.com/tolerance-go/widgets-v3/compare/v0.26.0...v0.26.1) (2024-04-10)
 
 ### Bug Fixes
