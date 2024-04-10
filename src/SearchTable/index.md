@@ -33,3 +33,9 @@ group:
 ## 请求额外数据渲染列表
 
 <code src="./demos/requestData" />
+
+## 请求异常
+
+尝试翻页，第 2，3 页面会报错
+
+<code src="./demos/throwError" />

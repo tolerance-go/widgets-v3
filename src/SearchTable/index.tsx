@@ -19,6 +19,7 @@ import React, {
   useState,
 } from 'react';
 import SearchForm, { SearchFormProps } from '../SearchForm';
+import { handleError } from 'src/_utils/handleError';
 
 const { TabPane } = Tabs;
 
@@ -159,16 +160,21 @@ const SearchTable = forwardRef(
     const fetch = async (params: RequestParams<T>) => {
       if (!request) return;
 
-      setLoading(true);
-      const result = await request(params);
-      setList(result.list); // TypeScript now knows this is T[]
-      result.data && setData(result.data);
-      clearSelection();
-      setTableState((prevState) => ({
-        ...prevState,
-        pagination: { ...prevState.pagination, total: result.total },
-      }));
-      setLoading(false);
+      try {
+        setLoading(true);
+        const result = await request(params);
+        setList(result.list); // TypeScript now knows this is T[]
+        result.data && setData(result.data);
+        clearSelection();
+        setTableState((prevState) => ({
+          ...prevState,
+          pagination: { ...prevState.pagination, total: result.total },
+        }));
+      } catch (error) {
+        handleError(error, '请求表格数据失败');
+      } finally {
+        setLoading(false);
+      }
     };
 
     const fetchRef = useRef(fetch);
