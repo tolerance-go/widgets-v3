@@ -111,6 +111,15 @@ export type SearchTableMethods<T> = {
   getTabItem: (key: string) => TableTabItem | undefined;
 };
 
+type TableState<T> = {
+  activeTabKey: string | undefined;
+  pagination: PaginationConfig;
+  filters: Partial<Record<keyof T, string[]>>;
+  sorter: Record<string, any>;
+  extra: TableCurrentDataSource<T>;
+  searchValues: Record<string, any>;
+};
+
 // Add generic type T to the component function
 const SearchTable = forwardRef(
   <T extends Record<string, any> = Record<string, any>>(
@@ -132,14 +141,7 @@ const SearchTable = forwardRef(
     const [data, setData] = useState<Record<string, any>>({});
     const [loading, setLoading] = useState(false);
 
-    const [tableState, setTableState] = useState<{
-      activeTabKey: string | undefined;
-      pagination: PaginationConfig;
-      filters: Partial<Record<keyof T, string[]>>;
-      sorter: Record<string, any>;
-      extra: TableCurrentDataSource<T>;
-      searchValues: Record<string, any>;
-    }>({
+    const [tableState, setTableState] = useState<TableState<T>>({
       activeTabKey: tabs?.[0]?.key,
       pagination: { current: 1, pageSize: 10 },
       filters: {},
@@ -193,11 +195,8 @@ const SearchTable = forwardRef(
     const methods: SearchTableMethods<T> = {
       clearSelection,
       reload: (params?: Partial<RequestParams<T>>) => {
-        const nextParams = {
-          tabItem: tableState.activeTabKey
-            ? methodsRef.current.getTabItem(tableState.activeTabKey)
-            : undefined,
-          activeTabKey: params?.activeTabKey,
+        const nextTableState: TableState<T> = {
+          activeTabKey: params?.activeTabKey ?? tableState.activeTabKey,
           pagination: params?.pagination
             ? { ...tableState.pagination, ...params?.pagination }
             : tableState.pagination,
@@ -205,20 +204,26 @@ const SearchTable = forwardRef(
             ? { ...tableState.filters, ...params?.filters }
             : tableState.filters,
           sorter: params?.sorter ? { ...tableState.sorter, ...params?.sorter } : tableState.sorter,
-          search: params?.search
+          searchValues: params?.search
             ? { ...tableState.searchValues, ...params?.search }
             : tableState.searchValues,
           extra: params?.extra ? { ...tableState.extra, ...params?.extra } : tableState.extra,
-          methods,
         };
 
-        fetch(nextParams);
+        const { searchValues, ...restTableState } = nextTableState;
 
-        skipNextFetchRef.current = true;
-        setTableState({
-          ...tableState,
-          ...nextParams,
+        fetch({
+          tabItem: tableState.activeTabKey
+            ? methodsRef.current.getTabItem(tableState.activeTabKey)
+            : undefined,
+          methods,
+          search: nextTableState.searchValues,
+          ...restTableState,
         });
+
+        // 禁止下一次自动请求
+        skipNextFetchRef.current = true;
+        setTableState(nextTableState);
       },
       getTabItem: (key: string) => {
         return tabs?.find((item) => item.key === key);
