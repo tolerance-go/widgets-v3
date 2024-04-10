@@ -21,6 +21,7 @@ import React, {
 import SearchForm, { SearchFormProps } from '../SearchForm';
 import { handleError } from 'src/_utils/handleError';
 import useLatestRef from 'src/_utils/useLatestRef';
+import './index.less';
 
 const { TabPane } = Tabs;
 
@@ -324,7 +325,7 @@ const SearchTable = forwardRef(
     }, [columns, tableState.activeTabKey, methods, selectedRowsInfo]);
 
     return (
-      <div>
+      <div className="wg-search-table-wrapper">
         <SearchForm
           {...(typeof searchForm === 'function'
             ? searchForm({ activeTabKey: tableState.activeTabKey })
@@ -360,6 +361,7 @@ const SearchTable = forwardRef(
             )}
             {tabs?.length && (
               <Tabs
+                className="wg-search-table-tabs"
                 activeKey={tableState.activeTabKey}
                 type="card"
                 onChange={(key) =>
