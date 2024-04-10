@@ -100,15 +100,16 @@ export default () => (
                     dataIndex: 'name',
                     key: 'name',
                     filters: [
-                      { text: 'Joe', value: 'Joe' },
-                      { text: 'Jim', value: 'Jim' },
+                      { text: '胡彦斌', value: '胡彦斌' },
+                      { text: '胡彦祖', value: '胡彦祖' },
                     ],
-                    sorter: true,
+                    onFilter: (value, record) => record.name.indexOf(value) === 0,
                   },
                   {
                     title: '年龄',
                     dataIndex: 'age',
                     key: 'age',
+                    sorter: (a, b) => a.age - b.age,
                   },
                   {
                     title: '住址',
@@ -227,69 +228,22 @@ export default () => (
                     },
                   },
                 ]}
-                // searchForm={{
-                //   renderFormItems: ({ form: { getFieldDecorator } }) => {
-                //     return [
-                //       <Form.Item label="E-mail">
-                //         {getFieldDecorator('email', {})(<Input autoComplete="off" />)}
-                //       </Form.Item>,
-                //       <Form.Item label="Password" hasFeedback>
-                //         {getFieldDecorator('password', {
-                //           rules: [],
-                //         })(<Input.Password autoComplete="off" />)}
-                //       </Form.Item>,
-                //       <Form.Item label="Confirm Password" hasFeedback>
-                //         {getFieldDecorator('confirm', {
-                //           rules: [],
-                //         })(<Input.Password />)}
-                //       </Form.Item>,
-                //       <Form.Item
-                //         label={
-                //           <span>
-                //             Nickname&nbsp;
-                //             <Tooltip title="What do you want others to call you?">
-                //               <Icon type="question-circle-o" />
-                //             </Tooltip>
-                //           </span>
-                //         }
-                //       >
-                //         {getFieldDecorator('nickname', {})(<Input />)}
-                //       </Form.Item>,
-                //       <Form.Item label="Habitual Residence">
-                //         {getFieldDecorator('residence', {
-                //           initialValue: ['zhejiang', 'hangzhou', 'xihu'],
-                //           // rules: [
-                //           //   {
-                //           //     type: 'array',
-                //           //     required: true,
-                //           //     message: 'Please select your habitual residence!',
-                //           //   },
-                //           // ],
-                //         })(<Cascader options={residences} />)}
-                //       </Form.Item>,
-                //     ];
-                //   },
-                // }}
-                request={async (params) => {
-                  console.log('params', params);
+                request={async () => {
                   await delay(1000);
-                  return {
-                    total: 100,
-                    list: [
-                      {
-                        key: '1',
-                        name: '胡彦斌',
-                        age: 32,
-                        address: '西湖区湖底公园1号',
-                      },
-                      {
-                        key: '2',
-                        name: '胡彦祖',
-                        age: 42,
-                        address: '西湖区湖底公园1号',
-                      },
-                    ],
-                  };
+                  return [
+                    {
+                      key: '1',
+                      name: '胡彦斌',
+                      age: 32,
+                      address: '西湖区湖底公园1号',
+                    },
+                    {
+                      key: '2',
+                      name: '胡彦祖',
+                      age: 42,
+                      address: '西湖区湖底公园1号',
+                    },
+                  ];
                 }}
               />,
             )}

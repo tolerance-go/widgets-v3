@@ -23,6 +23,7 @@ import { handleError } from 'src/_utils/handleError';
 import useLatestRef from 'src/_utils/useLatestRef';
 import './index.less';
 import { classNames } from 'src/_utils/classNames';
+import { TableSelectionBar } from 'src/_utils/TableSelectionBar';
 
 const { TabPane } = Tabs;
 
@@ -114,7 +115,7 @@ export type SearchTableMethods<T> = {
 
 type TableState<T> = {
   activeTabKey: string | undefined;
-  pagination: PaginationConfig;
+  pagination: Pick<PaginationConfig, 'current' | 'total' | 'pageSize'>;
   filters: Partial<Record<keyof T, string[]>>;
   sorter: Record<string, any>;
   extra: TableCurrentDataSource<T>;
@@ -424,55 +425,20 @@ const SearchTable = <T extends Record<string, any> = Record<string, any>>(
           <Col>{actionGroupEl}</Col>
         </Row>
       )}
-      {!!selectedRowsInfo.selectedRowKeys.length && (
-        <Alert
-          style={{ marginBottom: 16 }}
-          message={
-            <Row type="flex" gutter={10} align="middle" justify="space-between">
-              <Col>
-                <Row type="flex" align="middle" gutter={8}>
-                  <Col>
-                    <span>
-                      <span>已选 {selectedRowsInfo.selectedRowKeys.length} 项</span>
-                      <Button
-                        style={{
-                          marginLeft: 8,
-                        }}
-                        size="small"
-                        type="link"
-                        onClick={clearSelection}
-                      >
-                        取消选择
-                      </Button>
-                    </span>
-                  </Col>
-                  <Col>
-                    {renderSelectionDetail?.({
-                      methods,
-                      activeTabKey: tableState.activeTabKey,
-                      selectedRowsInfo,
-                    })}
-                  </Col>
-                </Row>
-              </Col>
-              <Col>
-                <Row align="middle" type="flex" gutter={8}>
-                  {React.Children.map(
-                    renderBatchActionGroup?.({
-                      methods,
-                      activeTabKey: tableState.activeTabKey,
-                      selectedRowsInfo,
-                    }),
-                    (action: React.ReactNode, index: number) => (
-                      <Col key={index}>{action}</Col>
-                    ),
-                  )}
-                </Row>
-              </Col>
-            </Row>
-          }
-        ></Alert>
-      )}
+      <TableSelectionBar
+        selectedRowKeys={selectedRowsInfo.selectedRowKeys}
+        clearSelection={clearSelection}
+        selectionDetail={renderSelectionDetail?.({
+          methods,
+          activeTabKey: tableState.activeTabKey,
+          selectedRowsInfo,
+        })}
+        batchActionGroup={renderBatchActionGroup?.({
+          methods,
+          activeTabKey: tableState.activeTabKey,
+          selectedRowsInfo,
+        })}
+      />
       <Table
         {...tableProps}
         className={classNames('wg-search-table', tableProps.className)}
