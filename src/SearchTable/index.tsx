@@ -378,7 +378,7 @@ const SearchTable = forwardRef(
                 }
               >
                 {tabs.map((item) => {
-                  return <TabPane tab={item.title} key={item.key}></TabPane>;
+                  return <TabPane tab={item.title} key={item.key} disabled={loading}></TabPane>;
                 })}
               </Tabs>
             )}
