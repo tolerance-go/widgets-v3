@@ -153,4 +153,29 @@ GroupsForm 复制支持数据复制
 
 ---
 
-SearchTable 切换 tab 的时候，分页参数从 1 开始
+~~SearchTable 切换 tab 的时候，分页参数从 1 开始~~
+
+---
+
+value 为字符串数组的 DateRange
+
+       const { modifyTime, ...rest } = params.search;
+
+        const query = {
+          currentPage: params.pagination.current,
+          pageSize: params.pagination.pageSize,
+          'qp-auditStatus-in': params.tabItem.data.auditStatus,
+          'qp-shipperCode-eq': getChannelCode(),
+          ...rest,
+          'qp-modifyTime-ge': modifyTime?.[0].format('YYYY-MM-DD HH:mm:ss'),
+          'qp-modifyTime-le': modifyTime?.[1].format('YYYY-MM-DD HH:mm:ss'),
+        };
+
+---
+
+支持 valueType
+
+          title: '操作日期',
+          dataIndex: 'createTime',
+          key: 'createTime',
+          render: val => moment.utc(val).format('YYYY-MM-DD HH:mm:ss'),
