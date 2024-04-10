@@ -20,16 +20,19 @@ import React, {
 } from 'react';
 import SearchForm, { SearchFormProps } from '../SearchForm';
 import { handleError } from 'src/_utils/handleError';
+import useLatestRef from 'src/_utils/useLatestRef';
 
 const { TabPane } = Tabs;
 
 export interface RequestParams<T> {
   activeTabKey?: string;
+  tabItem?: TableTabItem;
   pagination: PaginationConfig;
   filters: Partial<Record<keyof T, string[]>>;
   sorter: Record<string, any>;
   search: Record<string, any>;
   extra: TableCurrentDataSource<T>;
+  methods: SearchTableMethods<T>;
 }
 
 export interface RequestResult<T> {
@@ -41,6 +44,7 @@ export interface RequestResult<T> {
 type TableTabItem = {
   key?: string;
   title?: string;
+  data?: Record<string, any>;
 };
 
 type TableSelectionState<T> = {
@@ -103,6 +107,7 @@ export type SearchTableProps<T extends {} = {}> = {
 export type SearchTableMethods<T> = {
   reload: (params?: Partial<RequestParams<T>>) => void;
   clearSelection: () => void;
+  getTabItem: (key: string) => TableTabItem | undefined;
 };
 
 // Add generic type T to the component function
@@ -200,6 +205,7 @@ const SearchTable = forwardRef(
             ? { ...tableState.searchValues, ...params?.search }
             : tableState.searchValues,
           extra: params?.extra ? { ...tableState.extra, ...params?.extra } : tableState.extra,
+          methods,
         };
 
         fetch(nextParams);
@@ -210,10 +216,15 @@ const SearchTable = forwardRef(
           ...nextParams,
         });
       },
+      getTabItem: (key: string) => {
+        return tabs?.find((item) => item.key === key);
+      },
     };
 
     // 更新useImperativeHandle钩子，直接使用methods对象
     useImperativeHandle(ref, () => methods);
+
+    const methodsRef = useLatestRef(methods);
 
     useEffect(() => {
       if (skipNextFetchRef.current) {
@@ -222,12 +233,16 @@ const SearchTable = forwardRef(
       }
 
       fetchRef.current({
+        tabItem: tableState.activeTabKey
+          ? methodsRef.current.getTabItem(tableState.activeTabKey)
+          : undefined,
         activeTabKey: tableState.activeTabKey,
         pagination: tableState.pagination,
         filters: tableState.filters,
         sorter: tableState.sorter,
         search: tableState.searchValues,
         extra: tableState.extra,
+        methods: methodsRef.current,
       });
     }, [
       tableState.pagination.current,

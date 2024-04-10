@@ -45,10 +45,16 @@ export default () => (
       {
         key: '1',
         title: '中学',
+        data: {
+          test: 0,
+        },
       },
       {
         key: '2',
         title: '小学',
+        data: {
+          test: 1,
+        },
       },
     ]}
     columns={({ activeTabKey }) =>
