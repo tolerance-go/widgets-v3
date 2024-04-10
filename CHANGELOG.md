@@ -1,3 +1,9 @@
+# [0.26.0](https://github.com/tolerance-go/widgets-v3/compare/v0.25.0...v0.26.0) (2024-04-10)
+
+### Features
+
+- **SearchTable:** 支持 tabItem 挂载额外数据 ([de942fb](https://github.com/tolerance-go/widgets-v3/commit/de942fbeadb4a0c2f338a57fee43fb7896624d8e))
+
 # [0.25.0](https://github.com/tolerance-go/widgets-v3/compare/v0.24.0...v0.25.0) (2024-04-10)
 
 ### Features
