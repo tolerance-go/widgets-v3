@@ -1,3 +1,13 @@
+## [0.27.1](https://github.com/tolerance-go/widgets-v3/compare/v0.27.0...v0.27.1) (2024-04-10)
+
+### Bug Fixes
+
+- **Utils:** EnhancedMap 重构 ([63d8544](https://github.com/tolerance-go/widgets-v3/commit/63d854426ff48b209747a12944f8de7b2178cccc))
+
+### BREAKING CHANGES
+
+- **Utils:** filter 改为 pick，ignore 改为 omit
+
 # [0.27.0](https://github.com/tolerance-go/widgets-v3/compare/v0.26.2...v0.27.0) (2024-04-10)
 
 ### Features
