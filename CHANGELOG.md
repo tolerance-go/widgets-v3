@@ -1,3 +1,9 @@
+## [0.27.3](https://github.com/tolerance-go/widgets-v3/compare/v0.27.2...v0.27.3) (2024-04-10)
+
+### Bug Fixes
+
+- **SearchTable:** 修复 reload 不传参数的时候，影响下一次正常请求 ([41277c6](https://github.com/tolerance-go/widgets-v3/commit/41277c6d94319127fd0e1dbc98e1d7f54b289b5d))
+
 ## [0.27.2](https://github.com/tolerance-go/widgets-v3/compare/v0.27.1...v0.27.2) (2024-04-10)
 
 ### Bug Fixes
