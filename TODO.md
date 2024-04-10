@@ -183,3 +183,13 @@ value 为字符串数组的 DateRange
 ---
 
 重置自动搜索一次
+
+---
+
+                              const res = await request(`${baseUrl}/logisticsCompany/getCompanyListNoPage`)
+                              if (res.code !== BE_SUCCESS_CODE) {
+                                throw res.msg
+                              }
+
+
+                              支持 trow 一个带 type 对象
