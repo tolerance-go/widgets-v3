@@ -1,3 +1,11 @@
+## [0.27.2](https://github.com/tolerance-go/widgets-v3/compare/v0.27.1...v0.27.2) (2024-04-10)
+
+### Bug Fixes
+
+- **SearchTable:** 搜索加载的时候，禁用 tab ([c1db257](https://github.com/tolerance-go/widgets-v3/commit/c1db257f3f936cc169405908fbcc98c325077c80))
+- **SearchTable:** 修复 tabs 样式问题 ([3a3180e](https://github.com/tolerance-go/widgets-v3/commit/3a3180e01a4375dd0713b507ca7a0060de1f9a0e))
+- **SearchTable:** reload 的时候，丢失了 tab 的状态 ([9978b82](https://github.com/tolerance-go/widgets-v3/commit/9978b82d215cc62b72a282c3608fd7711e8c97bf))
+
 ## [0.27.1](https://github.com/tolerance-go/widgets-v3/compare/v0.27.0...v0.27.1) (2024-04-10)
 
 ### Bug Fixes
