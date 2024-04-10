@@ -1,3 +1,9 @@
+# [0.27.0](https://github.com/tolerance-go/widgets-v3/compare/v0.26.2...v0.27.0) (2024-04-10)
+
+### Features
+
+- **Utils:** 新增 EnhancedMap 工具类 ([827239e](https://github.com/tolerance-go/widgets-v3/commit/827239e0c49f0dca62e00d14585b180129d1f7cb))
+
 ## [0.26.2](https://github.com/tolerance-go/widgets-v3/compare/v0.26.1...v0.26.2) (2024-04-10)
 
 ### Bug Fixes
