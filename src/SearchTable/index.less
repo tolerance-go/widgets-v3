@@ -4,4 +4,17 @@
       margin-bottom: 0;
     }
   }
+
+  &-search-table {
+    // 表单内部的表格，出错的时候，不显示红色，比如 SelectableTable 在 FormItem 下面
+    .ant-pagination-options {
+      .ant-select-selection {
+        border: 1px solid #d9d9d9 !important;
+
+        .ant-select-arrow {
+          color: rgba(0, 0, 0, 0.25) !important;
+        }
+      }
+    }
+  }
 }

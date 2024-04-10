@@ -22,6 +22,7 @@ import SearchForm, { SearchFormProps } from '../SearchForm';
 import { handleError } from 'src/_utils/handleError';
 import useLatestRef from 'src/_utils/useLatestRef';
 import './index.less';
+import { classNames } from 'src/_utils/classNames';
 
 const { TabPane } = Tabs;
 
@@ -121,232 +122,278 @@ type TableState<T> = {
 };
 
 // Add generic type T to the component function
-const SearchTable = forwardRef(
-  <T extends Record<string, any> = Record<string, any>>(
-    {
-      searchForm,
-      tabs,
-      headerTitle,
-      request,
-      renderActionGroup,
-      renderBatchActionGroup,
-      renderSelectionDetail,
-      rowKey = 'key',
-      columns,
-      ...tableProps
-    }: SearchTableProps<T>,
-    ref: ForwardedRef<SearchTableMethods<T>>,
-  ) => {
-    const [list, setList] = useState<T[]>([]);
-    const [data, setData] = useState<Record<string, any>>({});
-    const [loading, setLoading] = useState(false);
+const SearchTable = <T extends Record<string, any> = Record<string, any>>(
+  {
+    searchForm,
+    tabs,
+    headerTitle,
+    request,
+    renderActionGroup,
+    renderBatchActionGroup,
+    renderSelectionDetail,
+    rowKey = 'key',
+    columns,
+    ...tableProps
+  }: SearchTableProps<T>,
+  ref: ForwardedRef<SearchTableMethods<T>>,
+) => {
+  const [list, setList] = useState<T[]>([]);
+  const [data, setData] = useState<Record<string, any>>({});
+  const [loading, setLoading] = useState(false);
 
-    const [tableState, setTableState] = useState<TableState<T>>({
-      activeTabKey: tabs?.[0]?.key,
-      pagination: { current: 1, pageSize: 10 },
-      filters: {},
-      sorter: {},
-      extra: { currentDataSource: list },
-      searchValues: {},
-    });
+  const [tableState, setTableState] = useState<TableState<T>>({
+    activeTabKey: tabs?.[0]?.key,
+    pagination: { current: 1, pageSize: 10 },
+    filters: {},
+    sorter: {},
+    extra: { currentDataSource: list },
+    searchValues: {},
+  });
 
-    // 保存选中行的keys和rows
-    const [selectedRowsInfo, setSelectedRowsInfo] = useState<TableSelectionState<T>>({
+  // 保存选中行的keys和rows
+  const [selectedRowsInfo, setSelectedRowsInfo] = useState<TableSelectionState<T>>({
+    selectedRowKeys: [],
+    selectedRows: [],
+  });
+
+  const skipNextFetchRef = useRef(false);
+
+  const clearSelection = () => {
+    setSelectedRowsInfo({
       selectedRowKeys: [],
       selectedRows: [],
     });
+  };
 
-    const skipNextFetchRef = useRef(false);
+  const fetch = async (params: RequestParams<T>) => {
+    if (!request) return;
 
-    const clearSelection = () => {
-      setSelectedRowsInfo({
-        selectedRowKeys: [],
-        selectedRows: [],
-      });
-    };
+    try {
+      setLoading(true);
+      const result = await request(params);
+      setList(result.list); // TypeScript now knows this is T[]
+      result.data && setData(result.data);
+      clearSelection();
+      setTableState((prevState) => ({
+        ...prevState,
+        pagination: { ...prevState.pagination, total: result.total },
+      }));
+    } catch (error) {
+      handleError(error, '请求表格数据失败');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    const fetch = async (params: RequestParams<T>) => {
-      if (!request) return;
+  const fetchRef = useRef(fetch);
 
-      try {
-        setLoading(true);
-        const result = await request(params);
-        setList(result.list); // TypeScript now knows this is T[]
-        result.data && setData(result.data);
-        clearSelection();
-        setTableState((prevState) => ({
-          ...prevState,
-          pagination: { ...prevState.pagination, total: result.total },
-        }));
-      } catch (error) {
-        handleError(error, '请求表格数据失败');
-      } finally {
-        setLoading(false);
-      }
-    };
+  useEffect(() => {
+    fetchRef.current = fetch;
+  }, [fetch]);
 
-    const fetchRef = useRef(fetch);
+  // 在组件内部创建methods对象
+  const methods: SearchTableMethods<T> = {
+    clearSelection,
+    reload: (params?: Partial<RequestParams<T>>) => {
+      const nextTableState: TableState<T> = {
+        activeTabKey: params?.activeTabKey ?? tableState.activeTabKey,
+        pagination: params?.pagination
+          ? { ...tableState.pagination, ...params?.pagination }
+          : tableState.pagination,
+        filters: params?.filters
+          ? { ...tableState.filters, ...params?.filters }
+          : tableState.filters,
+        sorter: params?.sorter ? { ...tableState.sorter, ...params?.sorter } : tableState.sorter,
+        searchValues: params?.search
+          ? { ...tableState.searchValues, ...params?.search }
+          : tableState.searchValues,
+        extra: params?.extra ? { ...tableState.extra, ...params?.extra } : tableState.extra,
+      };
 
-    useEffect(() => {
-      fetchRef.current = fetch;
-    }, [fetch]);
+      const { searchValues, ...restTableState } = nextTableState;
 
-    // 在组件内部创建methods对象
-    const methods: SearchTableMethods<T> = {
-      clearSelection,
-      reload: (params?: Partial<RequestParams<T>>) => {
-        const nextTableState: TableState<T> = {
-          activeTabKey: params?.activeTabKey ?? tableState.activeTabKey,
-          pagination: params?.pagination
-            ? { ...tableState.pagination, ...params?.pagination }
-            : tableState.pagination,
-          filters: params?.filters
-            ? { ...tableState.filters, ...params?.filters }
-            : tableState.filters,
-          sorter: params?.sorter ? { ...tableState.sorter, ...params?.sorter } : tableState.sorter,
-          searchValues: params?.search
-            ? { ...tableState.searchValues, ...params?.search }
-            : tableState.searchValues,
-          extra: params?.extra ? { ...tableState.extra, ...params?.extra } : tableState.extra,
-        };
-
-        const { searchValues, ...restTableState } = nextTableState;
-
-        fetch({
-          tabItem: tableState.activeTabKey
-            ? methodsRef.current.getTabItem(tableState.activeTabKey)
-            : undefined,
-          methods,
-          search: nextTableState.searchValues,
-          ...restTableState,
-        });
-
-        /**
-         * 判断一下触发自动请求的参数列表是否产生 diff，如果有 diff 的情况下，才禁止下次自动请求，否则跳过不去影响下次正常请求
-         */
-        if (
-          !(
-            tableState.pagination.current === nextTableState.pagination.current &&
-            tableState.pagination.pageSize === nextTableState.pagination.pageSize &&
-            tableState.filters === nextTableState.filters &&
-            tableState.sorter === nextTableState.sorter &&
-            tableState.extra === nextTableState.extra &&
-            tableState.searchValues === nextTableState.searchValues &&
-            tableState.activeTabKey === nextTableState.activeTabKey
-          )
-        ) {
-          // 禁止下一次自动请求
-          skipNextFetchRef.current = true;
-        }
-
-        setTableState(nextTableState);
-      },
-      getTabItem: (key: string) => {
-        return tabs?.find((item) => item.key === key);
-      },
-    };
-
-    // 更新useImperativeHandle钩子，直接使用methods对象
-    useImperativeHandle(ref, () => methods);
-
-    const methodsRef = useLatestRef(methods);
-
-    useEffect(() => {
-      if (skipNextFetchRef.current) {
-        skipNextFetchRef.current = false;
-        return;
-      }
-
-      fetchRef.current({
+      fetch({
         tabItem: tableState.activeTabKey
           ? methodsRef.current.getTabItem(tableState.activeTabKey)
           : undefined,
-        activeTabKey: tableState.activeTabKey,
-        pagination: tableState.pagination,
-        filters: tableState.filters,
-        sorter: tableState.sorter,
-        search: tableState.searchValues,
-        extra: tableState.extra,
-        methods: methodsRef.current,
+        methods,
+        search: nextTableState.searchValues,
+        ...restTableState,
       });
-    }, [
-      tableState.pagination.current,
-      tableState.pagination.pageSize,
-      tableState.filters,
-      tableState.sorter,
-      tableState.extra,
-      tableState.searchValues,
-      tableState.activeTabKey,
-    ]);
 
-    // 处理rowSelection，合并用户的配置
-    const handleRowSelection: TableProps<T>['rowSelection'] = tableProps.rowSelection
-      ? {
-          // 在selections中添加自定义选择项来实现反选
-          selections: [
-            {
-              key: 'invert',
-              text: '反选当页',
-              onSelect: (changableRowKeys) => {
-                const nextSelectedRowKeys = changableRowKeys.filter((key) => {
-                  // selectedRowKeys 可能为 number 数组或 string 数组
-                  return !(selectedRowsInfo.selectedRowKeys as string[]).includes(key);
-                });
-                // 需要找到这些键对应的行数据
-                const nextSelectedRows = list.filter(
-                  (row, index) =>
-                    nextSelectedRowKeys.includes(
-                      row[typeof rowKey === 'function' ? rowKey(row, index) : rowKey],
-                    ), // 假设每行数据都有一个唯一的`key`属性
-                );
-                setSelectedRowsInfo({
-                  selectedRowKeys: nextSelectedRowKeys,
-                  selectedRows: nextSelectedRows,
-                });
-              },
-            },
-          ],
-          ...tableProps.rowSelection,
-          hideDefaultSelections: true,
-          onChange: (selectedRowKeys, selectedRows) => {
-            // 更新内部状态
-            setSelectedRowsInfo({ selectedRowKeys, selectedRows });
-
-            // 如果用户传递了onChange，则调用
-            tableProps.rowSelection?.onChange?.(selectedRowKeys, selectedRows);
-          },
-          selectedRowKeys: selectedRowsInfo.selectedRowKeys,
-        }
-      : undefined;
-
-    const handleTableChange: TableProps<T>['onChange'] = (
-      pagination: PaginationConfig,
-      filters: Partial<Record<keyof T, string[]>>,
-      sorter: SorterResult<T>,
-      extra: TableCurrentDataSource<T>,
-    ) => {
-      setTableState((prevState) => ({
-        ...prevState,
-        pagination,
-        filters,
-        sorter,
-        extra,
-      }));
-    };
-
-    const mergedColumns = useMemo(() => {
-      if (typeof columns === 'function') {
-        return columns({
-          activeTabKey: tableState.activeTabKey,
-          methods,
-          selectedRowsInfo,
-        });
+      /**
+       * 判断一下触发自动请求的参数列表是否产生 diff，如果有 diff 的情况下，才禁止下次自动请求，否则跳过不去影响下次正常请求
+       */
+      if (
+        !(
+          tableState.pagination.current === nextTableState.pagination.current &&
+          tableState.pagination.pageSize === nextTableState.pagination.pageSize &&
+          tableState.filters === nextTableState.filters &&
+          tableState.sorter === nextTableState.sorter &&
+          tableState.extra === nextTableState.extra &&
+          tableState.searchValues === nextTableState.searchValues &&
+          tableState.activeTabKey === nextTableState.activeTabKey
+        )
+      ) {
+        // 禁止下一次自动请求
+        skipNextFetchRef.current = true;
       }
-      return columns;
-    }, [columns, tableState.activeTabKey, methods, selectedRowsInfo]);
 
-    return (
-      <div className="wg-search-table-wrapper">
+      setTableState(nextTableState);
+    },
+    getTabItem: (key: string) => {
+      return tabs?.find((item) => item.key === key);
+    },
+  };
+
+  // 更新useImperativeHandle钩子，直接使用methods对象
+  useImperativeHandle(ref, () => methods);
+
+  const methodsRef = useLatestRef(methods);
+
+  useEffect(() => {
+    if (skipNextFetchRef.current) {
+      skipNextFetchRef.current = false;
+      return;
+    }
+
+    fetchRef.current({
+      tabItem: tableState.activeTabKey
+        ? methodsRef.current.getTabItem(tableState.activeTabKey)
+        : undefined,
+      activeTabKey: tableState.activeTabKey,
+      pagination: tableState.pagination,
+      filters: tableState.filters,
+      sorter: tableState.sorter,
+      search: tableState.searchValues,
+      extra: tableState.extra,
+      methods: methodsRef.current,
+    });
+  }, [
+    tableState.pagination.current,
+    tableState.pagination.pageSize,
+    tableState.filters,
+    tableState.sorter,
+    tableState.extra,
+    tableState.searchValues,
+    tableState.activeTabKey,
+  ]);
+
+  // 处理rowSelection，合并用户的配置
+  const handleRowSelection: TableProps<T>['rowSelection'] = tableProps.rowSelection
+    ? {
+        // 在selections中添加自定义选择项来实现反选
+        selections: [
+          {
+            key: 'invert',
+            text: '反选当页',
+            onSelect: (changableRowKeys) => {
+              const nextSelectedRowKeys = changableRowKeys.filter((key) => {
+                // selectedRowKeys 可能为 number 数组或 string 数组
+                return !(selectedRowsInfo.selectedRowKeys as string[]).includes(key);
+              });
+              // 需要找到这些键对应的行数据
+              const nextSelectedRows = list.filter(
+                (row, index) =>
+                  nextSelectedRowKeys.includes(
+                    row[typeof rowKey === 'function' ? rowKey(row, index) : rowKey],
+                  ), // 假设每行数据都有一个唯一的`key`属性
+              );
+              setSelectedRowsInfo({
+                selectedRowKeys: nextSelectedRowKeys,
+                selectedRows: nextSelectedRows,
+              });
+            },
+          },
+        ],
+        hideDefaultSelections: true,
+        selectedRowKeys: selectedRowsInfo.selectedRowKeys,
+        ...tableProps.rowSelection,
+        onChange: (selectedRowKeys, selectedRows) => {
+          // 更新内部状态
+          setSelectedRowsInfo({ selectedRowKeys, selectedRows });
+
+          // 如果用户传递了onChange，则调用
+          tableProps.rowSelection?.onChange?.(selectedRowKeys, selectedRows);
+        },
+      }
+    : undefined;
+
+  const handleTableChange: TableProps<T>['onChange'] = (
+    pagination: PaginationConfig,
+    filters: Partial<Record<keyof T, string[]>>,
+    sorter: SorterResult<T>,
+    extra: TableCurrentDataSource<T>,
+  ) => {
+    setTableState((prevState) => ({
+      ...prevState,
+      pagination,
+      filters,
+      sorter,
+      extra,
+    }));
+  };
+
+  const mergedColumns = useMemo(() => {
+    if (typeof columns === 'function') {
+      return columns({
+        activeTabKey: tableState.activeTabKey,
+        methods,
+        selectedRowsInfo,
+      });
+    }
+    return columns;
+  }, [columns, tableState.activeTabKey, methods, selectedRowsInfo]);
+
+  const headerTitleEl = headerTitle && (
+    <span
+      style={{
+        color: 'rgba(42, 46, 54, 0.88)',
+        fontWeight: 500,
+        fontSize: '16px',
+      }}
+    >
+      {headerTitle}
+    </span>
+  );
+
+  const tabsEl = tabs?.length && (
+    <Tabs
+      className="wg-search-table-tabs"
+      activeKey={tableState.activeTabKey}
+      type="card"
+      onChange={(key) =>
+        setTableState((prev) => ({
+          ...prev,
+          pagination: { ...prev.pagination, current: 1 },
+          activeTabKey: key,
+        }))
+      }
+    >
+      {tabs.map((item) => {
+        return <TabPane tab={item.title} key={item.key} disabled={loading}></TabPane>;
+      })}
+    </Tabs>
+  );
+
+  const actionGroupEl = renderActionGroup && (
+    <Row type="flex" gutter={8}>
+      {React.Children.map(
+        renderActionGroup({
+          methods,
+          activeTabKey: tableState.activeTabKey,
+          selectedRowsInfo,
+        }),
+        (action: React.ReactNode, index: number) => (
+          <Col key={index}>{action}</Col>
+        ),
+      )}
+    </Row>
+  );
+
+  return (
+    <div className="wg-search-table-wrapper">
+      {searchForm && (
         <SearchForm
           {...(typeof searchForm === 'function'
             ? searchForm({ activeTabKey: tableState.activeTabKey })
@@ -362,6 +409,8 @@ const SearchTable = forwardRef(
             marginBottom: 10,
           }}
         ></SearchForm>
+      )}
+      {(headerTitleEl || tabsEl || actionGroupEl) && (
         <Row
           style={{ paddingTop: 16, paddingBottom: 16 }}
           type="flex"
@@ -369,133 +418,96 @@ const SearchTable = forwardRef(
           align="middle"
         >
           <Col>
-            {headerTitle && (
-              <span
-                style={{
-                  color: 'rgba(42, 46, 54, 0.88)',
-                  fontWeight: 500,
-                  fontSize: '16px',
-                }}
-              >
-                {headerTitle}
-              </span>
-            )}
-            {tabs?.length && (
-              <Tabs
-                className="wg-search-table-tabs"
-                activeKey={tableState.activeTabKey}
-                type="card"
-                onChange={(key) =>
-                  setTableState((prev) => ({
-                    ...prev,
-                    pagination: { ...prev.pagination, current: 1 },
-                    activeTabKey: key,
-                  }))
-                }
-              >
-                {tabs.map((item) => {
-                  return <TabPane tab={item.title} key={item.key} disabled={loading}></TabPane>;
-                })}
-              </Tabs>
-            )}
+            {headerTitleEl}
+            {tabsEl}
           </Col>
-          <Col>
-            <Row type="flex" gutter={8}>
-              {React.Children.map(
-                renderActionGroup?.({
-                  methods,
-                  activeTabKey: tableState.activeTabKey,
-                  selectedRowsInfo,
-                }),
-                (action: React.ReactNode, index: number) => (
-                  <Col key={index}>{action}</Col>
-                ),
-              )}
-            </Row>
-          </Col>
+          <Col>{actionGroupEl}</Col>
         </Row>
-        {!!selectedRowsInfo.selectedRowKeys.length && (
-          <Alert
-            style={{ marginBottom: 16 }}
-            message={
-              <Row type="flex" gutter={10} align="middle" justify="space-between">
-                <Col>
-                  <Row type="flex" align="middle" gutter={8}>
-                    <Col>
-                      <span>
-                        <span>已选 {selectedRowsInfo.selectedRowKeys.length} 项</span>
-                        <Button
-                          style={{
-                            marginLeft: 8,
-                          }}
-                          size="small"
-                          type="link"
-                          onClick={clearSelection}
-                        >
-                          取消选择
-                        </Button>
-                      </span>
-                    </Col>
-                    <Col>
-                      {renderSelectionDetail?.({
-                        methods,
-                        activeTabKey: tableState.activeTabKey,
-                        selectedRowsInfo,
-                      })}
-                    </Col>
-                  </Row>
-                </Col>
-                <Col>
-                  <Row align="middle" type="flex" gutter={8}>
-                    {React.Children.map(
-                      renderBatchActionGroup?.({
-                        methods,
-                        activeTabKey: tableState.activeTabKey,
-                        selectedRowsInfo,
-                      }),
-                      (action: React.ReactNode, index: number) => (
-                        <Col key={index}>{action}</Col>
-                      ),
-                    )}
-                  </Row>
-                </Col>
-              </Row>
-            }
-          ></Alert>
-        )}
-        <Table
-          {...tableProps}
-          columns={mergedColumns?.map((col) => {
-            return {
-              ...col,
-              render: col.render
-                ? (text, record, index) => {
-                    return col.render!(text, record, index, { data });
-                  }
-                : undefined,
-            } as ColumnProps<T>;
-          })}
-          rowKey={rowKey}
-          // 应用处理过的rowSelection
-          rowSelection={handleRowSelection}
-          dataSource={list}
-          pagination={{
-            ...tableState.pagination,
-            // 通常我们希望对结果进行向上取整，确保所有记录都可以被展示，即使最后一页的记录数不足一页的容量。
-            showTotal: (total, range) =>
-              `共 ${total} 条记录 第 ${tableState.pagination.current} / ${Math.ceil(
-                total / (tableState.pagination.pageSize ?? 1),
-              )} 页`,
-            showSizeChanger: true,
-            pageSizeOptions: ['10', '20', '30', '40', '50', '60', '70', '80', '90', '100'],
-            showQuickJumper: true,
-          }}
-          loading={loading}
-          onChange={handleTableChange}
-        />
-      </div>
-    );
-  },
-);
+      )}
+      {!!selectedRowsInfo.selectedRowKeys.length && (
+        <Alert
+          style={{ marginBottom: 16 }}
+          message={
+            <Row type="flex" gutter={10} align="middle" justify="space-between">
+              <Col>
+                <Row type="flex" align="middle" gutter={8}>
+                  <Col>
+                    <span>
+                      <span>已选 {selectedRowsInfo.selectedRowKeys.length} 项</span>
+                      <Button
+                        style={{
+                          marginLeft: 8,
+                        }}
+                        size="small"
+                        type="link"
+                        onClick={clearSelection}
+                      >
+                        取消选择
+                      </Button>
+                    </span>
+                  </Col>
+                  <Col>
+                    {renderSelectionDetail?.({
+                      methods,
+                      activeTabKey: tableState.activeTabKey,
+                      selectedRowsInfo,
+                    })}
+                  </Col>
+                </Row>
+              </Col>
+              <Col>
+                <Row align="middle" type="flex" gutter={8}>
+                  {React.Children.map(
+                    renderBatchActionGroup?.({
+                      methods,
+                      activeTabKey: tableState.activeTabKey,
+                      selectedRowsInfo,
+                    }),
+                    (action: React.ReactNode, index: number) => (
+                      <Col key={index}>{action}</Col>
+                    ),
+                  )}
+                </Row>
+              </Col>
+            </Row>
+          }
+        ></Alert>
+      )}
+      <Table
+        {...tableProps}
+        className={classNames('wg-search-table', tableProps.className)}
+        columns={mergedColumns?.map((col) => {
+          return {
+            ...col,
+            render: col.render
+              ? (text, record, index) => {
+                  return col.render!(text, record, index, { data });
+                }
+              : undefined,
+          } as ColumnProps<T>;
+        })}
+        rowKey={rowKey}
+        // 应用处理过的rowSelection
+        rowSelection={handleRowSelection}
+        dataSource={list}
+        pagination={{
+          ...tableState.pagination,
+          // 通常我们希望对结果进行向上取整，确保所有记录都可以被展示，即使最后一页的记录数不足一页的容量。
+          showTotal: (total, range) =>
+            `共 ${total} 条记录 第 ${tableState.pagination.current} / ${Math.ceil(
+              total / (tableState.pagination.pageSize ?? 1),
+            )} 页`,
+          showSizeChanger: true,
+          pageSizeOptions: ['10', '20', '30', '40', '50', '60', '70', '80', '90', '100'],
+          showQuickJumper: true,
+        }}
+        loading={loading}
+        onChange={handleTableChange}
+      />
+    </div>
+  );
+};
 
-export default SearchTable;
+export default forwardRef(SearchTable) as <T extends Record<string, any> = Record<string, any>>(
+  props: SearchTableProps<T> & { ref?: ForwardedRef<SearchTableMethods<T>> },
+) => JSX.Element;

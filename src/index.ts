@@ -25,6 +25,7 @@ export { default as GroupsForm } from './GroupsForm';
 export { default as SmartSteps } from './SmartSteps';
 export { default as StepsForm } from './StepsForm';
 export { default as ImageCropper } from './ImageCropper';
+export { default as SelectableTable } from './SelectableTable';
 export { default as EnhancedMap } from './_utils/EnhancedMap';
 
 export type { BackendFilteredSelectListItem } from './BackendFilteredSelect';

@@ -193,3 +193,7 @@ value 为字符串数组的 DateRange
 
 
                               支持 trow 一个带 type 对象
+
+---
+
+删除 editableTable 的行选择功能，新增 SelectableTable
