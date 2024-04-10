@@ -1,3 +1,9 @@
+## [0.26.1](https://github.com/tolerance-go/widgets-v3/compare/v0.26.0...v0.26.1) (2024-04-10)
+
+### Bug Fixes
+
+- **SearchTable:** 切换 tab 的时候，分页从第一页开始 ([73a10b1](https://github.com/tolerance-go/widgets-v3/commit/73a10b16a7f1944f11f59ff4066d65463b909051))
+
 # [0.26.0](https://github.com/tolerance-go/widgets-v3/compare/v0.25.0...v0.26.0) (2024-04-10)
 
 ### Features
