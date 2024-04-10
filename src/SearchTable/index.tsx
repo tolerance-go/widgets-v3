@@ -221,8 +221,24 @@ const SearchTable = forwardRef(
           ...restTableState,
         });
 
-        // 禁止下一次自动请求
-        skipNextFetchRef.current = true;
+        /**
+         * 判断一下触发自动请求的参数列表是否产生 diff，如果有 diff 的情况下，才禁止下次自动请求，否则跳过不去影响下次正常请求
+         */
+        if (
+          !(
+            tableState.pagination.current === nextTableState.pagination.current &&
+            tableState.pagination.pageSize === nextTableState.pagination.pageSize &&
+            tableState.filters === nextTableState.filters &&
+            tableState.sorter === nextTableState.sorter &&
+            tableState.extra === nextTableState.extra &&
+            tableState.searchValues === nextTableState.searchValues &&
+            tableState.activeTabKey === nextTableState.activeTabKey
+          )
+        ) {
+          // 禁止下一次自动请求
+          skipNextFetchRef.current = true;
+        }
+
         setTableState(nextTableState);
       },
       getTabItem: (key: string) => {
