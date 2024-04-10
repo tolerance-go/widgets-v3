@@ -193,6 +193,9 @@ const SearchTable = forwardRef(
       clearSelection,
       reload: (params?: Partial<RequestParams<T>>) => {
         const nextParams = {
+          tabItem: tableState.activeTabKey
+            ? methodsRef.current.getTabItem(tableState.activeTabKey)
+            : undefined,
           activeTabKey: params?.activeTabKey,
           pagination: params?.pagination
             ? { ...tableState.pagination, ...params?.pagination }

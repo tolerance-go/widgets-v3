@@ -174,7 +174,16 @@ export default () => (
         />,
         <Action
           key="btn2"
-          trigger={<Button type="primary">按钮2</Button>}
+          trigger={
+            <Button
+              type="primary"
+              onClick={() => {
+                renderActionGroupParams.methods.reload();
+              }}
+            >
+              手动刷新
+            </Button>
+          }
           request={async () => {
             await delay(1000);
           }}

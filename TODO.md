@@ -179,3 +179,7 @@ value 为字符串数组的 DateRange
           dataIndex: 'createTime',
           key: 'createTime',
           render: val => moment.utc(val).format('YYYY-MM-DD HH:mm:ss'),
+
+---
+
+重置自动搜索一次
