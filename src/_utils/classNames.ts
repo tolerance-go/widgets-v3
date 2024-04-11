@@ -1,4 +1,4 @@
-type Argument = string | number | null | undefined | ArgumentArray | { [key: string]: any };
+type Argument = string | number | null | undefined | false | ArgumentArray | { [key: string]: any };
 interface ArgumentArray extends Array<Argument> {}
 
 /**

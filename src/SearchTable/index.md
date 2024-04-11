@@ -39,3 +39,7 @@ group:
 尝试翻页，第 2，3 页面会报错
 
 <code src="./demos/throwError" />
+
+## 浮动底部分页器
+
+<code src="./demos/floatingPagination" />

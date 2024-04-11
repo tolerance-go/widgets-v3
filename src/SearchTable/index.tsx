@@ -1,4 +1,5 @@
-import { Alert, Button, Col, Row, Table, Tabs } from 'antd';
+import { Affix, Alert, Button, Col, Pagination, Row, Spin, Table, Tabs } from 'antd';
+import ReactDOM from 'react-dom';
 import {
   ColumnProps,
   PaginationConfig,
@@ -24,6 +25,7 @@ import useLatestRef from 'src/_utils/useLatestRef';
 import './index.less';
 import { classNames } from 'src/_utils/classNames';
 import { TableSelectionBar } from 'src/_utils/TableSelectionBar';
+import { AffixProps } from 'antd/es/affix';
 
 const { TabPane } = Tabs;
 
@@ -105,7 +107,44 @@ export type SearchTableProps<T extends {} = {}> = {
         activeTabKey?: string;
         selectedRowsInfo: TableSelectionState<T>;
       }) => SearchTableColumnProps<T>[]);
+  floatingPagination?: boolean;
+  getPaginationContainer?: () => HTMLElement; // 函数，返回分页器的容器DOM元素
 } & Omit<TableProps<T>, 'columns'>;
+
+const FloatingPagination = <T extends {} = {}>({
+  paginationProps,
+  onChange,
+  loading,
+  getPaginationContainer,
+}: {
+  onChange?: (page: number, pageSize?: number) => void;
+  paginationProps: TableProps<T>['pagination'];
+  loading?: boolean;
+  getPaginationContainer?: () => HTMLElement; // 函数，返回分页器的容器DOM元素
+}) => {
+  // 使用 getPaginationContainer 函数获取容器
+  const container = getPaginationContainer ? getPaginationContainer() : document.body;
+
+  return ReactDOM.createPortal(
+    <Spin spinning={loading} indicator={<span></span>}>
+      <Row
+        style={{
+          padding: '16px 0px',
+          background: 'white',
+        }}
+        type="flex"
+        justify="space-between"
+        align="middle"
+      >
+        <Col></Col>
+        <Col>
+          <Pagination {...paginationProps} onChange={onChange} onShowSizeChange={onChange} />
+        </Col>
+      </Row>
+    </Spin>,
+    container,
+  );
+};
 
 export type SearchTableMethods<T> = {
   reload: (params?: Partial<RequestParams<T>>) => void;
@@ -134,6 +173,8 @@ const SearchTable = <T extends Record<string, any> = Record<string, any>>(
     renderSelectionDetail,
     rowKey = 'key',
     columns,
+    floatingPagination,
+    getPaginationContainer,
     ...tableProps
   }: SearchTableProps<T>,
   ref: ForwardedRef<SearchTableMethods<T>>,
@@ -392,6 +433,18 @@ const SearchTable = <T extends Record<string, any> = Record<string, any>>(
     </Row>
   );
 
+  const paginationProps: TableProps<T>['pagination'] = {
+    ...tableState.pagination,
+    // 通常我们希望对结果进行向上取整，确保所有记录都可以被展示，即使最后一页的记录数不足一页的容量。
+    showTotal: (total, range) =>
+      `共 ${total} 条记录 第 ${tableState.pagination.current} / ${Math.ceil(
+        total / (tableState.pagination.pageSize ?? 1),
+      )} 页`,
+    showSizeChanger: true,
+    pageSizeOptions: ['10', '20', '30', '40', '50', '60', '70', '80', '90', '100'],
+    showQuickJumper: true,
+  };
+
   return (
     <div className="wg-search-table-wrapper">
       {searchForm && (
@@ -441,7 +494,11 @@ const SearchTable = <T extends Record<string, any> = Record<string, any>>(
       />
       <Table
         {...tableProps}
-        className={classNames('wg-search-table', tableProps.className)}
+        className={classNames(
+          'wg-search-table',
+          tableProps.className,
+          floatingPagination && 'hidden-pagination',
+        )}
         columns={mergedColumns?.map((col) => {
           return {
             ...col,
@@ -456,20 +513,27 @@ const SearchTable = <T extends Record<string, any> = Record<string, any>>(
         // 应用处理过的rowSelection
         rowSelection={handleRowSelection}
         dataSource={list}
-        pagination={{
-          ...tableState.pagination,
-          // 通常我们希望对结果进行向上取整，确保所有记录都可以被展示，即使最后一页的记录数不足一页的容量。
-          showTotal: (total, range) =>
-            `共 ${total} 条记录 第 ${tableState.pagination.current} / ${Math.ceil(
-              total / (tableState.pagination.pageSize ?? 1),
-            )} 页`,
-          showSizeChanger: true,
-          pageSizeOptions: ['10', '20', '30', '40', '50', '60', '70', '80', '90', '100'],
-          showQuickJumper: true,
-        }}
+        pagination={paginationProps}
         loading={loading}
         onChange={handleTableChange}
       />
+      {floatingPagination && (
+        <FloatingPagination
+          loading={loading}
+          getPaginationContainer={getPaginationContainer}
+          paginationProps={paginationProps}
+          onChange={(current, pageSize) => {
+            setTableState((prevState) => ({
+              ...prevState,
+              pagination: {
+                ...prevState.pagination,
+                current,
+                pageSize,
+              },
+            }));
+          }}
+        />
+      )}
     </div>
   );
 };
