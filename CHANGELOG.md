@@ -1,3 +1,13 @@
+# [0.30.0](https://github.com/tolerance-go/widgets-v3/compare/v0.29.0...v0.30.0) (2024-04-11)
+
+### Bug Fixes
+
+- **SelectableTable:** clearSelection 触发 onChange ([6678280](https://github.com/tolerance-go/widgets-v3/commit/66782801cf9cf9ea69dbed26e027944bb5251fe3))
+
+### Features
+
+- **SelectableTable:** 新增 params 参数，数据驱动 ([8053954](https://github.com/tolerance-go/widgets-v3/commit/8053954f4b67f5981d473a61eff2e1f1eea68193))
+
 # [0.29.0](https://github.com/tolerance-go/widgets-v3/compare/v0.28.0...v0.29.0) (2024-04-11)
 
 ### Features
