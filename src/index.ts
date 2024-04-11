@@ -33,3 +33,4 @@ export type { FrontendFilteredSelectListItem } from './FrontendFilteredSelect';
 export type { SearchTableProps } from './SearchTable';
 export type { EditableTabsProps } from './EditableTabs';
 export type { EditableGroupsProps } from './EditableGroups';
+export type { SelectableTableMethods } from './SelectableTable';

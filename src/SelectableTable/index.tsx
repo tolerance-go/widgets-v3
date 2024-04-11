@@ -1,18 +1,10 @@
-import { TableRowSelection } from 'antd/lib/table'; // 假设 SearchTable 的类型与 Ant Design 的 Table 相似
-import React, {
-  ForwardedRef,
-  forwardRef,
-  useEffect,
-  useImperativeHandle,
-  useRef,
-  useState,
-} from 'react';
-import SearchTable, { SearchTableMethods, SearchTableProps } from 'src/SearchTable';
-import useUpdateEffect from 'src/_utils/useUpdateEffect';
 import { Table } from 'antd';
 import { TableProps } from 'antd/es/table';
-import { handleError } from 'src/_utils/handleError';
+import { TableRowSelection } from 'antd/lib/table'; // 假设 SearchTable 的类型与 Ant Design 的 Table 相似
+import React, { ForwardedRef, forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 import { TableSelectionBar } from 'src/_utils/TableSelectionBar';
+import { handleError } from 'src/_utils/handleError';
+import useUpdateEffect from 'src/_utils/useUpdateEffect';
 
 // 组件 props 的类型定义
 export interface SelectableTableProps<T extends Record<string, any> = Record<string, any>>
@@ -30,8 +22,10 @@ export interface SelectableTableProps<T extends Record<string, any> = Record<str
   }) => React.ReactNode;
 }
 
-export type SelectableTableMethods<T> = {
+export type SelectableTableMethods<T extends Record<string, any> = Record<string, any>> = {
   clearSelection: () => void;
+  getDataSource: () => T[];
+  getSelectedRows: () => T[];
 };
 
 const SelectableTable = <T extends Record<string, any> = Record<string, any>>(
@@ -41,6 +35,7 @@ const SelectableTable = <T extends Record<string, any> = Record<string, any>>(
     request,
     renderSelectionDetail,
     renderBatchActionGroup,
+    rowKey = 'key',
     ...restProps
   }: SelectableTableProps<T>,
   ref: ForwardedRef<SelectableTableMethods<T>>,
@@ -68,8 +63,22 @@ const SelectableTable = <T extends Record<string, any> = Record<string, any>>(
     setSelectedRowKeys([]);
   };
 
+  const getDataSource = () => {
+    return list;
+  };
+
+  const getSelectedRows = () => {
+    return list.filter((item, index) =>
+      (selectedRowKeys as (string | number)[]).includes(
+        typeof rowKey === 'function' ? rowKey(item, index) : item[rowKey],
+      ),
+    );
+  };
+
   const methods: SelectableTableMethods<T> = {
     clearSelection,
+    getDataSource,
+    getSelectedRows,
   };
 
   // 使用 useImperativeHandle 来暴露组件方法
@@ -106,7 +115,13 @@ const SelectableTable = <T extends Record<string, any> = Record<string, any>>(
           selectedRowKeys,
         })}
       />
-      <Table {...restProps} dataSource={list} loading={loading} rowSelection={rowSelection} />
+      <Table
+        {...restProps}
+        rowKey={rowKey}
+        dataSource={list}
+        loading={loading}
+        rowSelection={rowSelection}
+      />
     </div>
   );
 };

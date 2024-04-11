@@ -11,3 +11,7 @@ group:
 ## 基本使用
 
 <code src="./demos/basic" />
+
+## 方法集
+
+<code src="./demos/methods" />
