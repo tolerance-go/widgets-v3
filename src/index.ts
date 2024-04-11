@@ -27,6 +27,7 @@ export { default as StepsForm } from './StepsForm';
 export { default as ImageCropper } from './ImageCropper';
 export { default as SelectableTable } from './SelectableTable';
 export { default as EnhancedMap } from './_utils/EnhancedMap';
+export { default as confirm } from './ProConfirm';
 
 export type { BackendFilteredSelectListItem } from './BackendFilteredSelect';
 export type { FrontendFilteredSelectListItem } from './FrontendFilteredSelect';
