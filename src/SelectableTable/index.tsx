@@ -60,6 +60,7 @@ const SelectableTable = <T extends Record<string, any> = Record<string, any>>(
 
   const clearSelection = () => {
     setSelectedRowKeys([]);
+    onChange?.([], []);
   };
 
   const getDataSource = () => {
