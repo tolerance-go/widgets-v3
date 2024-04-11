@@ -4,14 +4,16 @@ import { TableRowSelection } from 'antd/lib/table'; // 假设 SearchTable 的类
 import React, { ForwardedRef, forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 import { TableSelectionBar } from 'src/_utils/TableSelectionBar';
 import { handleError } from 'src/_utils/handleError';
+import useLatestRef from 'src/_utils/useLatestRef';
 import useUpdateEffect from 'src/_utils/useUpdateEffect';
 
 // 组件 props 的类型定义
 export interface SelectableTableProps<T extends Record<string, any> = Record<string, any>>
   extends Omit<TableProps<T>, 'onChange'> {
   value?: string[] | number[];
+  params?: Record<string, any>;
   onChange?: (selectedRowKeys: string[] | number[], selectedRows: T[]) => void;
-  request?: () => Promise<T[]>;
+  request?: (args: { params?: Record<string, any> }) => Promise<T[]>;
   renderBatchActionGroup?: (args: {
     methods: SelectableTableMethods<T>;
     selectedRowKeys: string[] | number[];
@@ -36,6 +38,7 @@ const SelectableTable = <T extends Record<string, any> = Record<string, any>>(
     renderSelectionDetail,
     renderBatchActionGroup,
     rowKey = 'key',
+    params,
     ...restProps
   }: SelectableTableProps<T>,
   ref: ForwardedRef<SelectableTableMethods<T>>,
@@ -44,10 +47,6 @@ const SelectableTable = <T extends Record<string, any> = Record<string, any>>(
 
   const [loading, setLoading] = useState(false);
   const [list, setList] = useState<T[]>([]);
-
-  useUpdateEffect(() => {
-    setSelectedRowKeys(value ?? []);
-  }, [value]);
 
   const handleSelectChange: TableRowSelection<T>['onChange'] = (selectedKeys, selectedRows) => {
     setSelectedRowKeys(selectedKeys);
@@ -84,22 +83,33 @@ const SelectableTable = <T extends Record<string, any> = Record<string, any>>(
   // 使用 useImperativeHandle 来暴露组件方法
   useImperativeHandle(ref, () => methods);
 
-  useEffect(() => {
-    const fetch = async () => {
-      try {
-        if (!request) return;
-        setLoading(true);
-        const list = await request();
-        setList(list);
-      } catch (error) {
-        handleError(error, '请求表格数据异常');
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetch = async (params?: Record<string, any>) => {
+    try {
+      if (!request) return;
+      setLoading(true);
+      const list = await request({ params });
+      setList(list);
+    } catch (error) {
+      handleError(error, '请求表格数据异常');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    fetch();
+  const fetchRef = useLatestRef(fetch);
+  const methodsRef = useLatestRef(methods);
+
+  useUpdateEffect(() => {
+    setSelectedRowKeys(value ?? []);
+  }, [value]);
+
+  useEffect(() => {
+    fetchRef.current(params);
   }, []);
+
+  useUpdateEffect(() => {
+    fetchRef.current(params);
+  }, [JSON.stringify(params)]);
 
   return (
     <div>

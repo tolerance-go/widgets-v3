@@ -15,3 +15,7 @@ group:
 ## 方法集
 
 <code src="./demos/methods" />
+
+## 请求参数变动
+
+<code src="./demos/params" />
