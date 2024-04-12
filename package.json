@@ -1,6 +1,6 @@
 {
   "name": "widgets-v3",
-  "version": "0.31.3",
+  "version": "0.31.4",
   "scripts": {
     "start": "dumi dev",
     "docs:build": "dumi build",
