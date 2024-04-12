@@ -1,3 +1,9 @@
+## [0.31.3](https://github.com/tolerance-go/widgets-v3/compare/v0.31.2...v0.31.3) (2024-04-12)
+
+### Bug Fixes
+
+- **SearchTable:** 切换 tab 后，使用缓存数据避免页面错误的动态渲染 ([6284f4b](https://github.com/tolerance-go/widgets-v3/commit/6284f4b3cb44413f7fecf2a03af62bfb428aa29a))
+
 ## [0.31.2](https://github.com/tolerance-go/widgets-v3/compare/v0.31.1...v0.31.2) (2024-04-12)
 
 ### Bug Fixes
