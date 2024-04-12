@@ -1,3 +1,9 @@
+## [0.31.2](https://github.com/tolerance-go/widgets-v3/compare/v0.31.1...v0.31.2) (2024-04-12)
+
+### Bug Fixes
+
+- **ProConfirm:** 增加 onClose 外部接口 ([9db6088](https://github.com/tolerance-go/widgets-v3/commit/9db6088d67a9c780a4194be2aacae0fd66a4b49b))
+
 ## [0.31.1](https://github.com/tolerance-go/widgets-v3/compare/v0.31.0...v0.31.1) (2024-04-12)
 
 ### Bug Fixes
