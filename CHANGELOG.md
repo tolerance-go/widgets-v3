@@ -1,3 +1,9 @@
+## [0.31.1](https://github.com/tolerance-go/widgets-v3/compare/v0.31.0...v0.31.1) (2024-04-12)
+
+### Bug Fixes
+
+- **ProConfirm:** 支持常规参数透传 ([0b7e692](https://github.com/tolerance-go/widgets-v3/commit/0b7e692537337912f203e9cc5a42137f38939c72))
+
 # [0.31.0](https://github.com/tolerance-go/widgets-v3/compare/v0.30.0...v0.31.0) (2024-04-12)
 
 ### Features
