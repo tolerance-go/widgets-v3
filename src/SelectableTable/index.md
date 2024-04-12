@@ -19,3 +19,7 @@ group:
 ## 请求参数变动
 
 <code src="./demos/params" />
+
+## 单选
+
+<code src="./demos/radioSelect" />

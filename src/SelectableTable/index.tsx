@@ -39,6 +39,7 @@ const SelectableTable = <T extends Record<string, any> = Record<string, any>>(
     renderBatchActionGroup,
     rowKey = 'key',
     params,
+    rowSelection: propRowSelection,
     ...restProps
   }: SelectableTableProps<T>,
   ref: ForwardedRef<SelectableTableMethods<T>>,
@@ -54,6 +55,7 @@ const SelectableTable = <T extends Record<string, any> = Record<string, any>>(
   };
 
   const rowSelection: TableRowSelection<T> = {
+    ...propRowSelection,
     selectedRowKeys,
     onChange: handleSelectChange,
   };
@@ -98,7 +100,6 @@ const SelectableTable = <T extends Record<string, any> = Record<string, any>>(
   };
 
   const fetchRef = useLatestRef(fetch);
-  const methodsRef = useLatestRef(methods);
 
   useUpdateEffect(() => {
     setSelectedRowKeys(value ?? []);
