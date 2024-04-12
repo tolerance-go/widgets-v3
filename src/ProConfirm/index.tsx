@@ -18,13 +18,15 @@ type ShowProConfirmConfigs = Pick<
   | 'maskClosable'
 > & {
   actions?: (args: { methods: ProConfirmMethods }) => ReactNode[];
+};
+
+type ProConfirmProps = ShowProConfirmConfigs & {
   onClose?: () => void;
 };
 
-type ProConfirmProps = ShowProConfirmConfigs;
-
 type ProConfirmMethods = {
-  close: () => void;
+  cancel: () => void;
+  confirm: () => void;
 };
 
 const ProConfirm = (props: ProConfirmProps) => {
@@ -86,18 +88,21 @@ const ProConfirm = (props: ProConfirmProps) => {
   };
 
   const methods: ProConfirmMethods = {
-    close: () => {
-      setVisible(false);
+    cancel: () => {
+      handleCancel();
+    },
+    confirm: () => {
+      handleConfirm();
     },
   };
 
   // 默认操作按钮
   const footer = actions?.({ methods }) || [
-    <Button key="back" {...cancelButtonProps} onClick={handleCancel} loading={loadingCancel}>
+    <Button key="cancel" {...cancelButtonProps} onClick={handleCancel} loading={loadingCancel}>
       {cancelText}
     </Button>,
     <Button
-      key="submit"
+      key="confirm"
       {...okButtonProps}
       type="primary"
       onClick={handleConfirm}
@@ -111,7 +116,7 @@ const ProConfirm = (props: ProConfirmProps) => {
     <Modal
       title={null}
       visible={visible}
-      onCancel={() => setVisible(false)}
+      onCancel={handleCancel}
       footer={null}
       afterClose={() => {
         onClose?.();
@@ -191,7 +196,6 @@ const confirm = (props: ShowProConfirmConfigs) => {
   document.body.appendChild(div);
 
   const close = () => {
-    props.onClose?.();
     console.log('removed');
     ReactDOM.unmountComponentAtNode(div);
     document.body.removeChild(div);

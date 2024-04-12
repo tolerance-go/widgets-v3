@@ -10,25 +10,26 @@ export default () => (
         confirm({
           title: '审核?',
           content: '确认审核嘛？',
+          // maskClosable: true,
           actions: ({ methods }) => [
             <Action
               request={async () => {
                 await delay(1000);
-                methods.close();
+                methods.cancel();
               }}
               trigger={<Button type="danger">驳回</Button>}
             />,
             <Action
               request={async () => {
                 await delay(1000);
-                methods.close();
+                methods.cancel();
               }}
               trigger={<Button type="primary">审核</Button>}
             />,
             <Action
               request={async () => {
                 await delay(1000);
-                methods.close();
+                methods.cancel();
               }}
               trigger={<Button type="primary">其他</Button>}
             />,
@@ -55,10 +56,8 @@ export default () => (
             await delay(1000);
           },
           onCancel: async () => {
+            alert(1);
             await delay(1000);
-          },
-          onClose: () => {
-            console.log('onClose');
           },
         });
       }}
