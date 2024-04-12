@@ -1,3 +1,9 @@
+## [0.31.5](https://github.com/tolerance-go/widgets-v3/compare/v0.31.4...v0.31.5) (2024-04-12)
+
+### Bug Fixes
+
+- **SelectableTable:** 允许透传 rowSelection，比如 radio ([bbdfcbb](https://github.com/tolerance-go/widgets-v3/commit/bbdfcbb14679538a6ee16f01abd2a0455008b4b4))
+
 ## [0.31.4](https://github.com/tolerance-go/widgets-v3/compare/v0.31.3...v0.31.4) (2024-04-12)
 
 ### Bug Fixes
