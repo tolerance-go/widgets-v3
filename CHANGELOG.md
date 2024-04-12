@@ -1,3 +1,13 @@
+## [0.31.4](https://github.com/tolerance-go/widgets-v3/compare/v0.31.3...v0.31.4) (2024-04-12)
+
+### Bug Fixes
+
+- **ProConfirm:** 保持和 antd 的逻辑一致，关闭即调用 cancel ([3291d50](https://github.com/tolerance-go/widgets-v3/commit/3291d507a3ae0ef025fa6e53efd2dc65a027130b))
+
+### BREAKING CHANGES
+
+- **ProConfirm:** 去除 close 方法，关闭弹窗会调用 cancel 注册方法
+
 ## [0.31.3](https://github.com/tolerance-go/widgets-v3/compare/v0.31.2...v0.31.3) (2024-04-12)
 
 ### Bug Fixes
