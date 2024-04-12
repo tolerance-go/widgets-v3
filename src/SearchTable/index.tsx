@@ -142,6 +142,17 @@ const SearchTable = <T extends Record<string, any> = Record<string, any>>(
   const [data, setData] = useState<Record<string, any>>({});
   const [loading, setLoading] = useState(false);
 
+  /**
+   * 避免切换 tab 的时候，用老数据，渲染新的 columns，比如 columns 根据 tab 做了动态渲染
+   * 这里缓存 tab 数据，在切换后先切过去
+   */
+  const [tabDataCache, setTabDataCache] = useState<{
+    [key: string]: {
+      list: T[];
+      data?: Record<string, any>;
+    };
+  }>({});
+
   const [tableState, setTableState] = useState<TableState<T>>({
     activeTabKey: tabs?.[0]?.key,
     pagination: { current: 1, pageSize: 10 },
@@ -179,6 +190,20 @@ const SearchTable = <T extends Record<string, any> = Record<string, any>>(
         ...prevState,
         pagination: { ...prevState.pagination, total: result.total },
       }));
+
+      // 更新缓存
+      setTabDataCache((prevCache) => {
+        if (params.activeTabKey) {
+          return {
+            ...prevCache,
+            [params.activeTabKey]: {
+              list: result.list,
+              data: result.data,
+            },
+          };
+        }
+        return prevCache;
+      });
     } catch (error) {
       handleError(error, '请求表格数据失败');
     } finally {
@@ -363,13 +388,22 @@ const SearchTable = <T extends Record<string, any> = Record<string, any>>(
       className="wg-search-table-tabs"
       activeKey={tableState.activeTabKey}
       type="card"
-      onChange={(key) =>
+      onChange={(key) => {
         setTableState((prev) => ({
           ...prev,
           pagination: { ...prev.pagination, current: 1 },
           activeTabKey: key,
-        }))
-      }
+        }));
+        // 检查缓存中是否有该标签的数据
+        if (tabDataCache[key]) {
+          setList(tabDataCache[key].list);
+          setData(tabDataCache[key].data ?? {});
+        } else {
+          // 如果没有缓存，清空当前列表和数据状态，并加载新数据
+          setList([]);
+          setData({});
+        }
+      }}
     >
       {tabs.map((item) => {
         return <TabPane tab={item.title} key={item.key} disabled={loading}></TabPane>;
