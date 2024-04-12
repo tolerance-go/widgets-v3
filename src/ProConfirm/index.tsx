@@ -18,11 +18,10 @@ type ShowProConfirmConfigs = Pick<
   | 'maskClosable'
 > & {
   actions?: (args: { methods: ProConfirmMethods }) => ReactNode[];
+  onClose?: () => void;
 };
 
-type ProConfirmProps = ShowProConfirmConfigs & {
-  onClose: () => void; // 添加一个onClose函数prop
-};
+type ProConfirmProps = ShowProConfirmConfigs;
 
 type ProConfirmMethods = {
   close: () => void;
@@ -115,7 +114,7 @@ const ProConfirm = (props: ProConfirmProps) => {
       onCancel={() => setVisible(false)}
       footer={null}
       afterClose={() => {
-        onClose();
+        onClose?.();
       }}
       width={416}
       bodyStyle={{
@@ -192,6 +191,7 @@ const confirm = (props: ShowProConfirmConfigs) => {
   document.body.appendChild(div);
 
   const close = () => {
+    props.onClose?.();
     console.log('removed');
     ReactDOM.unmountComponentAtNode(div);
     document.body.removeChild(div);

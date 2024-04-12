@@ -57,6 +57,9 @@ export default () => (
           onCancel: async () => {
             await delay(1000);
           },
+          onClose: () => {
+            console.log('onClose');
+          },
         });
       }}
     >
