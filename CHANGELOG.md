@@ -1,3 +1,9 @@
+# [0.31.0](https://github.com/tolerance-go/widgets-v3/compare/v0.30.0...v0.31.0) (2024-04-12)
+
+### Features
+
+- **ProConfirm:** 新增 ProConfirm 组件 ([4cac8dd](https://github.com/tolerance-go/widgets-v3/commit/4cac8dd27c14e5e56c26887a57675ca651c40d33))
+
 # [0.30.0](https://github.com/tolerance-go/widgets-v3/compare/v0.29.0...v0.30.0) (2024-04-11)
 
 ### Bug Fixes
