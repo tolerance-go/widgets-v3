@@ -6,7 +6,16 @@ import ReactDOM from 'react-dom';
 
 type ShowProConfirmConfigs = Pick<
   ModalFuncProps,
-  'title' | 'content' | 'onOk' | 'onCancel' | 'content'
+  | 'title'
+  | 'content'
+  | 'onOk'
+  | 'onCancel'
+  | 'content'
+  | 'okText'
+  | 'cancelText'
+  | 'okButtonProps'
+  | 'cancelButtonProps'
+  | 'maskClosable'
 > & {
   actions?: (args: { methods: ProConfirmMethods }) => ReactNode[];
 };
@@ -20,7 +29,19 @@ type ProConfirmMethods = {
 };
 
 const ProConfirm = (props: ProConfirmProps) => {
-  const { title, content, actions, onOk, onCancel, onClose } = props;
+  const {
+    title,
+    content,
+    actions,
+    onOk,
+    onCancel,
+    onClose,
+    okText = '确认',
+    cancelText = '取消',
+    okButtonProps,
+    cancelButtonProps,
+    maskClosable = false,
+  } = props;
   const [visible, setVisible] = useState(true);
   const [loadingOk, setLoadingOk] = useState(false); // State to track loading for confirm
   const [loadingCancel, setLoadingCancel] = useState(false); // State to track loading for cancel
@@ -73,11 +94,17 @@ const ProConfirm = (props: ProConfirmProps) => {
 
   // 默认操作按钮
   const footer = actions?.({ methods }) || [
-    <Button key="back" onClick={handleCancel} loading={loadingCancel}>
-      取消
+    <Button key="back" {...cancelButtonProps} onClick={handleCancel} loading={loadingCancel}>
+      {cancelText}
     </Button>,
-    <Button key="submit" type="primary" onClick={handleConfirm} loading={loadingOk}>
-      确认
+    <Button
+      key="submit"
+      {...okButtonProps}
+      type="primary"
+      onClick={handleConfirm}
+      loading={loadingOk}
+    >
+      {okText}
     </Button>,
   ];
 
@@ -94,7 +121,7 @@ const ProConfirm = (props: ProConfirmProps) => {
       bodyStyle={{
         padding: '32px 32px 24px',
       }}
-      maskClosable={false}
+      maskClosable={maskClosable}
     >
       {title && (
         <div
