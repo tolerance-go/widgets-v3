@@ -5,7 +5,8 @@ import { handleError } from 'src/_utils/handleError';
 type StoreProps = {
   children?: (data: Record<string, any>) => React.ReactNode;
   request?: () => Promise<Record<string, any>>;
-  name?: string; // 用于标识每个Store的可选属性
+  name?: string;
+  depends?: string[]; // 依赖的组件名称数组
 };
 
 export const useStore = (name: string) => {
@@ -13,17 +14,20 @@ export const useStore = (name: string) => {
   return context[name];
 };
 
-// 创建一个context，用于保存按名称索引的数据
+// 创建一个context，用于保存按名称索引的数据和加载状态
 export const StoreContext = createContext<Record<string, any>>({});
 
-const Store = ({ children, request, name }: StoreProps) => {
+const Store = ({ children, request, name, depends = [] }: StoreProps) => {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<Record<string, any>>({});
   const requestCounterRef = useRef(0);
   const context = useContext(StoreContext); // 使用context更新自己
 
+  // 检查所有依赖的组件是否已加载完成
+  const allDependenciesResolved = depends.every((dependency) => context[dependency]?.loaded);
+
   const fetch = async () => {
-    if (!request) return;
+    if (!request || !allDependenciesResolved) return;
     const currentRequestIndex = ++requestCounterRef.current;
     try {
       setLoading(true);
@@ -32,7 +36,7 @@ const Store = ({ children, request, name }: StoreProps) => {
       if (currentRequestIndex === requestCounterRef.current) {
         setData(newData);
         if (name) {
-          context[name] = newData; // 如果提供了名称，则在context中设置数据
+          context[name] = { data: newData, loaded: true }; // 更新context中的数据和加载状态
         }
       }
     } catch (error) {
@@ -46,7 +50,7 @@ const Store = ({ children, request, name }: StoreProps) => {
 
   useEffect(() => {
     fetch();
-  }, []);
+  }, [allDependenciesResolved]); // 当依赖项的加载状态变化时，重新触发请求
 
   return (
     <StoreContext.Provider value={context}>

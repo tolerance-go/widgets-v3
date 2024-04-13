@@ -47,6 +47,7 @@ export default () => (
               };
             }}
             name="component"
+            depends={['global']}
           >
             {(component) => {
               return (
@@ -58,6 +59,7 @@ export default () => (
             }}
           </Store>
           <Store
+            depends={['global']}
             request={async () => {
               await delay(3000);
               const skinColorTypeMap = new Map([
