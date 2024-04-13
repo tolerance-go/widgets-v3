@@ -1,3 +1,12 @@
+## [0.32.1](https://github.com/tolerance-go/widgets-v3/compare/v0.32.0...v0.32.1) (2024-04-13)
+
+
+### Bug Fixes
+
+* **Store:** useStore 没有在依赖更新的时候触发 ([0a0b3d1](https://github.com/tolerance-go/widgets-v3/commit/0a0b3d19d5693285029d01688d8b848f0da7f8c8))
+
+
+
 # [0.32.0](https://github.com/tolerance-go/widgets-v3/compare/v0.31.5...v0.32.0) (2024-04-13)
 
 
