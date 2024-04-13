@@ -2,6 +2,23 @@ import React, { createContext, useContext, useEffect, useRef, useState } from 'r
 import { Spin } from 'antd';
 import { handleError } from 'src/_utils/handleError';
 
+// 定义存储在context中的每个数据条目的类型
+type StoreEntry = {
+  data: Record<string, any>;
+  loaded: boolean; // 表示数据是否已加载完成
+};
+
+// 更新StoreContext的类型，使其可以包括StoreEntry类型的数据
+type StoreContextType = Record<string, StoreEntry | undefined>;
+
+export const useStore = (name: string) => {
+  const context = useContext(StoreContext);
+  return context[name]?.data;
+};
+
+// 使用更新后的类型初始化StoreContext
+export const StoreContext = createContext<StoreContextType>({});
+
 type StoreProps = {
   children?: (data: Record<string, any>) => React.ReactNode;
   request?: () => Promise<Record<string, any>>;
@@ -9,21 +26,12 @@ type StoreProps = {
   depends?: string[]; // 依赖的组件名称数组
 };
 
-export const useStore = (name: string) => {
-  const context = useContext(StoreContext);
-  return context[name];
-};
-
-// 创建一个context，用于保存按名称索引的数据和加载状态
-export const StoreContext = createContext<Record<string, any>>({});
-
 const Store = ({ children, request, name, depends = [] }: StoreProps) => {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<Record<string, any>>({});
   const requestCounterRef = useRef(0);
-  const context = useContext(StoreContext); // 使用context更新自己
+  const context = useContext(StoreContext);
 
-  // 检查所有依赖的组件是否已加载完成
   const allDependenciesResolved = depends.every((dependency) => context[dependency]?.loaded);
 
   const fetch = async () => {
@@ -36,7 +44,7 @@ const Store = ({ children, request, name, depends = [] }: StoreProps) => {
       if (currentRequestIndex === requestCounterRef.current) {
         setData(newData);
         if (name) {
-          context[name] = { data: newData, loaded: true }; // 更新context中的数据和加载状态
+          context[name] = { data: newData, loaded: true };
         }
       }
     } catch (error) {
@@ -50,7 +58,7 @@ const Store = ({ children, request, name, depends = [] }: StoreProps) => {
 
   useEffect(() => {
     fetch();
-  }, [allDependenciesResolved]); // 当依赖项的加载状态变化时，重新触发请求
+  }, [allDependenciesResolved]);
 
   return (
     <StoreContext.Provider value={context}>
