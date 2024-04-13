@@ -1,38 +1,44 @@
 import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
 import { Spin } from 'antd';
 import { handleError } from 'src/_utils/handleError';
+import useUpdateEffect from 'src/_utils/useUpdateEffect';
 
-// 定义存储在context中的每个数据条目的类型
 type StoreEntry = {
   data: Record<string, any>;
-  loaded: boolean; // 表示数据是否已加载完成
+  loaded: boolean;
 };
 
-// 更新StoreContext的类型，使其可以包括StoreEntry类型的数据
 type StoreContextType = Record<string, StoreEntry | undefined>;
+
+const StoreContext = createContext<StoreContextType>({});
 
 export const useStore = (name: string) => {
   const context = useContext(StoreContext);
   return context[name]?.data;
 };
 
-// 使用更新后的类型初始化StoreContext
-export const StoreContext = createContext<StoreContextType>({});
-
 type StoreProps = {
   children?: (data: Record<string, any>) => React.ReactNode;
   request?: () => Promise<Record<string, any>>;
   name?: string;
-  depends?: string[]; // 依赖的组件名称数组
+  depends?: string[];
 };
 
 const Store = ({ children, request, name, depends = [] }: StoreProps) => {
+  const parentContext = useContext(StoreContext);
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<Record<string, any>>({});
   const requestCounterRef = useRef(0);
-  const context = useContext(StoreContext);
+
+  // 新的state来维护当前Store和其父Store的数据
+  const [context, setContext] = useState<StoreContextType>({ ...parentContext });
 
   const allDependenciesResolved = depends.every((dependency) => context[dependency]?.loaded);
+
+  // 监听parentContext的变化，并更新context state
+  useUpdateEffect(() => {
+    setContext((prevContext) => ({ ...parentContext, ...prevContext }));
+  }, [parentContext]);
 
   const fetch = async () => {
     if (!request || !allDependenciesResolved) return;
@@ -40,12 +46,17 @@ const Store = ({ children, request, name, depends = [] }: StoreProps) => {
     try {
       setLoading(true);
       const newData = await request();
-
       if (currentRequestIndex === requestCounterRef.current) {
         setData(newData);
-        if (name) {
-          context[name] = { data: newData, loaded: true };
-        }
+        setContext((prev) => {
+          if (name) {
+            return {
+              ...prev,
+              [name]: { data: newData, loaded: true },
+            };
+          }
+          return prev;
+        });
       }
     } catch (error) {
       handleError(error, '请求视图数据失败');

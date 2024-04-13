@@ -1,14 +1,12 @@
-import { Button, Cascader, Form, Icon, Input, Tooltip } from 'antd';
-import React, { useContext } from 'react';
-import {
-  DrawerForm,
-  ProDescriptions,
-  SearchTable,
-  Store,
-  StoreContext,
-  useStore,
-} from 'widgets-v3';
+import { Button, Form, Icon, Input, Tooltip } from 'antd';
 import delay from 'delay';
+import React from 'react';
+import { DrawerForm, ProDescriptions, SearchTable, Store, useStore } from 'widgets-v3';
+
+const User = () => {
+  const global = useStore('global');
+  return <div>username: {global?.userInfo.nickname}</div>;
+};
 
 const Child = () => {
   const component = useStore('component');
@@ -38,6 +36,7 @@ export default () => (
     {(global) => {
       return (
         <div style={{ border: '1px solid', padding: 10 }}>
+          <User />
           {JSON.stringify(global)}
           <Store
             request={async () => {

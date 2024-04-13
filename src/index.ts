@@ -18,7 +18,7 @@ export { default as EditableTabs } from './EditableTabs';
 export { default as TabsForm } from './TabsForm';
 export { default as FormDependency } from './FormDependency';
 export { default as LoginForm } from './LoginForm';
-export { default as Store, StoreContext, useStore } from './Store';
+export { default as Store, useStore } from './Store';
 export { default as FormField } from './FormField';
 export { default as EditableGroups } from './EditableGroups';
 export { default as GroupsForm } from './GroupsForm';
