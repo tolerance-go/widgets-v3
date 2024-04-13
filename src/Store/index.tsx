@@ -1,21 +1,26 @@
-import React, { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { Spin, message } from 'antd';
+import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
+import { Spin } from 'antd';
+import { handleError } from 'src/_utils/handleError';
 
 type StoreProps = {
   children?: (data: Record<string, any>) => React.ReactNode;
   request?: () => Promise<Record<string, any>>;
-  name?: string; // 新增属性，用于标识每个Store
+  name?: string; // 用于标识每个Store的可选属性
 };
 
+export const useStore = (name: string) => {
+  const context = useContext(StoreContext);
+  return context[name];
+};
+
+// 创建一个context，用于保存按名称索引的数据
 export const StoreContext = createContext<Record<string, any>>({});
 
 const Store = ({ children, request, name }: StoreProps) => {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<Record<string, any>>({});
   const requestCounterRef = useRef(0);
-
-  // 使用 useContext 获取上级 Store 提供的数据
-  const parentData = useContext(StoreContext);
+  const context = useContext(StoreContext); // 使用context更新自己
 
   const fetch = async () => {
     if (!request) return;
@@ -26,16 +31,12 @@ const Store = ({ children, request, name }: StoreProps) => {
 
       if (currentRequestIndex === requestCounterRef.current) {
         setData(newData);
+        if (name) {
+          context[name] = newData; // 如果提供了名称，则在context中设置数据
+        }
       }
     } catch (error) {
-      let errorMessage;
-      if (typeof error === 'string') {
-        errorMessage = error;
-      } else if (error instanceof Error) {
-        errorMessage = error.message;
-      }
-      console.log(error);
-      message.error(errorMessage || '请求视图数据失败');
+      handleError(error, '请求视图数据失败');
     } finally {
       if (currentRequestIndex === requestCounterRef.current) {
         setLoading(false);
@@ -47,14 +48,9 @@ const Store = ({ children, request, name }: StoreProps) => {
     fetch();
   }, []);
 
-  // 提供更新后的数据给子组件
-  const value = useMemo(() => {
-    return name ? { ...parentData, [name]: data } : data;
-  }, [name, parentData, data]);
-
   return (
-    <StoreContext.Provider value={value}>
-      <Spin spinning={loading}>{children?.(value)}</Spin>
+    <StoreContext.Provider value={context}>
+      <Spin spinning={loading}>{children?.(data)}</Spin>
     </StoreContext.Provider>
   );
 };

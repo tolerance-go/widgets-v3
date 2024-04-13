@@ -1,46 +1,26 @@
 import { Button, Cascader, Form, Icon, Input, Tooltip } from 'antd';
 import React, { useContext } from 'react';
-import { DrawerForm, ProDescriptions, SearchTable, Store, StoreContext } from 'widgets-v3';
+import {
+  DrawerForm,
+  ProDescriptions,
+  SearchTable,
+  Store,
+  StoreContext,
+  useStore,
+} from 'widgets-v3';
 import delay from 'delay';
 
-const residences = [
-  {
-    value: 'zhejiang',
-    label: 'Zhejiang',
-    children: [
-      {
-        value: 'hangzhou',
-        label: 'Hangzhou',
-        children: [
-          {
-            value: 'xihu',
-            label: 'West Lake',
-          },
-        ],
-      },
-    ],
-  },
-  {
-    value: 'jiangsu',
-    label: 'Jiangsu',
-    children: [
-      {
-        value: 'nanjing',
-        label: 'Nanjing',
-        children: [
-          {
-            value: 'zhonghuamen',
-            label: 'Zhong Hua Men',
-          },
-        ],
-      },
-    ],
-  },
-];
-
 const Child = () => {
-  const stores = useContext(StoreContext);
-  return <div style={{ border: '1px solid', padding: 10 }}>{JSON.stringify(stores)}</div>;
+  const component = useStore('component');
+  const global = useStore('global');
+  const unknown = useStore('unknown');
+  return (
+    <div style={{ border: '1px solid', padding: 10 }}>
+      <div>component: {JSON.stringify(component)}</div>
+      <div>global: {JSON.stringify(global)}</div>
+      <div>unknown: {JSON.stringify(unknown)}</div>
+    </div>
+  );
 };
 
 export default () => (
@@ -55,23 +35,22 @@ export default () => (
     }}
     name="global"
   >
-    {({ global }) => {
+    {(global) => {
       return (
         <div style={{ border: '1px solid', padding: 10 }}>
-          <div>username: {global.userInfo?.nickname}</div>
+          {JSON.stringify(global)}
           <Store
             request={async () => {
               await delay(1000);
               return {
-                componentKey: 'componentKey',
+                componentInfo: 'componentInfo',
               };
             }}
             name="component"
           >
-            {({ component, global }) => {
+            {(component) => {
               return (
                 <div style={{ border: '1px solid', padding: 10 }}>
-                  <div>global: {JSON.stringify(global)}</div>
                   <div>component: {JSON.stringify(component)}</div>
                   <Child />
                 </div>
@@ -269,18 +248,6 @@ export default () => (
                             }
                           >
                             {getFieldDecorator('nickname', {})(<Input />)}
-                          </Form.Item>,
-                          <Form.Item label="Habitual Residence">
-                            {getFieldDecorator('residence', {
-                              initialValue: ['zhejiang', 'hangzhou', 'xihu'],
-                              // rules: [
-                              //   {
-                              //     type: 'array',
-                              //     required: true,
-                              //     message: 'Please select your habitual residence!',
-                              //   },
-                              // ],
-                            })(<Cascader options={residences} />)}
                           </Form.Item>,
                         ];
                       },
