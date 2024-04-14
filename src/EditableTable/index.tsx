@@ -373,6 +373,37 @@ const EditableTable = <T extends Record<string, any> = Record<string, any>>({
     }
   };
 
+  const handleCopy = (copyRowId: React.Key) => {
+    if (Object.entries(editingRowIds).some(([_, editing]) => editing)) {
+      message.warn('有正在编辑的行，请先保存');
+      return;
+    }
+
+    const index = dataSource.findIndex((item) => item[rowKey].toString() === copyRowId);
+    if (index === -1) {
+      console.error('Row not found');
+      return;
+    }
+
+    const newDataItem = { ...dataSource[index] }; // 复制当前行数据
+    const rowId = Date.now().toString(); // 为复制的行生成一个新的唯一ID
+    const newDataItemWithKey = { ...newDataItem, [rowKey]: rowId };
+
+    const newData = [...dataSource];
+    newData.splice(index + 1, 0, newDataItemWithKey); // 将复制的行插入到当前行的下方
+
+    setDataSource(newData);
+    setEditingRowIds((prev) => ({ ...prev, [rowId]: true })); // 新复制的行直接进入编辑状态
+
+    // 特殊处理：如果是在当前页的最后一项之后插入，则考虑是否需要翻页
+    const isInsertAtCurrentPageBottom =
+      (index + 1) % pageSize === 0 && index < newData.length - 1;
+    if (isInsertAtCurrentPageBottom) {
+      const newPage = currentPage + 1;
+      setCurrentPage(newPage); // 翻至下一页
+    }
+  };
+
   const operationColumn: ExtendedColumnProps<T> = {
     title: '操作',
     dataIndex: OPERATION_DATA_INDEX,
@@ -395,7 +426,7 @@ const EditableTable = <T extends Record<string, any> = Record<string, any>>({
                 >
                   编辑
                 </Button>
-                <Button
+                {/* <Button
                   size="small"
                   type="link"
                   style={{ marginRight: 8 }}
@@ -410,6 +441,14 @@ const EditableTable = <T extends Record<string, any> = Record<string, any>>({
                   onClick={() => handleInsertRow('below', rowId)}
                 >
                   下方插入
+                </Button> */}
+                <Button
+                  size="small"
+                  type="link"
+                  style={{ marginRight: 8 }}
+                  onClick={() => handleCopy(rowId)}
+                >
+                  复制
                 </Button>
                 <Popconfirm
                   title="确认删除吗？"
