@@ -29,6 +29,7 @@ export { default as SelectableTable } from './SelectableTable';
 export { default as EnhancedMap } from './_utils/EnhancedMap';
 export { default as confirm } from './SmartConfirm';
 export { default as SmartRangePicker } from './SmartRangePicker';
+export { default as Separator } from './Separator';
 
 export type { BackendFilteredSelectListItem } from './BackendFilteredSelect';
 export type { FrontendFilteredSelectListItem } from './FrontendFilteredSelect';
