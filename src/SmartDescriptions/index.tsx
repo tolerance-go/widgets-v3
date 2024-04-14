@@ -14,17 +14,17 @@ export interface RequestParams<T> {}
 
 export interface RequestResult<T> {}
 
-export type ProDescriptionsProps<T> = {
+export type SmartDescriptionsProps<T> = {
   request?: (params: RequestParams<T>) => Promise<RequestResult<T>>;
   children?: (dataSource?: Record<string, any>) => ReactNode | DescriptionsComponentSchema[];
 };
 
-export type ProDescriptionsMethods<T> = {};
+export type SmartDescriptionsMethods<T> = {};
 
-const ProDescriptions = forwardRef(
+const SmartDescriptions = forwardRef(
   <T extends {} = {}>(
-    { request, children, ...tableProps }: ProDescriptionsProps<T>,
-    ref: ForwardedRef<ProDescriptionsProps<T>>,
+    { request, children, ...tableProps }: SmartDescriptionsProps<T>,
+    ref: ForwardedRef<SmartDescriptionsProps<T>>,
   ) => {
     const [loading, setLoading] = useState(false);
     const [dataSource, setDataSource] = useState<Record<string, any>>();
@@ -41,7 +41,7 @@ const ProDescriptions = forwardRef(
     };
 
     // 在组件内部创建methods对象
-    const methods: ProDescriptionsMethods<T> = {};
+    const methods: SmartDescriptionsMethods<T> = {};
 
     // 更新useImperativeHandle钩子，直接使用methods对象
     useImperativeHandle(ref, () => methods);
@@ -86,4 +86,4 @@ const ProDescriptions = forwardRef(
   },
 );
 
-export default ProDescriptions;
+export default SmartDescriptions;

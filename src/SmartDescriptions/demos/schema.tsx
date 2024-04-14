@@ -1,10 +1,10 @@
 import { Button, Cascader, Form, Icon, Input, Tooltip } from 'antd';
 import delay from 'delay';
 import React from 'react';
-import { ProDescriptions } from 'widgets-v3';
+import { SmartDescriptions } from 'widgets-v3';
 
 export default () => (
-  <ProDescriptions
+  <SmartDescriptions
     request={async () => {
       await delay(1000);
       return {
@@ -121,5 +121,5 @@ export default () => (
         },
       ];
     }}
-  </ProDescriptions>
+  </SmartDescriptions>
 );

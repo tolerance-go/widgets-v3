@@ -4,7 +4,7 @@ group:
   order: 6
 ---
 
-# ProDescriptions
+# SmartDescriptions
 
 ## 基本使用
 

@@ -1,6 +1,6 @@
 import { Button, Cascader, Form, Icon, Input, Tooltip } from 'antd';
 import React from 'react';
-import { Action, DrawerForm, ProDescriptions, SearchTable } from 'widgets-v3';
+import { Action, DrawerForm, SmartDescriptions, SearchTable } from 'widgets-v3';
 import delay from 'delay';
 
 const residences = [
@@ -131,7 +131,7 @@ export default () => (
                 trigger={<Button type="link">查看</Button>}
                 renderFormItems={() => {
                   return (
-                    <ProDescriptions
+                    <SmartDescriptions
                       request={async () => {
                         await delay(1000);
                         return {
@@ -211,7 +211,7 @@ export default () => (
                           },
                         ];
                       }}
-                    </ProDescriptions>
+                    </SmartDescriptions>
                   );
                 }}
               ></DrawerForm>

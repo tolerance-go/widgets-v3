@@ -4,7 +4,7 @@ import React from 'react';
 import {
   BackendFilteredSelectListItem,
   DrawerForm,
-  ProDescriptions,
+  SmartDescriptions,
   SmartForm,
   SelectableTable,
 } from 'widgets-v3';
@@ -124,7 +124,7 @@ export default () => (
                             trigger={<Button type="link">查看</Button>}
                             renderFormItems={() => {
                               return (
-                                <ProDescriptions
+                                <SmartDescriptions
                                   request={async () => {
                                     await delay(1000);
                                     return {
@@ -216,7 +216,7 @@ export default () => (
                                       },
                                     ];
                                   }}
-                                </ProDescriptions>
+                                </SmartDescriptions>
                               );
                             }}
                           ></DrawerForm>

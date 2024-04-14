@@ -11,7 +11,7 @@ import {
   EditableGroups,
   GroupsForm,
   SelectableTable,
-  ProDescriptions,
+  SmartDescriptions,
   SelectableTableMethods,
 } from 'widgets-v3';
 import delay from 'delay';
@@ -132,7 +132,7 @@ export default () => {
                               trigger={<Button type="link">查看</Button>}
                               renderFormItems={() => {
                                 return (
-                                  <ProDescriptions
+                                  <SmartDescriptions
                                     request={async () => {
                                       await delay(1000);
                                       return {
@@ -224,7 +224,7 @@ export default () => {
                                         },
                                       ];
                                     }}
-                                  </ProDescriptions>
+                                  </SmartDescriptions>
                                 );
                               }}
                             ></DrawerForm>
