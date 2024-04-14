@@ -1,7 +1,7 @@
 import { Button, Form } from 'antd';
 import delay from 'delay';
 import React from 'react';
-import { BackendFilteredSelect, ProForm, StringRangePicker } from 'widgets-v3';
+import { BackendFilteredSelect, ProForm, SmartRangePicker } from 'widgets-v3';
 
 export default () => (
   <ProForm
@@ -13,17 +13,17 @@ export default () => (
     renderFormItems={({ form: { getFieldDecorator }, submitLoading }) => {
       return (
         <>
-          <Form.Item label="StringRangePicker">
-            {getFieldDecorator('StringRangePicker', {
+          <Form.Item label="SmartRangePicker">
+            {getFieldDecorator('SmartRangePicker', {
               rules: [],
-            })(<StringRangePicker />)}
+            })(<SmartRangePicker />)}
           </Form.Item>
 
-          <Form.Item label="StringRangePicker YYYY-MM-DD HH:mm:ss">
-            {getFieldDecorator('StringRangePicker YYYY-MM-DD HH:mm:ss', {
+          <Form.Item label="SmartRangePicker YYYY-MM-DD HH:mm:ss">
+            {getFieldDecorator('SmartRangePicker YYYY-MM-DD HH:mm:ss', {
               rules: [],
               initialValue: ['2024-04-15 03:30:07', '2024-05-18 03:30:07'],
-            })(<StringRangePicker valueFormat="YYYY-MM-DD HH:mm:ss" format={'YYYY-MM-DD'} />)}
+            })(<SmartRangePicker valueFormat="YYYY-MM-DD HH:mm:ss" format={'YYYY-MM-DD'} />)}
           </Form.Item>
           <Form.Item>
             <Button loading={submitLoading} type="primary" htmlType="submit">

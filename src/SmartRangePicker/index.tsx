@@ -6,7 +6,7 @@ import useUpdateEffect from 'src/_utils/useUpdateEffect';
 
 const { RangePicker } = DatePicker;
 
-type StringRangePickerValue =
+type SmartRangePickerValue =
   | undefined[]
   | null[]
   | [string]
@@ -16,13 +16,13 @@ type StringRangePickerValue =
   | [string, null]
   | [string, string];
 
-interface StringRangePickerProps extends Omit<RangePickerProps, 'value' | 'onChange'> {
-  value?: StringRangePickerValue; // 使用新定义的类型
+interface SmartRangePickerProps extends Omit<RangePickerProps, 'value' | 'onChange'> {
+  value?: SmartRangePickerValue; // 使用新定义的类型
   valueFormat?: string;
-  onChange?: (dates: StringRangePickerValue) => void;
+  onChange?: (dates: SmartRangePickerValue) => void;
 }
 
-const StringRangePicker: React.FC<StringRangePickerProps> = ({
+const SmartRangePicker: React.FC<SmartRangePickerProps> = ({
   value,
   valueFormat = 'YYYY-MM-DD',
   format = valueFormat,
@@ -58,7 +58,7 @@ const StringRangePicker: React.FC<StringRangePickerProps> = ({
   const handleRangeChange = (dates: RangePickerValue): void => {
     const formattedDates = [convertToString(dates[0]), convertToString(dates[1])];
     setDates(dates);
-    onChange?.(formattedDates as StringRangePickerValue);
+    onChange?.(formattedDates as SmartRangePickerValue);
   };
 
   return (
@@ -71,4 +71,4 @@ const StringRangePicker: React.FC<StringRangePickerProps> = ({
   );
 };
 
-export default StringRangePicker;
+export default SmartRangePicker;

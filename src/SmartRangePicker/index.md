@@ -4,7 +4,7 @@ group:
   order: 3
 ---
 
-# StringRangePicker
+# SmartRangePicker
 
 继承自 antd 的版本，但是 value 改为了 string，减少上层转换操作
 
