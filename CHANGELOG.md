@@ -1,3 +1,14 @@
+# [0.34.0](https://github.com/tolerance-go/widgets-v3/compare/v0.33.0...v0.34.0) (2024-04-14)
+
+
+### Features
+
+* **Separator:** 新增 Separator 组件 ([42840be](https://github.com/tolerance-go/widgets-v3/commit/42840beab0548643166edf0422ecedaebbc8b015))
+* **SmartA:** 新增 aria-disabled 属性 ([0dbbb08](https://github.com/tolerance-go/widgets-v3/commit/0dbbb08b1eb0753ceec7de8577465b514dc25fa1))
+* **SmartA:** 新增 SmartA 组件 ([8b3257f](https://github.com/tolerance-go/widgets-v3/commit/8b3257f2ef97ecd2d926f6827b6a58fa7da3dba5))
+
+
+
 # [0.33.0](https://github.com/tolerance-go/widgets-v3/compare/v0.32.1...v0.33.0) (2024-04-14)
 
 
