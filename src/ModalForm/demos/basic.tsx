@@ -1,4 +1,5 @@
 import { Button, Cascader, Form, Icon, Input, Tooltip } from 'antd';
+import delay from 'delay';
 import React from 'react';
 import { ModalForm } from 'widgets-v3';
 
@@ -98,6 +99,18 @@ export default () => (
           })(<Cascader options={residences} />)}
         </Form.Item>,
       ];
+    }}
+    renderActionGroup={({ submitLoading }) => {
+      return [
+        <Button type="primary" htmlType="submit" loading={submitLoading}>
+          提交
+        </Button>,
+      ];
+    }}
+    request={async (params) => {
+      console.log(params);
+      await delay(1000);
+      // throw '提交失败'
     }}
   />
 );

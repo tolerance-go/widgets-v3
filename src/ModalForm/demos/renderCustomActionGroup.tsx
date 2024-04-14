@@ -107,7 +107,7 @@ export default () => (
           trigger={<Button type="primary">请求异常按钮</Button>}
           request={async () => {
             await delay(1000);
-            throw new Error();
+            throw new Error('请求异常按钮');
           }}
         />,
       ];

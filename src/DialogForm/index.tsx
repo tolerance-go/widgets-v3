@@ -5,6 +5,9 @@ import { FormContext, FormParentsFieldIdContext } from '../_utils/FormContext';
 import Container from './Container';
 import { createFormEventBusWrapper } from 'src/_utils/createFormEventBusWrapper';
 import { useParentsFormMeta } from 'src/_utils/useParentsFormMeta';
+import { handleError } from 'src/_utils/handleError';
+import './index.less';
+import { classNames } from 'src/_utils/classNames';
 
 // 辅助函数来检测一个对象是否是Promise
 // 这是Promise遵循的Promise/A+规范的一部分
@@ -16,7 +19,9 @@ function isPromise(obj: any): boolean {
 type InitialFormValues = {
   [key: string]: any;
 };
-
+interface RequestParams {
+  values: Record<string, any>;
+}
 export type DialogFormBaseProps = React.PropsWithChildren<{
   mergeIntoForm?: false | string;
   width?: string | number;
@@ -31,10 +36,12 @@ export type DialogFormBaseProps = React.PropsWithChildren<{
   renderActionGroup?: (args: {
     toggleModal: () => void;
     form: WrappedFormUtils;
+    submitLoading: boolean;
   }) => React.ReactNode;
   // 阻止最外层点击冒泡
   stopWrapClickPropagation?: boolean;
   onValuesChange?: (changedValues: Record<string, any>, allValues: Record<string, any>) => void;
+  request?: (params: RequestParams) => Promise<void>;
 }>;
 
 export type DialogFormProps =
@@ -58,11 +65,13 @@ const DialogFormInner = ({
   renderActionGroup,
   stopWrapClickPropagation,
   mergeIntoForm,
+  request,
   ...restProps
 }: DialogFormInnerProps) => {
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const [formLoading, setFormLoading] = useState<boolean>(false); // 新增状态，用于跟踪异步表单项的加载状态
   const [initialFormValues, setInitialFormValues] = useState<InitialFormValues>();
+  const [submitLoading, setSubmitLoading] = useState(false);
   // 使用 FormContext 来确定是否嵌套在 Form 中
 
   const { ifUsedParentForm, parentsFieldId, usedForm } = useParentsFormMeta({
@@ -95,13 +104,66 @@ const DialogFormInner = ({
   // 自定义操作组件的渲染
   const renderCustomActionGroupInner = () => {
     if (typeof renderActionGroup === 'function') {
-      return renderActionGroup({ toggleModal, form: usedForm });
+      return renderActionGroup({ toggleModal, form: usedForm, submitLoading });
     }
     return null;
   };
 
   const resetData = () => {
     setInitialFormValues(undefined);
+  };
+
+  const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (e) => {
+    e.preventDefault();
+
+    if (!request) {
+      return;
+    }
+
+    try {
+      const formValues = await new Promise<Record<string, any>>((resolve, reject) => {
+        form.validateFieldsAndScroll((err, values) => {
+          if (err) {
+            reject(err);
+            return;
+          }
+          resolve(values);
+        });
+      });
+
+      setSubmitLoading(true);
+      await request({ values: formValues });
+      toggleModal();
+    } catch (error) {
+      handleError(error, '表单验证失败'); // Using the common error handling function
+    } finally {
+      setSubmitLoading(false);
+    }
+  };
+
+  const renderFormContent = (formItems?: React.ReactNode) => {
+    const footer = [
+      <Button key="close" onClick={toggleModal}>
+        关闭
+      </Button>,
+      renderCustomActionGroupInner(),
+    ];
+
+    if (type === 'drawer') {
+      return (
+        <>
+          <div style={{ paddingBottom: 24 }}>{formItems}</div>
+          <div className={classNames('wg-dialog-footer', 'wg-drawer-footer')}>{footer}</div>
+        </>
+      );
+    }
+
+    return (
+      <>
+        <div style={{ paddingBottom: 24 }}>{formItems}</div>
+        <div className={classNames('wg-dialog-footer', 'wg-modal-footer')}>{footer}</div>
+      </>
+    );
   };
 
   const renderContent = () => {
@@ -111,20 +173,24 @@ const DialogFormInner = ({
 
     if (requestInitialFormValues) {
       if (initialFormValues) {
-        return renderFormItems?.({
-          form: usedForm,
-          initialFormValues,
-          parentsFieldId,
-        });
+        return renderFormContent(
+          renderFormItems?.({
+            form: usedForm,
+            initialFormValues,
+            parentsFieldId,
+          }),
+        );
       }
 
       return null;
     }
 
-    return renderFormItems?.({
-      form: usedForm,
-      parentsFieldId,
-    });
+    return renderFormContent(
+      renderFormItems?.({
+        form: usedForm,
+        parentsFieldId,
+      }),
+    );
   };
 
   const renderForm = () => {
@@ -138,7 +204,9 @@ const DialogFormInner = ({
 
     return (
       <FormContext.Provider value={form}>
-        <Form {...restProps}>{renderContent()}</Form>
+        <Form onSubmit={handleSubmit} {...restProps}>
+          {renderContent()}
+        </Form>
       </FormContext.Provider>
     );
   };
@@ -179,12 +247,7 @@ const DialogFormInner = ({
           toggleModal();
           resetData();
         }}
-        footer={[
-          <Button key="close" onClick={toggleModal}>
-            关闭
-          </Button>,
-          renderCustomActionGroupInner(),
-        ]}
+        footer={null}
       >
         {renderForm()}
       </Container>
