@@ -56,27 +56,6 @@ turn [ <ModalForm key={'modal-form-1'} title='修改手机号' trigger={ <Button
 
 ---
 
-              <Action
-                    trigger={
-                        <Button type="primary">
-                            登录
-                        </Button>
-                    }
-                    request={async () => {
-
-                        const formValues = await new Promise((resolve, reject) => {
-                            validateFieldsAndScroll((errors, values) => {
-                                if (errors) {
-                                    reject('表单验证失败，请检查')
-                                    return;
-                                }
-                                resolve(values)
-                            })
-                        })
-
-                        把 form 封装进去
-
----
 
 <Action trigger={ <Button size='large' block style={{
                                         marginLeft: 0,
@@ -117,43 +96,11 @@ turn [ <ModalForm key={'modal-form-1'} title='修改手机号' trigger={ <Button
 
 ---
 
-renderActionGroup={({ toggleModal, form }) => { return [ <Action key="btn1" trigger={<Button type="primary">确认</Button>} request={async () => { const formValues = await new Promise((resolve, reject) => { form.validateFieldsAndScroll((errors, values) => { if (errors) { reject('表单存在错误，请检查') return; } resolve(values) }) }) await delay(1000);
-
-                      console.log(formValues)
-
-                      toggleModal()
-                    }}
-                  />,
-                ];
-              }}
-
----
-
 后端分页下拉框，如果搜索没有数据的话，展示 空状态
 
 ---
 
 重构 图片预览组件，效果对其 antd@5
-
----
-
-EditableTable 修改 UE，把插入改为复制
-
----
-
-~~GroupsForm 复制支持数据复制~~
-
----
-
-~~searchTable 的 request 支持处理内部异常~~
-
----
-
-~~Action 支持 trigger 为函数注入 loading~~
-
----
-
-~~SearchTable 切换 tab 的时候，分页参数从 1 开始~~
 
 ---
 

@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
 import { DatePicker } from 'antd';
-import moment from 'moment';
 import { RangePickerProps, RangePickerValue } from 'antd/es/date-picker/interface'; // 导入 RangePicker 的类型定义
+import moment from 'moment';
+import React, { useState } from 'react';
 import useUpdateEffect from 'src/_utils/useUpdateEffect';
 
 const { RangePicker } = DatePicker;
 
-type SmartRangePickerValue =
+type StringRangePickerValue =
   | undefined[]
   | null[]
   | [string]
@@ -16,6 +16,8 @@ type SmartRangePickerValue =
   | [string, null]
   | [string, string];
 
+type SmartRangePickerValue = StringRangePickerValue | RangePickerProps['value'];
+
 interface SmartRangePickerProps extends Omit<RangePickerProps, 'value' | 'onChange'> {
   value?: SmartRangePickerValue; // 使用新定义的类型
   valueFormat?: string;
@@ -24,7 +26,7 @@ interface SmartRangePickerProps extends Omit<RangePickerProps, 'value' | 'onChan
 
 const SmartRangePicker: React.FC<SmartRangePickerProps> = ({
   value,
-  valueFormat = 'YYYY-MM-DD',
+  valueFormat,
   format = valueFormat,
   onChange,
   ...restProps
@@ -43,22 +45,42 @@ const SmartRangePicker: React.FC<SmartRangePickerProps> = ({
     return date;
   };
 
-  const [dates, setDates] = useState<(moment.Moment | undefined | null)[]>(
-    Array.isArray(value) ? [convertToMoment(value[0]), convertToMoment(value[1])] : [],
-  );
+  const [dates, setDates] = useState<(moment.Moment | undefined | null)[]>(() => {
+    if (valueFormat) {
+      const stringVal = value as StringRangePickerValue;
+      return Array.isArray(stringVal)
+        ? [convertToMoment(stringVal[0]), convertToMoment(stringVal[1])]
+        : [];
+    }
+    return Array.isArray(value) ? (value as (moment.Moment | undefined | null)[]) : [];
+  });
 
   useUpdateEffect(() => {
-    if (Array.isArray(value)) {
-      setDates([convertToMoment(value[0]), convertToMoment(value[1])]);
+    if (valueFormat) {
+      const stringVal = value as StringRangePickerValue;
+      if (Array.isArray(value)) {
+        setDates([convertToMoment(stringVal[0]), convertToMoment(stringVal[1])]);
+      } else {
+        setDates([]);
+      }
     } else {
-      setDates([]);
+      if (Array.isArray(value)) {
+        setDates(value as (moment.Moment | undefined | null)[]);
+      } else {
+        setDates([]);
+      }
     }
   }, [value, valueFormat]);
 
   const handleRangeChange = (dates: RangePickerValue): void => {
-    const formattedDates = [convertToString(dates[0]), convertToString(dates[1])];
-    setDates(dates);
-    onChange?.(formattedDates as SmartRangePickerValue);
+    if (valueFormat) {
+      const formattedDates = [convertToString(dates[0]), convertToString(dates[1])];
+      setDates(dates);
+      onChange?.(formattedDates as SmartRangePickerValue);
+    } else {
+      setDates(dates);
+      onChange?.(dates as SmartRangePickerValue);
+    }
   };
 
   return (
