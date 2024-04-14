@@ -1,10 +1,10 @@
-// ProConfirm.tsx
+// SmartConfirm.tsx
 import { Button, Col, Modal, Row } from 'antd';
 import { ModalFuncProps } from 'antd/es/modal/Modal';
 import React, { ReactNode, useState } from 'react';
 import ReactDOM from 'react-dom';
 
-type ShowProConfirmConfigs = Pick<
+type ShowSmartConfirmConfigs = Pick<
   ModalFuncProps,
   | 'title'
   | 'content'
@@ -17,19 +17,19 @@ type ShowProConfirmConfigs = Pick<
   | 'cancelButtonProps'
   | 'maskClosable'
 > & {
-  actions?: (args: { methods: ProConfirmMethods }) => ReactNode[];
+  actions?: (args: { methods: SmartConfirmMethods }) => ReactNode[];
 };
 
-type ProConfirmProps = ShowProConfirmConfigs & {
+type SmartConfirmProps = ShowSmartConfirmConfigs & {
   onClose?: () => void;
 };
 
-type ProConfirmMethods = {
+type SmartConfirmMethods = {
   cancel: () => void;
   confirm: () => void;
 };
 
-const ProConfirm = (props: ProConfirmProps) => {
+const SmartConfirm = (props: SmartConfirmProps) => {
   const {
     title,
     content,
@@ -87,7 +87,7 @@ const ProConfirm = (props: ProConfirmProps) => {
     }
   };
 
-  const methods: ProConfirmMethods = {
+  const methods: SmartConfirmMethods = {
     cancel: () => {
       handleCancel();
     },
@@ -190,8 +190,8 @@ const ProConfirm = (props: ProConfirmProps) => {
   );
 };
 
-// 显示ProConfirm对话框的函数
-const confirm = (props: ShowProConfirmConfigs) => {
+// 显示SmartConfirm对话框的函数
+const confirm = (props: ShowSmartConfirmConfigs) => {
   const div = document.createElement('div');
   document.body.appendChild(div);
 
@@ -201,7 +201,7 @@ const confirm = (props: ShowProConfirmConfigs) => {
     document.body.removeChild(div);
   };
 
-  ReactDOM.render(<ProConfirm {...props} onClose={close} />, div);
+  ReactDOM.render(<SmartConfirm {...props} onClose={close} />, div);
 };
 
 export default confirm;
