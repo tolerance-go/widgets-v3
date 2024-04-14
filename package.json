@@ -2,6 +2,7 @@
   "name": "widgets-v3",
   "version": "0.34.1",
   "scripts": {
+    "prepare": "husky install",
     "start": "dumi dev",
     "docs:build": "dumi build",
     "build": "rimraf dist && father build",
@@ -20,9 +21,6 @@
   ],
   "module": "dist/esm/index.js",
   "typings": "dist/esm/index.d.ts",
-  "gitHooks": {
-    "pre-commit": "lint-staged"
-  },
   "lint-staged": {
     "*.{js,jsx,less,md,json}": [
       "prettier --write"
@@ -56,11 +54,11 @@
     "dumi": "^1.1.0",
     "father": "^4.0.0-rc.2",
     "gh-pages": "^3.0.0",
+    "husky": "6",
     "lint-staged": "^10.0.7",
     "prettier": "^2.2.1",
     "rimraf": "^5.0.5",
-    "typescript": "~3.8.3",
-    "yorkie": "^2.0.0"
+    "typescript": "~3.8.3"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
