@@ -1,3 +1,25 @@
+# [0.33.0](https://github.com/tolerance-go/widgets-v3/compare/v0.32.1...v0.33.0) (2024-04-14)
+
+
+### Features
+
+* 新增 SmartDescriptions 组件 ([162fd95](https://github.com/tolerance-go/widgets-v3/commit/162fd959c59563643b9f43e59324673023e1d035))
+* **DialogForm:** 支持 request 和 submit 按钮渲染 ([b252780](https://github.com/tolerance-go/widgets-v3/commit/b252780f28a6d2c48f10714bd2fb75a1588953bf))
+* **EditableTable:** 新增复制行功能 ([6a35b37](https://github.com/tolerance-go/widgets-v3/commit/6a35b37b809b480a3382b5ac1d9e29e703ec13c8))
+* **SmartForm:** 新增 SmartForm 组件 ([2b82eba](https://github.com/tolerance-go/widgets-v3/commit/2b82ebac7c66605e7d1a53abaeff3ffb7ebe210d))
+* **SmartRangePicker:** 兼容 RangePicker 组件 ([fd922a7](https://github.com/tolerance-go/widgets-v3/commit/fd922a7791915b86823e3cef458fa8bf176cc7f0))
+* **SmartRangePicker:** 新增 SmartRangePicker 组件 ([5a835ae](https://github.com/tolerance-go/widgets-v3/commit/5a835aebfdca8eed09a55c966cef9b7ecccb20bc))
+
+
+### BREAKING CHANGES
+
+* **EditableTable:** 删除上下插入按钮
+* 改名 ProDescriptions 为 SmartDescriptions
+* **SmartForm:** 将 ProForm 改名为 SmartForm
+* **SmartRangePicker:** 将 ProRangePicker 改名为 SmartRangePicker
+
+
+
 ## [0.32.1](https://github.com/tolerance-go/widgets-v3/compare/v0.32.0...v0.32.1) (2024-04-13)
 
 
