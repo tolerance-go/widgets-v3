@@ -1,5 +1,6 @@
 ---
 group:
+  title: Action
   order: 1
 ---
 
