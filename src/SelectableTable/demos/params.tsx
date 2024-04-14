@@ -5,7 +5,7 @@ import {
   BackendFilteredSelectListItem,
   DrawerForm,
   ProDescriptions,
-  ProForm,
+  SmartForm,
   SelectableTable,
 } from 'widgets-v3';
 
@@ -36,7 +36,7 @@ const getPageItems = (
 export default () => {
   const [num, setNum] = useState(0);
   return (
-    <ProForm
+    <SmartForm
       request={async (params) => {
         console.log(params);
         await delay(1000);

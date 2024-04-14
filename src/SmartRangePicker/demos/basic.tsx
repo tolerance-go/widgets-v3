@@ -1,10 +1,10 @@
 import { Button, Form } from 'antd';
 import delay from 'delay';
 import React from 'react';
-import { BackendFilteredSelect, ProForm, SmartRangePicker } from 'widgets-v3';
+import { BackendFilteredSelect, SmartForm, SmartRangePicker } from 'widgets-v3';
 
 export default () => (
-  <ProForm
+  <SmartForm
     request={async (params) => {
       console.log(params);
       await delay(1000);

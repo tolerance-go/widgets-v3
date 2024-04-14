@@ -2,7 +2,7 @@ import { Button, Cascader, Form, Icon, Input, InputNumber, Tooltip } from 'antd'
 import React from 'react';
 import {
   BackendFilteredSelect,
-  ProForm,
+  SmartForm,
   BackendFilteredSelectListItem,
   EditableTable,
   TabsForm,

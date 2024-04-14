@@ -4,7 +4,7 @@ group:
   order: 4
 ---
 
-# ProForm
+# SmartForm
 
 ## 基本使用
 

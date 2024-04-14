@@ -2,7 +2,7 @@ import { Button, Cascader, Col, Form, Icon, Input, InputNumber, Row, Tooltip } f
 import React from 'react';
 import {
   BackendFilteredSelect,
-  ProForm,
+  SmartForm,
   BackendFilteredSelectListItem,
   EditableTable,
   TabsForm,
@@ -75,7 +75,7 @@ const residences = [
 ];
 
 export default () => (
-  <ProForm
+  <SmartForm
     request={async (params) => {
       console.log(params);
       await delay(1000);

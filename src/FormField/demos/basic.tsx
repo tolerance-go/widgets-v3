@@ -1,10 +1,10 @@
 import { Button, Col, Form, Input, Row } from 'antd';
 import delay from 'delay';
 import React from 'react';
-import { FormField, ProForm } from 'widgets-v3';
+import { FormField, SmartForm } from 'widgets-v3';
 
 export default () => (
-  <ProForm
+  <SmartForm
     request={async (params) => {
       console.log(params);
       await delay(1000);

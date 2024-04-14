@@ -2,7 +2,7 @@ import { Button, Cascader, Col, Form, Icon, Input, InputNumber, Row, Tooltip } f
 import React, { useEffect, useRef } from 'react';
 import {
   BackendFilteredSelect,
-  ProForm,
+  SmartForm,
   BackendFilteredSelectListItem,
   EditableTable,
   TabsForm,
@@ -79,7 +79,7 @@ export default () => {
   const selectableTableRef = useRef<SelectableTableMethods>(null);
 
   return (
-    <ProForm
+    <SmartForm
       request={async (params) => {
         console.log(params);
         await delay(1000);

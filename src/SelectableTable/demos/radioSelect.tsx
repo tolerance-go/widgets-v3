@@ -5,7 +5,7 @@ import {
   BackendFilteredSelectListItem,
   DrawerForm,
   ProDescriptions,
-  ProForm,
+  SmartForm,
   SelectableTable,
 } from 'widgets-v3';
 
@@ -69,7 +69,7 @@ const residences = [
 ];
 
 export default () => (
-  <ProForm
+  <SmartForm
     request={async (params) => {
       console.log(params);
       await delay(1000);

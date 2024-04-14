@@ -13,7 +13,7 @@ export interface RequestParams {
 
 export interface RequestResult {}
 
-export type ProFormProps = {
+export type SmartFormProps = {
   mergeIntoForm?: false | string;
   request?: (params: RequestParams) => Promise<void>;
   renderFormItems?: (params: {
@@ -24,9 +24,9 @@ export type ProFormProps = {
   onValuesChange?: (changedValues: Record<string, any>, allValues: Record<string, any>) => void;
 };
 
-export type ProFormInnerProps = ProFormProps & FormComponentProps;
+export type SmartFormInnerProps = SmartFormProps & FormComponentProps;
 
-const ProFormInner: React.FC<ProFormInnerProps> = ({
+const SmartFormInner: React.FC<SmartFormInnerProps> = ({
   form,
   renderFormItems,
   request,
@@ -85,13 +85,13 @@ const ProFormInner: React.FC<ProFormInnerProps> = ({
   }
 };
 
-const ProForm = createFormEventBusWrapper(
-  Form.create<ProFormInnerProps>({
-    name: 'ProForm',
+const SmartForm = createFormEventBusWrapper(
+  Form.create<SmartFormInnerProps>({
+    name: 'SmartForm',
     onValuesChange(props, changedValues, allValues) {
       props.onValuesChange?.(changedValues, allValues);
     },
-  })(ProFormInner),
+  })(SmartFormInner),
 );
 
-export default ProForm;
+export default SmartForm;

@@ -2,7 +2,7 @@ import { Button, Cascader, Col, Form, Icon, Input, InputNumber, Row, Tooltip } f
 import React from 'react';
 import {
   BackendFilteredSelect,
-  ProForm,
+  SmartForm,
   BackendFilteredSelectListItem,
   EditableTable,
   TabsForm,

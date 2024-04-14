@@ -4,7 +4,7 @@ export { default as ModalForm } from './ModalForm';
 export { default as Action } from './Action';
 export { default as BackendFilteredSelect } from './BackendFilteredSelect';
 export { default as FrontendFilteredSelect } from './FrontendFilteredSelect';
-export { default as ProForm } from './ProForm';
+export { default as SmartForm } from './SmartForm';
 export { default as EllipsisTooltip } from './EllipsisTooltip';
 export { default as ProDescriptions } from './ProDescriptions';
 export { default as DialogForm } from './DialogForm';
