@@ -21,8 +21,8 @@ const SmartA: React.FC<SmartAProps> = ({ loading, disabled, children, ...props }
 
   // 根据 disabled 和 loading 状态设置样式
   const linkStyle: CSSProperties = {
-    color: disabled ? 'grey' : undefined, // 当 disabled 时，颜色设置为灰色
-    cursor: disabled ? 'not-allowed' : loading ? 'default' : 'pointer', // 设置适当的鼠标样式
+    color: disabled ? '#aaa' : undefined, // 当 disabled 时，颜色设置为灰色
+    cursor: disabled || loading ? 'default' : 'pointer', // 设置适当的鼠标样式
   };
 
   return (
