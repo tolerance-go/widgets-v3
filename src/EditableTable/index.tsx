@@ -21,6 +21,7 @@ import React, {
   useState,
 } from 'react';
 import useUpdateEffect from '../_utils/useUpdateEffect';
+import Separator from 'src/Separator';
 
 const OPERATION_DATA_INDEX = 'Editable_operation';
 
@@ -396,8 +397,7 @@ const EditableTable = <T extends Record<string, any> = Record<string, any>>({
     setEditingRowIds((prev) => ({ ...prev, [rowId]: true })); // 新复制的行直接进入编辑状态
 
     // 特殊处理：如果是在当前页的最后一项之后插入，则考虑是否需要翻页
-    const isInsertAtCurrentPageBottom =
-      (index + 1) % pageSize === 0 && index < newData.length - 1;
+    const isInsertAtCurrentPageBottom = (index + 1) % pageSize === 0 && index < newData.length - 1;
     if (isInsertAtCurrentPageBottom) {
       const newPage = currentPage + 1;
       setCurrentPage(newPage); // 翻至下一页
@@ -417,71 +417,40 @@ const EditableTable = <T extends Record<string, any> = Record<string, any>>({
             const rowId = record[rowKey].toString();
 
             return !editing ? (
-              <>
-                <Button
-                  size="small"
-                  type="link"
-                  style={{ marginRight: 8 }}
-                  onClick={() => setEditing(true)}
-                >
-                  编辑
-                </Button>
-                {/* <Button
-                  size="small"
-                  type="link"
-                  style={{ marginRight: 8 }}
+              <Separator>
+                <a onClick={() => setEditing(true)}>编辑</a>
+                {/* <a
                   onClick={() => handleInsertRow('above', rowId)}
                 >
                   上方插入
-                </Button>
-                <Button
-                  size="small"
-                  type="link"
-                  style={{ marginRight: 8 }}
+                </a>
+                <a
                   onClick={() => handleInsertRow('below', rowId)}
                 >
                   下方插入
-                </Button> */}
-                <Button
-                  size="small"
-                  type="link"
-                  style={{ marginRight: 8 }}
-                  onClick={() => handleCopy(rowId)}
-                >
-                  复制
-                </Button>
+                </a> */}
+                <a onClick={() => handleCopy(rowId)}>复制</a>
                 <Popconfirm
                   title="确认删除吗？"
                   cancelText="取消"
                   okText="确认"
                   onConfirm={() => handleDelete(record[rowKey])}
                 >
-                  <Button size="small" type="link">
-                    删除
-                  </Button>
+                  <a>删除</a>
                 </Popconfirm>
-              </>
+              </Separator>
             ) : (
-              <>
-                <Button
-                  size="small"
-                  type="link"
-                  style={{ marginRight: 8 }}
-                  onClick={() => save(form, record, index, setEditing)}
-                >
-                  保存
-                </Button>
+              <Separator>
+                <a onClick={() => save(form, record, index, setEditing)}>保存</a>
                 <Popconfirm
                   title="确认取消吗？"
                   cancelText="取消"
                   okText="确认"
                   onConfirm={() => setEditing(false)}
                 >
-                  <Button size="small" type="link">
-                    取消
-                  </Button>
+                  <a>取消</a>
                 </Popconfirm>
-              </>
+              </Separator>
             );
           }}
         </EditableRowContext.Consumer>
