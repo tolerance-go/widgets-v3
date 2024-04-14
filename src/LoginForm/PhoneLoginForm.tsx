@@ -10,7 +10,7 @@ type PhoneLoginFormInnerProps = {
   requestCaptcha?: () => Promise<void>;
 } & FormComponentProps;
 
-const captchaTimestampKey = 'captchaTimestamp'
+const captchaTimestampKey = 'captchaTimestamp';
 
 const PhoneLoginInnerForm = ({
   form,

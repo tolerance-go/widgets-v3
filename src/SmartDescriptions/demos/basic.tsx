@@ -31,7 +31,10 @@ export default () => (
       }}
     >
       {(data) => {
-        return [<div key={1}>{JSON.stringify(data)}</div>, <div key={2}>{JSON.stringify(data)}</div>];
+        return [
+          <div key={1}>{JSON.stringify(data)}</div>,
+          <div key={2}>{JSON.stringify(data)}</div>,
+        ];
       }}
     </SmartDescriptions>
   </>
