@@ -26,7 +26,7 @@ const SmartA: React.FC<SmartAProps> = ({ loading, disabled, children, ...props }
   };
 
   return (
-    <a {...props} onClick={handleClick} style={linkStyle}>
+    <a {...props} aria-disabled={disabled} onClick={handleClick} style={linkStyle}>
       {loading ? <Icon type="loading" /> : children}
     </a>
   );
